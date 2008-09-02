@@ -1,0 +1,41 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="All">
+    <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
+    <ItemGroup>
+      <Projects Include="Cassia.sln" />
+    </ItemGroup>
+    <PropertyGroup>
+      <BuildPath>Build\</BuildPath>
+      <PackageLabel>Cassia-$(CCNetLabel).zip</PackageLabel>
+      <DropPath>..\Drops\Cassia\</DropPath>
+      <PackageOutputPath>$(BuildPath)bin\Release\</PackageOutputPath>
+      <PackageOutput>$(PackageOutputPath)**\*.*</PackageOutput>
+    </PropertyGroup>
+    
+    <Target Name="Clean">
+        <RemoveDir Directories="$(BuildPath)" />
+        <MakeDir Directories="$(DropPath)" />
+        <MakeDir Directories="$(BuildPath)" />
+    </Target>
+    
+  <Target Name="Build" DependsOnTargets="Clean">
+        <AssemblyInfo Condition="'$(CCNetLabel)' != ''"
+                      CodeLanguage="CS"
+                      OutputFile="VersionInfo.cs"
+                      AssemblyVersion="$(CCNetLabel)"
+                      AssemblyFileVersion="$(CCNetLabel)"
+                      CLSCompliant="true" 
+                      AssemblyCompany="Cassia Developers"
+                      AssemblyProduct="Cassia: .NET Terminal Services Library"
+                      AssemblyCopyright="Copyright © 2008" />
+    <MSBuild Projects="@(Projects)" Targets="Build" Properties="Configuration=Release" />  
+  </Target>
+    
+  <Target Name="Package">
+    <CreateItem Include="$(PackageOutput)">
+      <Output TaskParameter="Include" ItemName="PackageFiles" />
+    </CreateItem>
+    <Zip Files="@(PackageFiles)" ZipFileName="$(DropPath)$(PackageLabel)" WorkingDirectory="$(PackageOutputPath)" />
+  </Target>
+
+  <Target Name="All" DependsOnTargets="Build;Package" />
+</Project>
