@@ -56,7 +56,7 @@ namespace Cassia
 
     [StructLayout(LayoutKind.Sequential)]
     [CLSCompliant(false)]
-    public struct WINSTATIONINFORMATIONW
+    internal struct WINSTATIONINFORMATIONW
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 70)]
         private byte[] Reserved1;

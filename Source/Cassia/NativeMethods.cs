@@ -4,8 +4,7 @@ using Cassia;
 
 namespace Cassia
 {
-    [CLSCompliant(false)]
-    public static class NativeMethods
+    internal static class NativeMethods
     {
         public const uint CurrentSessionId = uint.MaxValue;
         public static readonly IntPtr LocalServerHandle = IntPtr.Zero;
