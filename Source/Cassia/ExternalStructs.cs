@@ -55,7 +55,6 @@ namespace Cassia
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    [CLSCompliant(false)]
     internal struct WINSTATIONINFORMATIONW
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 70)]
