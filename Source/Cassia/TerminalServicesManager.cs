@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Cassia;
 using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace Cassia
@@ -102,16 +101,6 @@ namespace Cassia
                 sessionInfo.ConnectionState = (WTS_CONNECTSTATE_CLASS) Marshal.ReadInt32(mem);
                 NativeMethods.WTSFreeMemory(mem);
             }
-
-            if (
-                NativeMethods.WTSQuerySessionInformation(server, sessionId, WTS_INFO_CLASS.WTSUserName, out mem,
-                                                         out returned))
-            {
-                string str = Marshal.PtrToStringAuto(mem);
-                NativeMethods.WTSFreeMemory(mem);
-                sessionInfo.UserName = str;
-            }
-
             if (
                 NativeMethods.WTSQuerySessionInformation(server, sessionId, WTS_INFO_CLASS.WTSClientName, out mem,
                                                          out returned))
@@ -121,26 +110,50 @@ namespace Cassia
                 sessionInfo.ClientName = str;
             }
 
-            GetTimeInfo(server, sessionId, sessionInfo);
-            return sessionInfo;
-        }
-
-        private static void GetTimeInfo(IntPtr server, uint sessionId, ITerminalServicesSession sessionInfo)
-        {
-            uint retLen = 0;
-            WINSTATIONINFORMATIONW wsInfo = new WINSTATIONINFORMATIONW();
-            if (
-                NativeMethods.WinStationQueryInformationW(server, sessionId,
-                                                          (uint) WINSTATIONINFOCLASS.WinStationInformation, ref wsInfo,
-                                                          (uint) Marshal.SizeOf(typeof(WINSTATIONINFORMATIONW)),
-                                                          ref retLen) != 0)
+            if (Environment.OSVersion.Version > new Version(6, 0))
             {
-                sessionInfo.ConnectTime = FileTimeToDateTime(wsInfo.ConnectTime);
-                sessionInfo.CurrentTime = FileTimeToDateTime(wsInfo.CurrentTime);
-                sessionInfo.DisconnectTime = FileTimeToDateTime(wsInfo.DisconnectTime);
-                sessionInfo.LastInputTime = FileTimeToDateTime(wsInfo.LastInputTime);
-                sessionInfo.LoginTime = FileTimeToDateTime(wsInfo.LoginTime);
+                // We can actually use documented APIs in Windows Server 2008+.
+                if (
+                    NativeMethods.WTSQuerySessionInformation(server, sessionId, WTS_INFO_CLASS.WTSSessionInfo, out mem,
+                                                             out returned))
+                {
+                    WTSINFO info = (WTSINFO) Marshal.PtrToStructure(mem, typeof(WTSINFO));
+                    sessionInfo.ConnectTime = DateTime.FromFileTime(info.ConnectTime);
+                    sessionInfo.CurrentTime = DateTime.FromFileTime(info.CurrentTime);
+                    sessionInfo.DisconnectTime = DateTime.FromFileTime(info.DisconnectTime);
+                    sessionInfo.LastInputTime = DateTime.FromFileTime(info.LastInputTime);
+                    sessionInfo.LoginTime = DateTime.FromFileTime(info.LogonTime);
+                    sessionInfo.UserName = info.UserName;
+                    NativeMethods.WTSFreeMemory(mem);
+                }
             }
+            else
+            {
+                if (
+                    NativeMethods.WTSQuerySessionInformation(server, sessionId, WTS_INFO_CLASS.WTSUserName, out mem,
+                                                             out returned))
+                {
+                    string str = Marshal.PtrToStringAuto(mem);
+                    NativeMethods.WTSFreeMemory(mem);
+                    sessionInfo.UserName = str;
+                }
+                uint retLen = 0;
+                WINSTATIONINFORMATIONW wsInfo = new WINSTATIONINFORMATIONW();
+                if (
+                    NativeMethods.WinStationQueryInformationW(server, sessionId,
+                                                              (uint) WINSTATIONINFOCLASS.WinStationInformation,
+                                                              ref wsInfo,
+                                                              (uint) Marshal.SizeOf(typeof(WINSTATIONINFORMATIONW)),
+                                                              ref retLen) != 0)
+                {
+                    sessionInfo.ConnectTime = FileTimeToDateTime(wsInfo.ConnectTime);
+                    sessionInfo.CurrentTime = FileTimeToDateTime(wsInfo.CurrentTime);
+                    sessionInfo.DisconnectTime = FileTimeToDateTime(wsInfo.DisconnectTime);
+                    sessionInfo.LastInputTime = FileTimeToDateTime(wsInfo.LastInputTime);
+                    sessionInfo.LoginTime = FileTimeToDateTime(wsInfo.LoginTime);
+                }
+            }
+            return sessionInfo;
         }
     }
 }
