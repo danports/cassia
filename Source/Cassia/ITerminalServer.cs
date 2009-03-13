@@ -4,7 +4,7 @@ namespace Cassia
 {
     public interface ITerminalServer
     {
-        ITerminalServicesSession CurrentSession { get; }
         IList<ITerminalServicesSession> GetSessions();
+        ITerminalServicesSession GetSession(int sessionId);
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace Cassia
@@ -16,21 +15,6 @@ namespace Cassia
 
         #region ITerminalServer Members
 
-        public ITerminalServicesSession CurrentSession
-        {
-            get
-            {
-                if (_serverName != null)
-                {
-                    throw new NotSupportedException("Can't fetch CurrentSession for remote terminal server");
-                }
-                using (TerminalServerHandle server = new TerminalServerHandle(_serverName))
-                {
-                    return SessionHelper.GetSessionInfo(server, SessionHelper.GetCurrentSessionId(server));
-                }
-            }
-        }
-
         public IList<ITerminalServicesSession> GetSessions()
         {
             using (TerminalServerHandle server = new TerminalServerHandle(_serverName))
@@ -42,6 +26,14 @@ namespace Cassia
                     results.Add(SessionHelper.GetSessionInfo(server, sessionInfo.SessionID));
                 }
                 return results;
+            }
+        }
+
+        public ITerminalServicesSession GetSession(int sessionId)
+        {
+            using (TerminalServerHandle server = new TerminalServerHandle(_serverName))
+            {
+                return SessionHelper.GetSessionInfo(server, (uint) sessionId);
             }
         }
 

@@ -8,7 +8,13 @@ namespace Cassia
 
         public ITerminalServicesSession CurrentSession
         {
-            get { return new TerminalServer().CurrentSession; }
+            get
+            {
+                using (TerminalServerHandle server = new TerminalServerHandle(null))
+                {
+                    return SessionHelper.GetSessionInfo(server, SessionHelper.GetCurrentSessionId(server));
+                }
+            }
         }
 
         public IList<ITerminalServicesSession> GetSessions(string serverName)
@@ -19,6 +25,16 @@ namespace Cassia
         public IList<ITerminalServicesSession> GetSessions()
         {
             return GetSessions(null);
+        }
+
+        public ITerminalServer GetRemoteServer(string serverName)
+        {
+            return new TerminalServer(serverName);
+        }
+
+        public ITerminalServer GetLocalServer()
+        {
+            return new TerminalServer();
         }
 
         #endregion
