@@ -1,18 +1,17 @@
 using System;
-using Cassia;
 
 namespace Cassia
 {
     public interface ITerminalServicesSession
     {
-        string ClientName { get; set; }
-        WTS_CONNECTSTATE_CLASS ConnectionState { get; set; }
-        DateTime ConnectTime { get; set; }
-        DateTime CurrentTime { get; set; }
-        DateTime DisconnectTime { get; set; }
-        DateTime LastInputTime { get; set; }
-        DateTime LoginTime { get; set; }
-        long SessionId { get; set; }
-        string UserName { get; set; }
+        string ClientName { get; }
+        WTS_CONNECTSTATE_CLASS ConnectionState { get; }
+        DateTime ConnectTime { get; }
+        DateTime CurrentTime { get; }
+        DateTime DisconnectTime { get; }
+        DateTime LastInputTime { get; }
+        DateTime LoginTime { get; }
+        long SessionId { get; }
+        string UserName { get; }
     }
 }

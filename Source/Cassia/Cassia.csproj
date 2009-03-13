@@ -37,10 +37,14 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="ExternalStructs.cs" />
+    <Compile Include="ITerminalServer.cs" />
     <Compile Include="ITerminalServicesManager.cs" />
     <Compile Include="ITerminalServicesSession.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SessionHelper.cs" />
+    <Compile Include="TerminalServer.cs" />
+    <Compile Include="TerminalServerHandle.cs" />
     <Compile Include="TerminalServicesManager.cs" />
     <Compile Include="TerminalServicesSession.cs" />
   </ItemGroup>
