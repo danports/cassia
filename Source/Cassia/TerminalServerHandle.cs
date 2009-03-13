@@ -5,7 +5,7 @@ namespace Cassia
 {
     public class TerminalServerHandle : IDisposable
     {
-        private readonly IntPtr _serverPtr;
+        private IntPtr _serverPtr;
 
         public TerminalServerHandle(string serverName)
         {
@@ -44,6 +44,7 @@ namespace Cassia
             if (_serverPtr != NativeMethods.LocalServerHandle)
             {
                 NativeMethods.WTSCloseServer(_serverPtr);
+                _serverPtr = NativeMethods.LocalServerHandle;
             }
         }
 
