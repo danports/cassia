@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Security.Principal;
 
 namespace Cassia
@@ -49,6 +50,14 @@ namespace Cassia
         public void Kill(int exitCode)
         {
             SessionHelper.TerminateProcess(_server.Handle, _processId, exitCode);
+        }
+
+        public Process GetProcessObject()
+        {
+            return
+                _server.ServerName == null
+                    ? Process.GetProcessById(_processId)
+                    : Process.GetProcessById(_processId, _server.ServerName);
         }
 
         #endregion

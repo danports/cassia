@@ -98,6 +98,7 @@ namespace SessionInfo
             Console.WriteLine("Process ID: " + process.ProcessId);
             Console.WriteLine("Process Name: " + process.ProcessName);
             Console.WriteLine("SID: " + process.Sid);
+            Console.WriteLine("Working Set: " + process.GetProcessObject().WorkingSet64);
         }
 
         private static void ListServers(string[] args)

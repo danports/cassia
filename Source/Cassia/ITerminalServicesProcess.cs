@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Security.Principal;
 
 namespace Cassia
@@ -10,5 +11,6 @@ namespace Cassia
         SecurityIdentifier Sid { get; }
         void Kill();
         void Kill(int exitCode);
+        Process GetProcessObject();
     }
 }
