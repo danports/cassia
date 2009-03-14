@@ -45,5 +45,9 @@ namespace Cassia
         [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int WTSEnumerateServers([MarshalAs(UnmanagedType.LPTStr)] string pDomainName, int reserved,
                                                      int version, out IntPtr ppServerInfo, out int pCount);
+
+        [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern int WTSEnumerateProcesses(IntPtr hServer, int reserved, int version,
+                                                       out IntPtr ppProcessInfo, out int count);
     }
 }

@@ -13,9 +13,7 @@ namespace Cassia
                 using (ITerminalServer server = new TerminalServer())
                 {
                     server.Open();
-                    return
-                        SessionHelper.GetSessionInfo(server, server.Handle,
-                                                     SessionHelper.GetCurrentSessionId(server.Handle));
+                    return new TerminalServicesSession(server, SessionHelper.GetCurrentSessionId(server.Handle));
                 }
             }
         }
@@ -51,9 +49,9 @@ namespace Cassia
         public IList<ITerminalServer> GetServers(string domainName)
         {
             List<ITerminalServer> servers = new List<ITerminalServer>();
-            foreach (string serverName in SessionHelper.EnumerateServers(domainName))
+            foreach (WTS_SERVER_INFO serverInfo in SessionHelper.EnumerateServers(domainName))
             {
-                servers.Add(new TerminalServer(serverName));
+                servers.Add(new TerminalServer(serverInfo.ServerName));
             }
             return servers;
         }

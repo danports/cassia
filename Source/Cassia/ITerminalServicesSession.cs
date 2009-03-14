@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Cassia
 {
@@ -24,5 +25,7 @@ namespace Cassia
         RemoteMessageBoxResult MessageBox(string text, string caption, RemoteMessageBoxButtons buttons,
                                                  RemoteMessageBoxIcon icon, RemoteMessageBoxDefaultButton defaultButton,
                                                  RemoteMessageBoxOptions options, TimeSpan timeout, bool synchronous);
+
+        IList<ITerminalServicesProcess> GetProcesses();
     }
 }

@@ -8,6 +8,12 @@ namespace Cassia
 {
     internal static class SessionHelper
     {
+        #region Delegates
+
+        public delegate void ListProcessInfosCallback(WTS_PROCESS_INFO processInfo);
+
+        #endregion
+
         public static WTS_CONNECTSTATE_CLASS GetConnectionState(ITerminalServerHandle server, int sessionId)
         {
             int returned;
@@ -119,42 +125,10 @@ namespace Cassia
             }
         }
 
-        private static DateTime FileTimeToDateTime(FILETIME ft)
+        public static DateTime FileTimeToDateTime(FILETIME ft)
         {
             long hFT = (((long) ft.dwHighDateTime) << 32) + ft.dwLowDateTime;
             return DateTime.FromFileTime(hFT);
-        }
-
-        public static TerminalServicesSession GetSessionInfo(ITerminalServer server, ITerminalServerHandle serverHandle,
-                                                             int sessionId)
-        {
-            TerminalServicesSession sessionInfo = new TerminalServicesSession(server);
-            sessionInfo.SessionId = sessionId;
-            sessionInfo.ConnectionState = GetConnectionState(serverHandle, sessionId);
-            sessionInfo.ClientName = GetClientName(serverHandle, sessionId);
-
-            if (Environment.OSVersion.Version > new Version(6, 0))
-            {
-                // We can actually use documented APIs in Vista / Windows Server 2008+.
-                WTSINFO info = GetWtsInfo(serverHandle, sessionId);
-                sessionInfo.ConnectTime = DateTime.FromFileTime(info.ConnectTime);
-                sessionInfo.CurrentTime = DateTime.FromFileTime(info.CurrentTime);
-                sessionInfo.DisconnectTime = DateTime.FromFileTime(info.DisconnectTime);
-                sessionInfo.LastInputTime = DateTime.FromFileTime(info.LastInputTime);
-                sessionInfo.LoginTime = DateTime.FromFileTime(info.LogonTime);
-                sessionInfo.UserName = info.UserName;
-            }
-            else
-            {
-                WINSTATIONINFORMATIONW wsInfo = GetWinStationInformation(serverHandle, sessionId);
-                sessionInfo.ConnectTime = FileTimeToDateTime(wsInfo.ConnectTime);
-                sessionInfo.CurrentTime = FileTimeToDateTime(wsInfo.CurrentTime);
-                sessionInfo.DisconnectTime = FileTimeToDateTime(wsInfo.DisconnectTime);
-                sessionInfo.LastInputTime = FileTimeToDateTime(wsInfo.LastInputTime);
-                sessionInfo.LoginTime = FileTimeToDateTime(wsInfo.LoginTime);
-                sessionInfo.UserName = GetUserName(serverHandle, sessionId);
-            }
-            return sessionInfo;
         }
 
         public static IList<WTS_SESSION_INFO> GetSessionInfos(ITerminalServerHandle server)
@@ -168,14 +142,7 @@ namespace Cassia
             }
             try
             {
-                List<WTS_SESSION_INFO> results = new List<WTS_SESSION_INFO>();
-                long pointer = ppSessionInfo.ToInt64();
-                for (int i = 0; i < count; i++)
-                {
-                    results.Add((WTS_SESSION_INFO) Marshal.PtrToStructure(new IntPtr(pointer), typeof(WTS_SESSION_INFO)));
-                    pointer += Marshal.SizeOf(typeof(WTS_SESSION_INFO));
-                }
-                return results;
+                return PtrToStructureList<WTS_SESSION_INFO>(ppSessionInfo, count);
             }
             finally
             {
@@ -239,7 +206,7 @@ namespace Cassia
             return result;
         }
 
-        public static IList<string> EnumerateServers(string domainName)
+        public static IList<WTS_SERVER_INFO> EnumerateServers(string domainName)
         {
             IntPtr ppServerInfo;
             int count;
@@ -249,20 +216,55 @@ namespace Cassia
             }
             try
             {
-                List<string> result = new List<string>();
-                long pointer = ppServerInfo.ToInt64();
-                for (int index = 0; index < count; index++)
-                {
-                    WTS_SERVER_INFO info =
-                        (WTS_SERVER_INFO) Marshal.PtrToStructure(new IntPtr(pointer), typeof(WTS_SERVER_INFO));
-                    result.Add(info.ServerName);
-                    pointer += Marshal.SizeOf(typeof(WTS_SERVER_INFO));
-                }
-                return result;
+                return PtrToStructureList<WTS_SERVER_INFO>(ppServerInfo, count);
             }
             finally
             {
                 NativeMethods.WTSFreeMemory(ppServerInfo);
+            }
+        }
+
+        private static IList<T> PtrToStructureList<T>(IntPtr ppList, int count) where T : struct
+        {
+            List<T> result = new List<T>();
+            long pointer = ppList.ToInt64();
+            int sizeOf = Marshal.SizeOf(typeof(T));
+            for (int index = 0; index < count; index++)
+            {
+                T item = (T) Marshal.PtrToStructure(new IntPtr(pointer), typeof(T));
+                result.Add(item);
+                pointer += sizeOf;
+            }
+            return result;
+        }
+
+        public static void ForEachProcessInfo(ITerminalServerHandle server, ListProcessInfosCallback callback)
+        {
+            IntPtr ppProcessInfo;
+            int count;
+            if (NativeMethods.WTSEnumerateProcesses(server.Handle, 0, 1, out ppProcessInfo, out count) == 0)
+            {
+                throw new Win32Exception();
+            }
+            try
+            {
+                // We can't just return a list of WTS_PROCESS_INFOs because those have pointers to 
+                // SIDs that have to be copied into managed memory first. So we use a callback instead.
+                IList<WTS_PROCESS_INFO> processInfos = PtrToStructureList<WTS_PROCESS_INFO>(ppProcessInfo, count);
+                foreach (WTS_PROCESS_INFO processInfo in processInfos)
+                {
+                    // It seems that WTSEnumerateProcesses likes to return an empty struct in the first 
+                    // element of the array, so we ignore that here.
+                    // TODO: Find out why this happens.
+                    if (processInfo.ProcessId != 0)
+                    {
+                        callback(processInfo);
+                    }
+                }
+            }
+            finally
+            {
+                NativeMethods.WTSFreeMemory(ppProcessInfo);
             }
         }
     }

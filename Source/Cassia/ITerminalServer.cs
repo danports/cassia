@@ -12,5 +12,6 @@ namespace Cassia
         ITerminalServicesSession GetSession(int sessionId);
         void Open();
         void Close();
+        IList<ITerminalServicesProcess> GetProcesses();
     }
 }

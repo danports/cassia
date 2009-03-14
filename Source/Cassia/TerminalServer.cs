@@ -45,14 +45,14 @@ namespace Cassia
             IList<WTS_SESSION_INFO> sessionInfos = SessionHelper.GetSessionInfos(_handle);
             foreach (WTS_SESSION_INFO sessionInfo in sessionInfos)
             {
-                results.Add(SessionHelper.GetSessionInfo(this, Handle, sessionInfo.SessionID));
+                results.Add(new TerminalServicesSession(this, sessionInfo.SessionID));
             }
             return results;
         }
 
         public ITerminalServicesSession GetSession(int sessionId)
         {
-            return SessionHelper.GetSessionInfo(this, Handle, sessionId);
+            return new TerminalServicesSession(this, sessionId);
         }
 
         public void Dispose()
@@ -69,6 +69,14 @@ namespace Cassia
         public void Close()
         {
             Dispose();
+        }
+
+        public IList<ITerminalServicesProcess> GetProcesses()
+        {
+            List<ITerminalServicesProcess> processes = new List<ITerminalServicesProcess>();
+            SessionHelper.ForEachProcessInfo(Handle,
+                                             delegate(WTS_PROCESS_INFO processInfo) { processes.Add(new TerminalServicesProcess(processInfo)); });
+            return processes;
         }
 
         #endregion

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Cassia;
 
 namespace SessionInfo
@@ -28,6 +29,12 @@ namespace SessionInfo
                 case "listsessions":
                     ListSessions(args);
                     return;
+                case "listsessionprocesses":
+                    ListSessionProcesses(args);
+                    return;
+                case "listprocesses":
+                    ListProcesses(args);
+                    return;
                 case "logoff":
                     LogoffSession(args);
                     return;
@@ -42,6 +49,35 @@ namespace SessionInfo
                     return;
             }
             Console.WriteLine("Unknown command: " + args[0]);
+        }
+
+        private static void ListProcesses(string[] args)
+        {
+            if (args.Length < 2)
+            {
+                Console.WriteLine("Usage: SessionInfo listprocesses [server]");
+            }
+            using (ITerminalServer server = GetServerFromName(args[1]))
+            {
+                server.Open();
+                WriteProcesses(server.GetProcesses());
+            }
+        }
+
+        private static void WriteProcesses(IEnumerable<ITerminalServicesProcess> processes)
+        {
+            foreach (ITerminalServicesProcess process in processes)
+            {
+                WriteProcessInfo(process);
+            }
+        }
+
+        private static void WriteProcessInfo(ITerminalServicesProcess process)
+        {
+            Console.WriteLine("Session ID: " + process.SessionId);
+            Console.WriteLine("Process ID: " + process.ProcessId);
+            Console.WriteLine("Process Name: " + process.ProcessName);
+            Console.WriteLine("SID: " + process.Sid);
         }
 
         private static void ListServers(string[] args)
@@ -108,6 +144,22 @@ namespace SessionInfo
             {
                 server.Open();
                 WriteSessionInfo(server.GetSession(sessionId));
+            }
+        }
+
+        private static void ListSessionProcesses(string[] args)
+        {
+            if (args.Length < 3)
+            {
+                Console.WriteLine("Usage: SessionInfo listsessionprocesses [server] [session id]");
+                return;
+            }
+            int sessionId = int.Parse(args[2]);
+            using (ITerminalServer server = GetServerFromName(args[1]))
+            {
+                server.Open();
+                ITerminalServicesSession session = server.GetSession(sessionId);
+                WriteProcesses(session.GetProcesses());
             }
         }
 

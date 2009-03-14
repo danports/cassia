@@ -40,6 +40,7 @@
     <Compile Include="ITerminalServer.cs" />
     <Compile Include="ITerminalServerHandle.cs" />
     <Compile Include="ITerminalServicesManager.cs" />
+    <Compile Include="ITerminalServicesProcess.cs" />
     <Compile Include="ITerminalServicesSession.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -52,6 +53,7 @@
     <Compile Include="TerminalServer.cs" />
     <Compile Include="TerminalServerHandle.cs" />
     <Compile Include="TerminalServicesManager.cs" />
+    <Compile Include="TerminalServicesProcess.cs" />
     <Compile Include="TerminalServicesSession.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
