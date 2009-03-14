@@ -51,6 +51,9 @@ namespace Cassia
                                                        out IntPtr ppProcessInfo, out int count);
 
         [DllImport("wtsapi32.dll", SetLastError = true)]
+        public static extern int WTSShutdownSystem(IntPtr hServer, int shutdownFlag);
+
+        [DllImport("wtsapi32.dll", SetLastError = true)]
         public static extern int WTSTerminateProcess(IntPtr hServer, int processId, int exitCode);
     }
 }

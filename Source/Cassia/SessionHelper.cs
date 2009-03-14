@@ -275,5 +275,13 @@ namespace Cassia
                 throw new Win32Exception();
             }
         }
+
+        public static void ShutdownSystem(ITerminalServerHandle server, int flags)
+        {
+            if (NativeMethods.WTSShutdownSystem(server.Handle, flags) == 0)
+            {
+                throw new Win32Exception();
+            }
+        }
     }
 }

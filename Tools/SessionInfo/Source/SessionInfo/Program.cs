@@ -50,8 +50,26 @@ namespace SessionInfo
                 case "ask":
                     AskQuestion(args);
                     return;
+                case "shutdown":
+                    Shutdown(args);
+                    return;
             }
             Console.WriteLine("Unknown command: " + args[0]);
+        }
+
+        private static void Shutdown(string[] args)
+        {
+            if (args.Length < 3)
+            {
+                Console.WriteLine("Usage: SessionInfo shutdown [server] [shutdown type]");
+                return;
+            }
+            using (ITerminalServer server = GetServerFromName(args[1]))
+            {
+                server.Open();
+                ShutdownType type = (ShutdownType) Enum.Parse(typeof(ShutdownType), args[2], true);
+                server.Shutdown(type);
+            }
         }
 
         private static void KillProcess(string[] args)

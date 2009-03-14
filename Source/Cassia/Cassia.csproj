@@ -50,6 +50,7 @@
     <Compile Include="RemoteMessageBoxOptions.cs" />
     <Compile Include="RemoteMessageBoxResult.cs" />
     <Compile Include="SessionHelper.cs" />
+    <Compile Include="ShutdownType.cs" />
     <Compile Include="TerminalServer.cs" />
     <Compile Include="TerminalServerHandle.cs" />
     <Compile Include="TerminalServicesManager.cs" />

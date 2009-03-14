@@ -14,5 +14,6 @@ namespace Cassia
         void Close();
         IList<ITerminalServicesProcess> GetProcesses();
         ITerminalServicesProcess GetProcess(int processId);
+        void Shutdown(ShutdownType type);
     }
 }

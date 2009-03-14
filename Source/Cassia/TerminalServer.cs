@@ -91,6 +91,11 @@ namespace Cassia
             throw new InvalidOperationException("Process ID " + processId + " not found");
         }
 
+        public void Shutdown(ShutdownType type)
+        {
+            SessionHelper.ShutdownSystem(Handle, (int) type);
+        }
+
         #endregion
 
         ~TerminalServer()
