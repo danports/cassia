@@ -1,10 +1,10 @@
 using System;
-using Cassia;
 
 namespace Cassia
 {
     public class TerminalServicesSession : ITerminalServicesSession
     {
+        private readonly ITerminalServer _server;
         private string _clientName;
         private WTS_CONNECTSTATE_CLASS _connectionState;
         private DateTime _connectTime;
@@ -14,6 +14,11 @@ namespace Cassia
         private DateTime _loginTime;
         private long _sessionId;
         private string _userName;
+
+        public TerminalServicesSession(ITerminalServer server)
+        {
+            _server = server;
+        }
 
         #region ITerminalServicesSession Members
 
@@ -69,6 +74,26 @@ namespace Cassia
         {
             get { return _userName; }
             set { _userName = value; }
+        }
+
+        public void Logoff()
+        {
+            Logoff(false);
+        }
+
+        public void Logoff(bool synchronous)
+        {
+            SessionHelper.LogoffSession(_server.Handle, (uint) _sessionId, synchronous);
+        }
+
+        public void Disconnect()
+        {
+            Disconnect(false);
+        }
+
+        public void Disconnect(bool synchronous)
+        {
+            SessionHelper.DisconnectSession(_server.Handle, (uint) _sessionId, synchronous);
         }
 
         #endregion

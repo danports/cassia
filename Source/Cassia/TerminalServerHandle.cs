@@ -3,7 +3,7 @@ using System.ComponentModel;
 
 namespace Cassia
 {
-    public class TerminalServerHandle : IDisposable
+    public class TerminalServerHandle : ITerminalServerHandle
     {
         private IntPtr _serverPtr;
 

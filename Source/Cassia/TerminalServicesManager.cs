@@ -10,21 +10,32 @@ namespace Cassia
         {
             get
             {
-                using (TerminalServerHandle server = new TerminalServerHandle(null))
+                using (ITerminalServer server = new TerminalServer())
                 {
-                    return SessionHelper.GetSessionInfo(server, SessionHelper.GetCurrentSessionId(server));
+                    server.Open();
+                    return
+                        SessionHelper.GetSessionInfo(server, server.Handle,
+                                                     SessionHelper.GetCurrentSessionId(server.Handle));
                 }
             }
         }
 
         public IList<ITerminalServicesSession> GetSessions(string serverName)
         {
-            return new TerminalServer(serverName).GetSessions();
+            using (ITerminalServer server = GetRemoteServer(serverName))
+            {
+                server.Open();
+                return server.GetSessions();
+            }
         }
 
         public IList<ITerminalServicesSession> GetSessions()
         {
-            return GetSessions(null);
+            using (ITerminalServer server = GetLocalServer())
+            {
+                server.Open();
+                return GetSessions(null);
+            }
         }
 
         public ITerminalServer GetRemoteServer(string serverName)

@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.InteropServices;
-using Cassia;
 
 namespace Cassia
 {
@@ -25,6 +24,12 @@ namespace Cassia
 
         [DllImport("wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern void WTSCloseServer(IntPtr hServer);
+
+        [DllImport("wtsapi32.dll", SetLastError = true)]
+        public static extern int WTSLogoffSession(IntPtr hServer, uint sessionId, bool wait);
+
+        [DllImport("wtsapi32.dll", SetLastError = true)]
+        public static extern int WTSDisconnectSession(IntPtr hServer, uint sessionId, bool wait);
 
         [DllImport("winsta.dll")]
         public static extern int WinStationQueryInformationW(IntPtr hServer, uint sessionId, uint information,

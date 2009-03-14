@@ -8,7 +8,7 @@ namespace Cassia
 {
     internal static class SessionHelper
     {
-        internal static WTS_CONNECTSTATE_CLASS GetConnectionState(TerminalServerHandle server, uint sessionId)
+        public static WTS_CONNECTSTATE_CLASS GetConnectionState(ITerminalServerHandle server, uint sessionId)
         {
             uint returned;
             IntPtr mem;
@@ -31,7 +31,7 @@ namespace Cassia
             }
         }
 
-        internal static string GetClientName(TerminalServerHandle server, uint sessionId)
+        public static string GetClientName(ITerminalServerHandle server, uint sessionId)
         {
             uint returned;
             IntPtr mem;
@@ -54,7 +54,7 @@ namespace Cassia
             }
         }
 
-        internal static string GetUserName(TerminalServerHandle server, uint sessionId)
+        public static string GetUserName(ITerminalServerHandle server, uint sessionId)
         {
             uint returned;
             IntPtr mem;
@@ -77,7 +77,7 @@ namespace Cassia
             }
         }
 
-        internal static WTSINFO GetWtsInfo(TerminalServerHandle server, uint sessionId)
+        public static WTSINFO GetWtsInfo(ITerminalServerHandle server, uint sessionId)
         {
             uint returned;
             IntPtr mem;
@@ -100,7 +100,7 @@ namespace Cassia
             }
         }
 
-        internal static WINSTATIONINFORMATIONW GetWinStationInformation(TerminalServerHandle server, uint sessionId)
+        public static WINSTATIONINFORMATIONW GetWinStationInformation(ITerminalServerHandle server, uint sessionId)
         {
             uint retLen = 0;
             WINSTATIONINFORMATIONW wsInfo = new WINSTATIONINFORMATIONW();
@@ -125,17 +125,18 @@ namespace Cassia
             return DateTime.FromFileTime(hFT);
         }
 
-        internal static TerminalServicesSession GetSessionInfo(TerminalServerHandle server, uint sessionId)
+        public static TerminalServicesSession GetSessionInfo(ITerminalServer server, ITerminalServerHandle serverHandle,
+                                                             uint sessionId)
         {
-            TerminalServicesSession sessionInfo = new TerminalServicesSession();
+            TerminalServicesSession sessionInfo = new TerminalServicesSession(server);
             sessionInfo.SessionId = sessionId;
-            sessionInfo.ConnectionState = GetConnectionState(server, sessionId);
-            sessionInfo.ClientName = GetClientName(server, sessionId);
+            sessionInfo.ConnectionState = GetConnectionState(serverHandle, sessionId);
+            sessionInfo.ClientName = GetClientName(serverHandle, sessionId);
 
             if (Environment.OSVersion.Version > new Version(6, 0))
             {
                 // We can actually use documented APIs in Vista / Windows Server 2008+.
-                WTSINFO info = GetWtsInfo(server, sessionId);
+                WTSINFO info = GetWtsInfo(serverHandle, sessionId);
                 sessionInfo.ConnectTime = DateTime.FromFileTime(info.ConnectTime);
                 sessionInfo.CurrentTime = DateTime.FromFileTime(info.CurrentTime);
                 sessionInfo.DisconnectTime = DateTime.FromFileTime(info.DisconnectTime);
@@ -145,18 +146,18 @@ namespace Cassia
             }
             else
             {
-                WINSTATIONINFORMATIONW wsInfo = GetWinStationInformation(server, sessionId);
+                WINSTATIONINFORMATIONW wsInfo = GetWinStationInformation(serverHandle, sessionId);
                 sessionInfo.ConnectTime = FileTimeToDateTime(wsInfo.ConnectTime);
                 sessionInfo.CurrentTime = FileTimeToDateTime(wsInfo.CurrentTime);
                 sessionInfo.DisconnectTime = FileTimeToDateTime(wsInfo.DisconnectTime);
                 sessionInfo.LastInputTime = FileTimeToDateTime(wsInfo.LastInputTime);
                 sessionInfo.LoginTime = FileTimeToDateTime(wsInfo.LoginTime);
-                sessionInfo.UserName = GetUserName(server, sessionId);
+                sessionInfo.UserName = GetUserName(serverHandle, sessionId);
             }
             return sessionInfo;
         }
 
-        internal static IList<WTS_SESSION_INFO> GetSessionInfos(TerminalServerHandle server)
+        public static IList<WTS_SESSION_INFO> GetSessionInfos(ITerminalServerHandle server)
         {
             IntPtr ppSessionInfo;
             uint count;
@@ -182,7 +183,7 @@ namespace Cassia
             }
         }
 
-        internal static uint GetCurrentSessionId(TerminalServerHandle server)
+        public static uint GetCurrentSessionId(ITerminalServerHandle server)
         {
             uint returned;
             IntPtr mem;
@@ -200,6 +201,22 @@ namespace Cassia
                 }
             }
             else
+            {
+                throw new Win32Exception();
+            }
+        }
+
+        public static void LogoffSession(ITerminalServerHandle server, uint sessionId, bool wait)
+        {
+            if (NativeMethods.WTSLogoffSession(server.Handle, sessionId, wait) == 0)
+            {
+                throw new Win32Exception();
+            }
+        }
+
+        public static void DisconnectSession(ITerminalServerHandle server, uint sessionId, bool wait)
+        {
+            if (NativeMethods.WTSDisconnectSession(server.Handle, sessionId, wait) == 0)
             {
                 throw new Win32Exception();
             }

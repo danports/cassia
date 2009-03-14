@@ -13,5 +13,9 @@ namespace Cassia
         DateTime LoginTime { get; }
         long SessionId { get; }
         string UserName { get; }
+        void Logoff();
+        void Logoff(bool synchronous);
+        void Disconnect();
+        void Disconnect(bool synchronous);
     }
 }

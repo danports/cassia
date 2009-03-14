@@ -38,6 +38,7 @@
     </Compile>
     <Compile Include="ExternalStructs.cs" />
     <Compile Include="ITerminalServer.cs" />
+    <Compile Include="ITerminalServerHandle.cs" />
     <Compile Include="ITerminalServicesManager.cs" />
     <Compile Include="ITerminalServicesSession.cs" />
     <Compile Include="NativeMethods.cs" />
