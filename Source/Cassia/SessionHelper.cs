@@ -8,9 +8,9 @@ namespace Cassia
 {
     internal static class SessionHelper
     {
-        public static WTS_CONNECTSTATE_CLASS GetConnectionState(ITerminalServerHandle server, uint sessionId)
+        public static WTS_CONNECTSTATE_CLASS GetConnectionState(ITerminalServerHandle server, int sessionId)
         {
-            uint returned;
+            int returned;
             IntPtr mem;
             if (
                 NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSConnectState,
@@ -31,9 +31,9 @@ namespace Cassia
             }
         }
 
-        public static string GetClientName(ITerminalServerHandle server, uint sessionId)
+        public static string GetClientName(ITerminalServerHandle server, int sessionId)
         {
-            uint returned;
+            int returned;
             IntPtr mem;
             if (
                 NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSClientName, out mem,
@@ -54,9 +54,9 @@ namespace Cassia
             }
         }
 
-        public static string GetUserName(ITerminalServerHandle server, uint sessionId)
+        public static string GetUserName(ITerminalServerHandle server, int sessionId)
         {
-            uint returned;
+            int returned;
             IntPtr mem;
             if (
                 NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSUserName, out mem,
@@ -77,9 +77,9 @@ namespace Cassia
             }
         }
 
-        public static WTSINFO GetWtsInfo(ITerminalServerHandle server, uint sessionId)
+        public static WTSINFO GetWtsInfo(ITerminalServerHandle server, int sessionId)
         {
-            uint returned;
+            int returned;
             IntPtr mem;
             if (
                 NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSSessionInfo,
@@ -100,15 +100,15 @@ namespace Cassia
             }
         }
 
-        public static WINSTATIONINFORMATIONW GetWinStationInformation(ITerminalServerHandle server, uint sessionId)
+        public static WINSTATIONINFORMATIONW GetWinStationInformation(ITerminalServerHandle server, int sessionId)
         {
-            uint retLen = 0;
+            int retLen = 0;
             WINSTATIONINFORMATIONW wsInfo = new WINSTATIONINFORMATIONW();
             if (
                 NativeMethods.WinStationQueryInformationW(server.Handle, sessionId,
-                                                          (uint) WINSTATIONINFOCLASS.WinStationInformation, ref wsInfo,
-                                                          (uint) Marshal.SizeOf(typeof(WINSTATIONINFORMATIONW)),
-                                                          ref retLen) != 0)
+                                                          (int) WINSTATIONINFOCLASS.WinStationInformation, ref wsInfo,
+                                                          Marshal.SizeOf(typeof(WINSTATIONINFORMATIONW)), ref retLen)
+                != 0)
             {
                 return wsInfo;
             }
@@ -126,7 +126,7 @@ namespace Cassia
         }
 
         public static TerminalServicesSession GetSessionInfo(ITerminalServer server, ITerminalServerHandle serverHandle,
-                                                             uint sessionId)
+                                                             int sessionId)
         {
             TerminalServicesSession sessionInfo = new TerminalServicesSession(server);
             sessionInfo.SessionId = sessionId;
@@ -160,7 +160,7 @@ namespace Cassia
         public static IList<WTS_SESSION_INFO> GetSessionInfos(ITerminalServerHandle server)
         {
             IntPtr ppSessionInfo;
-            uint count;
+            int count;
 
             if (NativeMethods.WTSEnumerateSessions(server.Handle, 0, 1, out ppSessionInfo, out count) == 0)
             {
@@ -183,9 +183,9 @@ namespace Cassia
             }
         }
 
-        public static uint GetCurrentSessionId(ITerminalServerHandle server)
+        public static int GetCurrentSessionId(ITerminalServerHandle server)
         {
-            uint returned;
+            int returned;
             IntPtr mem;
             if (
                 NativeMethods.WTSQuerySessionInformation(server.Handle, NativeMethods.CurrentSessionId,
@@ -193,7 +193,7 @@ namespace Cassia
             {
                 try
                 {
-                    return (uint) Marshal.ReadInt32(mem);
+                    return Marshal.ReadInt32(mem);
                 }
                 finally
                 {
@@ -206,7 +206,7 @@ namespace Cassia
             }
         }
 
-        public static void LogoffSession(ITerminalServerHandle server, uint sessionId, bool wait)
+        public static void LogoffSession(ITerminalServerHandle server, int sessionId, bool wait)
         {
             if (NativeMethods.WTSLogoffSession(server.Handle, sessionId, wait) == 0)
             {
@@ -214,7 +214,7 @@ namespace Cassia
             }
         }
 
-        public static void DisconnectSession(ITerminalServerHandle server, uint sessionId, bool wait)
+        public static void DisconnectSession(ITerminalServerHandle server, int sessionId, bool wait)
         {
             if (NativeMethods.WTSDisconnectSession(server.Handle, sessionId, wait) == 0)
             {
@@ -222,17 +222,17 @@ namespace Cassia
             }
         }
 
-        public static RemoteMessageBoxResult SendMessage(ITerminalServerHandle server, uint sessionId, string title,
-                                                         string message, uint style, uint timeout, bool wait)
+        public static RemoteMessageBoxResult SendMessage(ITerminalServerHandle server, int sessionId, string title,
+                                                         string message, int style, int timeout, bool wait)
         {
             RemoteMessageBoxResult result;
             title = title ?? string.Empty;
             message = message ?? string.Empty;
             if (
                 NativeMethods.WTSSendMessage(server.Handle, sessionId, title,
-                                             (uint) (title.Length * Marshal.SystemDefaultCharSize), message,
-                                             (uint) (message.Length * Marshal.SystemDefaultCharSize), style, timeout,
-                                             out result, wait) == 0)
+                                             title.Length * Marshal.SystemDefaultCharSize, message,
+                                             message.Length * Marshal.SystemDefaultCharSize, style, timeout, out result,
+                                             wait) == 0)
             {
                 throw new Win32Exception();
             }
@@ -242,7 +242,7 @@ namespace Cassia
         public static IList<string> EnumerateServers(string domainName)
         {
             IntPtr ppServerInfo;
-            uint count;
+            int count;
             if (NativeMethods.WTSEnumerateServers(domainName, 0, 1, out ppServerInfo, out count) == 0)
             {
                 throw new Win32Exception();
@@ -251,7 +251,7 @@ namespace Cassia
             {
                 List<string> result = new List<string>();
                 long pointer = ppServerInfo.ToInt64();
-                for (uint index = 0; index < count; index++)
+                for (int index = 0; index < count; index++)
                 {
                     WTS_SERVER_INFO info =
                         (WTS_SERVER_INFO) Marshal.PtrToStructure(new IntPtr(pointer), typeof(WTS_SERVER_INFO));

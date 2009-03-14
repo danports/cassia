@@ -52,7 +52,7 @@ namespace Cassia
 
         public ITerminalServicesSession GetSession(int sessionId)
         {
-            return SessionHelper.GetSessionInfo(this, Handle, (uint) sessionId);
+            return SessionHelper.GetSessionInfo(this, Handle, sessionId);
         }
 
         public void Dispose()

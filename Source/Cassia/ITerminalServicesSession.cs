@@ -11,7 +11,7 @@ namespace Cassia
         DateTime DisconnectTime { get; }
         DateTime LastInputTime { get; }
         DateTime LoginTime { get; }
-        long SessionId { get; }
+        int SessionId { get; }
         string UserName { get; }
         void Logoff();
         void Logoff(bool synchronous);

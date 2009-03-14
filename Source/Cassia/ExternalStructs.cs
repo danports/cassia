@@ -7,6 +7,16 @@ namespace Cassia
     // DO NOT RESHARPER THIS FILE. R# will reorder members of unmanaged structs,
     // resulting in access violations at runtime.
 
+    [StructLayout(LayoutKind.Sequential)]
+    public struct WTS_PROCESS_INFO
+    {
+        public int SessionId;
+        public int ProcessId;
+        [MarshalAs(UnmanagedType.LPTStr)]
+        public string ProcessName;
+        public IntPtr UserSid;
+    }
+
     public enum WTS_INFO_CLASS
     {
         WTSInitialProgram,
@@ -59,7 +69,7 @@ namespace Cassia
     {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 70)]
         private byte[] Reserved1;
-        public UInt32 SessionId;
+        public int SessionId;
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
         private byte[] Reserved2;
         public FILETIME ConnectTime;
@@ -74,7 +84,7 @@ namespace Cassia
     [StructLayout(LayoutKind.Sequential)]
     internal struct WTS_SESSION_INFO
     {
-        public uint SessionID;
+        public int SessionID;
         [MarshalAs(UnmanagedType.LPTStr)]
         public string WinStationName;
         public WTS_CONNECTSTATE_CLASS State;
@@ -87,32 +97,32 @@ namespace Cassia
         public string ServerName;
     }
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
     internal struct WTSINFO
     {
         public WTS_CONNECTSTATE_CLASS State;
-        public UInt32 SessionId;
-        public UInt32 IncomingBytes;
-        public UInt32 OutgoingBytes;
-        public UInt32 IncomingFrames;
-        public UInt32 OutgoingFrames;
-        public UInt32 IncomingCompressedBytes;
-        public UInt32 OutgoingCompressedBytes;
+        public int SessionId;
+        public int IncomingBytes;
+        public int OutgoingBytes;
+        public int IncomingFrames;
+        public int OutgoingFrames;
+        public int IncomingCompressedBytes;
+        public int OutgoingCompressedBytes;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-        public String WinStationName;
+        public string WinStationName;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 17)]
-        public String Domain;
+        public string Domain;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 21)]
-        public String UserName;
+        public string UserName;
         [MarshalAs(UnmanagedType.I8)]
-        public Int64 ConnectTime;
+        public long ConnectTime;
         [MarshalAs(UnmanagedType.I8)]
-        public Int64 DisconnectTime;
+        public long DisconnectTime;
         [MarshalAs(UnmanagedType.I8)]
-        public Int64 LastInputTime;
+        public long LastInputTime;
         [MarshalAs(UnmanagedType.I8)]
-        public Int64 LogonTime;
+        public long LogonTime;
         [MarshalAs(UnmanagedType.I8)]
-        public Int64 CurrentTime;
+        public long CurrentTime;
     }
 }

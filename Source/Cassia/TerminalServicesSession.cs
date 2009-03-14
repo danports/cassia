@@ -12,7 +12,7 @@ namespace Cassia
         private DateTime _disconnectTime;
         private DateTime _lastInputTime;
         private DateTime _loginTime;
-        private long _sessionId;
+        private int _sessionId;
         private string _userName;
 
         public TerminalServicesSession(ITerminalServer server)
@@ -64,7 +64,7 @@ namespace Cassia
             set { _loginTime = value; }
         }
 
-        public long SessionId
+        public int SessionId
         {
             get { return _sessionId; }
             set { _sessionId = value; }
@@ -83,7 +83,7 @@ namespace Cassia
 
         public void Logoff(bool synchronous)
         {
-            SessionHelper.LogoffSession(_server.Handle, (uint) _sessionId, synchronous);
+            SessionHelper.LogoffSession(_server.Handle, _sessionId, synchronous);
         }
 
         public void Disconnect()
@@ -93,7 +93,7 @@ namespace Cassia
 
         public void Disconnect(bool synchronous)
         {
-            SessionHelper.DisconnectSession(_server.Handle, (uint) _sessionId, synchronous);
+            SessionHelper.DisconnectSession(_server.Handle, _sessionId, synchronous);
         }
 
         public void MessageBox(string text)
@@ -116,10 +116,10 @@ namespace Cassia
                                                  RemoteMessageBoxIcon icon, RemoteMessageBoxDefaultButton defaultButton,
                                                  RemoteMessageBoxOptions options, TimeSpan timeout, bool synchronous)
         {
-            uint timeoutSeconds = (uint) timeout.TotalSeconds;
-            uint style = (uint) buttons | (uint) icon | (uint) defaultButton | (uint) options;
+            int timeoutSeconds = (int) timeout.TotalSeconds;
+            int style = (int) buttons | (int) icon | (int) defaultButton | (int) options;
             return
-                SessionHelper.SendMessage(_server.Handle, (uint) _sessionId, caption, text, style, timeoutSeconds,
+                SessionHelper.SendMessage(_server.Handle, _sessionId, caption, text, style, timeoutSeconds,
                                           synchronous);
         }
 
