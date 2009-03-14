@@ -17,6 +17,11 @@ namespace Cassia
 
         #region ITerminalServer Members
 
+        public string ServerName
+        {
+            get { return _serverName; }
+        }
+
         public bool IsOpen
         {
             get { return _handle != null; }

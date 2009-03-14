@@ -48,6 +48,16 @@ namespace Cassia
             return new TerminalServer();
         }
 
+        public IList<ITerminalServer> GetServers(string domainName)
+        {
+            List<ITerminalServer> servers = new List<ITerminalServer>();
+            foreach (string serverName in SessionHelper.EnumerateServers(domainName))
+            {
+                servers.Add(new TerminalServer(serverName));
+            }
+            return servers;
+        }
+
         #endregion
     }
 }

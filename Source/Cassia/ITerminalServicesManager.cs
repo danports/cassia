@@ -9,5 +9,6 @@ namespace Cassia
         IList<ITerminalServicesSession> GetSessions();
         ITerminalServer GetRemoteServer(string serverName);
         ITerminalServer GetLocalServer();
+        IList<ITerminalServer> GetServers(string domainName);
     }
 }

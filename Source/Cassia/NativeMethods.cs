@@ -41,5 +41,9 @@ namespace Cassia
                                                 [MarshalAs(UnmanagedType.LPTStr)] string title, uint titleLength,
                                                 [MarshalAs(UnmanagedType.LPTStr)] string message, uint messageLength,
                                                 uint style, uint timeout, out RemoteMessageBoxResult result, bool wait);
+
+        [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern int WTSEnumerateServers([MarshalAs(UnmanagedType.LPTStr)] string pDomainName, uint reserved,
+                                                     uint version, out IntPtr ppServerInfo, out uint pCount);
     }
 }

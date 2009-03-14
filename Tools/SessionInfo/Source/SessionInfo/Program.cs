@@ -22,7 +22,10 @@ namespace SessionInfo
                 case "get":
                     GetSessionInfo(args);
                     return;
-                case "list":
+                case "listservers":
+                    ListServers(args);
+                    return;
+                case "listsessions":
                     ListSessions(args);
                     return;
                 case "logoff":
@@ -39,6 +42,15 @@ namespace SessionInfo
                     return;
             }
             Console.WriteLine("Unknown command: " + args[0]);
+        }
+
+        private static void ListServers(string[] args)
+        {
+            string domainName = (args.Length > 1 ? args[1] : null);
+            foreach (ITerminalServer server in _manager.GetServers(domainName))
+            {
+                Console.WriteLine(server.ServerName);
+            }
         }
 
         private static void AskQuestion(string[] args)

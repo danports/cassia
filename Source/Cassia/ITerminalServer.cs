@@ -5,19 +5,12 @@ namespace Cassia
 {
     public interface ITerminalServer : IDisposable
     {
+        ITerminalServerHandle Handle { get; }
+        bool IsOpen { get; }
+        string ServerName { get; }
         IList<ITerminalServicesSession> GetSessions();
         ITerminalServicesSession GetSession(int sessionId);
         void Open();
         void Close();
-
-        ITerminalServerHandle Handle
-        {
-            get;
-        }
-
-        bool IsOpen
-        {
-            get;
-        }
     }
 }

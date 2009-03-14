@@ -80,6 +80,13 @@ namespace Cassia
         public WTS_CONNECTSTATE_CLASS State;
     }
 
+    [StructLayout(LayoutKind.Sequential)]
+    internal struct WTS_SERVER_INFO
+    {
+        [MarshalAs(UnmanagedType.LPTStr)]
+        public string ServerName;
+    }
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
     internal struct WTSINFO
     {

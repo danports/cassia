@@ -169,11 +169,11 @@ namespace Cassia
             try
             {
                 List<WTS_SESSION_INFO> results = new List<WTS_SESSION_INFO>();
-                Int32 current = ppSessionInfo.ToInt32();
+                long pointer = ppSessionInfo.ToInt64();
                 for (int i = 0; i < count; i++)
                 {
-                    results.Add((WTS_SESSION_INFO) Marshal.PtrToStructure((IntPtr) current, typeof(WTS_SESSION_INFO)));
-                    current += Marshal.SizeOf(typeof(WTS_SESSION_INFO));
+                    results.Add((WTS_SESSION_INFO) Marshal.PtrToStructure(new IntPtr(pointer), typeof(WTS_SESSION_INFO)));
+                    pointer += Marshal.SizeOf(typeof(WTS_SESSION_INFO));
                 }
                 return results;
             }
@@ -237,6 +237,33 @@ namespace Cassia
                 throw new Win32Exception();
             }
             return result;
+        }
+
+        public static IList<string> EnumerateServers(string domainName)
+        {
+            IntPtr ppServerInfo;
+            uint count;
+            if (NativeMethods.WTSEnumerateServers(domainName, 0, 1, out ppServerInfo, out count) == 0)
+            {
+                throw new Win32Exception();
+            }
+            try
+            {
+                List<string> result = new List<string>();
+                long pointer = ppServerInfo.ToInt64();
+                for (uint index = 0; index < count; index++)
+                {
+                    WTS_SERVER_INFO info =
+                        (WTS_SERVER_INFO) Marshal.PtrToStructure(new IntPtr(pointer), typeof(WTS_SERVER_INFO));
+                    result.Add(info.ServerName);
+                    pointer += Marshal.SizeOf(typeof(WTS_SERVER_INFO));
+                }
+                return result;
+            }
+            finally
+            {
+                NativeMethods.WTSFreeMemory(ppServerInfo);
+            }
         }
     }
 }
