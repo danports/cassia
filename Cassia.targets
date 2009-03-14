@@ -4,11 +4,9 @@
       <Projects Include="Cassia.sln" />
     </ItemGroup>
     <PropertyGroup>
-      <BuildPath>Build\</BuildPath>
+      <BuildPath>Bin\</BuildPath>
       <PackageLabel>Cassia-$(CCNetLabel).zip</PackageLabel>
       <DropPath>..\Drops\Cassia\</DropPath>
-      <PackageOutputPath>$(BuildPath)bin\Release\</PackageOutputPath>
-      <PackageOutput>$(PackageOutputPath)**\*.*</PackageOutput>
     </PropertyGroup>
     
     <Target Name="Clean">
@@ -31,10 +29,10 @@
   </Target>
     
   <Target Name="Package">
-    <CreateItem Include="$(PackageOutput)">
+    <CreateItem Include="**\*.*" Exclude="**\obj\**\*.*;**\*.suo;**\*.user;**\.svn\**\*.*;**\*Resharper*\**\*.*">
       <Output TaskParameter="Include" ItemName="PackageFiles" />
     </CreateItem>
-    <Zip Files="@(PackageFiles)" ZipFileName="$(DropPath)$(PackageLabel)" WorkingDirectory="$(PackageOutputPath)" />
+    <Zip Files="@(PackageFiles)" ZipFileName="$(DropPath)$(PackageLabel)" />
   </Target>
 
   <Target Name="All" DependsOnTargets="Build;Package" />
