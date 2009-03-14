@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Cassia;
+using Microsoft.Win32;
 
 namespace SessionInfo
 {
@@ -17,6 +18,9 @@ namespace SessionInfo
             }
             switch (args[0].ToLower())
             {
+                case "waitforevents":
+                    WaitForEvents();
+                    return;
                 case "current":
                     ShowCurrentSession();
                     return;
@@ -55,6 +59,14 @@ namespace SessionInfo
                     return;
             }
             Console.WriteLine("Unknown command: " + args[0]);
+        }
+
+        private static void WaitForEvents()
+        {
+            Console.WriteLine("Waiting for events; press Enter to exit.");
+            SystemEvents.SessionSwitch +=
+                delegate(object sender, SessionSwitchEventArgs args) { Console.WriteLine(args.Reason); };
+            Console.ReadLine();
         }
 
         private static void Shutdown(string[] args)
