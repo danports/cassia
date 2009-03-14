@@ -49,5 +49,8 @@ namespace Cassia
         [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int WTSEnumerateProcesses(IntPtr hServer, int reserved, int version,
                                                        out IntPtr ppProcessInfo, out int count);
+
+        [DllImport("wtsapi32.dll", SetLastError = true)]
+        public static extern int WTSTerminateProcess(IntPtr hServer, int processId, int exitCode);
     }
 }

@@ -8,5 +8,7 @@ namespace Cassia
         int ProcessId { get; }
         string ProcessName { get; }
         SecurityIdentifier Sid { get; }
+        void Kill();
+        void Kill(int exitCode);
     }
 }

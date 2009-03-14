@@ -35,6 +35,9 @@ namespace SessionInfo
                 case "listprocesses":
                     ListProcesses(args);
                     return;
+                case "killprocess":
+                    KillProcess(args);
+                    return;
                 case "logoff":
                     LogoffSession(args);
                     return;
@@ -49,6 +52,23 @@ namespace SessionInfo
                     return;
             }
             Console.WriteLine("Unknown command: " + args[0]);
+        }
+
+        private static void KillProcess(string[] args)
+        {
+            if (args.Length < 4)
+            {
+                Console.WriteLine("Usage: SessionInfo killprocess [server] [process id] [exit code]");
+                return;
+            }
+            int processId = int.Parse(args[2]);
+            int exitCode = int.Parse(args[3]);
+            using (ITerminalServer server = GetServerFromName(args[1]))
+            {
+                server.Open();
+                ITerminalServicesProcess process = server.GetProcess(processId);
+                process.Kill(exitCode);
+            }
         }
 
         private static void ListProcesses(string[] args)

@@ -75,8 +75,20 @@ namespace Cassia
         {
             List<ITerminalServicesProcess> processes = new List<ITerminalServicesProcess>();
             SessionHelper.ForEachProcessInfo(Handle,
-                                             delegate(WTS_PROCESS_INFO processInfo) { processes.Add(new TerminalServicesProcess(processInfo)); });
+                                             delegate(WTS_PROCESS_INFO processInfo) { processes.Add(new TerminalServicesProcess(this, processInfo)); });
             return processes;
+        }
+
+        public ITerminalServicesProcess GetProcess(int processId)
+        {
+            foreach (ITerminalServicesProcess process in GetProcesses())
+            {
+                if (process.ProcessId == processId)
+                {
+                    return process;
+                }
+            }
+            throw new InvalidOperationException("Process ID " + processId + " not found");
         }
 
         #endregion

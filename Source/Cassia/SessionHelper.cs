@@ -267,5 +267,13 @@ namespace Cassia
                 NativeMethods.WTSFreeMemory(ppProcessInfo);
             }
         }
+
+        public static void TerminateProcess(ITerminalServerHandle server, int processId, int exitCode)
+        {
+            if (NativeMethods.WTSTerminateProcess(server.Handle, processId, exitCode) == 0)
+            {
+                throw new Win32Exception();
+            }
+        }
     }
 }

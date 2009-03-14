@@ -13,5 +13,6 @@ namespace Cassia
         void Open();
         void Close();
         IList<ITerminalServicesProcess> GetProcesses();
+        ITerminalServicesProcess GetProcess(int processId);
     }
 }

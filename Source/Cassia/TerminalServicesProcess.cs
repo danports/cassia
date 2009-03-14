@@ -6,11 +6,13 @@ namespace Cassia
     {
         private readonly int _processId;
         private readonly string _processName;
+        private readonly ITerminalServer _server;
         private readonly int _sessionId;
         private readonly SecurityIdentifier _sid;
 
-        public TerminalServicesProcess(WTS_PROCESS_INFO processInfo)
+        public TerminalServicesProcess(ITerminalServer server, WTS_PROCESS_INFO processInfo)
         {
+            _server = server;
             _sessionId = processInfo.SessionId;
             _processId = processInfo.ProcessId;
             _processName = processInfo.ProcessName;
@@ -37,6 +39,16 @@ namespace Cassia
         public SecurityIdentifier Sid
         {
             get { return _sid; }
+        }
+
+        public void Kill()
+        {
+            Kill(-1);
+        }
+
+        public void Kill(int exitCode)
+        {
+            SessionHelper.TerminateProcess(_server.Handle, _processId, exitCode);
         }
 
         #endregion
