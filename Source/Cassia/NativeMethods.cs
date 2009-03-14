@@ -35,5 +35,11 @@ namespace Cassia
         public static extern int WinStationQueryInformationW(IntPtr hServer, uint sessionId, uint information,
                                                              ref WINSTATIONINFORMATIONW buffer, uint bufferLength,
                                                              ref uint returnedLength);
+
+        [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern int WTSSendMessage(IntPtr hServer, uint sessionId,
+                                                [MarshalAs(UnmanagedType.LPTStr)] string title, uint titleLength,
+                                                [MarshalAs(UnmanagedType.LPTStr)] string message, uint messageLength,
+                                                uint style, uint timeout, out RemoteMessageBoxResult result, bool wait);
     }
 }

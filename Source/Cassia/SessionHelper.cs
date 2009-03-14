@@ -221,5 +221,22 @@ namespace Cassia
                 throw new Win32Exception();
             }
         }
+
+        public static RemoteMessageBoxResult SendMessage(ITerminalServerHandle server, uint sessionId, string title,
+                                                         string message, uint style, uint timeout, bool wait)
+        {
+            RemoteMessageBoxResult result;
+            title = title ?? string.Empty;
+            message = message ?? string.Empty;
+            if (
+                NativeMethods.WTSSendMessage(server.Handle, sessionId, title,
+                                             (uint) (title.Length * Marshal.SystemDefaultCharSize), message,
+                                             (uint) (message.Length * Marshal.SystemDefaultCharSize), style, timeout,
+                                             out result, wait) == 0)
+            {
+                throw new Win32Exception();
+            }
+            return result;
+        }
     }
 }

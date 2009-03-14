@@ -96,6 +96,33 @@ namespace Cassia
             SessionHelper.DisconnectSession(_server.Handle, (uint) _sessionId, synchronous);
         }
 
+        public void MessageBox(string text)
+        {
+            MessageBox(text, null);
+        }
+
+        public void MessageBox(string text, string caption)
+        {
+            MessageBox(text, caption, default(RemoteMessageBoxIcon));
+        }
+
+        public void MessageBox(string text, string caption, RemoteMessageBoxIcon icon)
+        {
+            MessageBox(text, caption, default(RemoteMessageBoxButtons), icon, default(RemoteMessageBoxDefaultButton),
+                       default(RemoteMessageBoxOptions), TimeSpan.Zero, false);
+        }
+
+        public RemoteMessageBoxResult MessageBox(string text, string caption, RemoteMessageBoxButtons buttons,
+                                                 RemoteMessageBoxIcon icon, RemoteMessageBoxDefaultButton defaultButton,
+                                                 RemoteMessageBoxOptions options, TimeSpan timeout, bool synchronous)
+        {
+            uint timeoutSeconds = (uint) timeout.TotalSeconds;
+            uint style = (uint) buttons | (uint) icon | (uint) defaultButton | (uint) options;
+            return
+                SessionHelper.SendMessage(_server.Handle, (uint) _sessionId, caption, text, style, timeoutSeconds,
+                                          synchronous);
+        }
+
         #endregion
     }
 }

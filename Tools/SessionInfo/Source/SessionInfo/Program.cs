@@ -31,8 +31,57 @@ namespace SessionInfo
                 case "disconnect":
                     DisconnectSession(args);
                     return;
+                case "message":
+                    SendMessage(args);
+                    return;
+                case "ask":
+                    AskQuestion(args);
+                    return;
             }
             Console.WriteLine("Unknown command: " + args[0]);
+        }
+
+        private static void AskQuestion(string[] args)
+        {
+            if (args.Length < 8)
+            {
+                Console.WriteLine(
+                    "Usage: SessionInfo ask [server] [session id] [icon] [caption] [text] [timeout] [buttons]");
+                return;
+            }
+            int seconds = int.Parse(args[6]);
+            int sessionId = int.Parse(args[2]);
+            using (ITerminalServer server = GetServerFromName(args[1]))
+            {
+                server.Open();
+                ITerminalServicesSession session = server.GetSession(sessionId);
+                RemoteMessageBoxIcon icon =
+                    (RemoteMessageBoxIcon) Enum.Parse(typeof(RemoteMessageBoxIcon), args[3], true);
+                RemoteMessageBoxButtons buttons =
+                    (RemoteMessageBoxButtons) Enum.Parse(typeof(RemoteMessageBoxButtons), args[7], true);
+                RemoteMessageBoxResult result =
+                    session.MessageBox(args[5], args[4], buttons, icon, default(RemoteMessageBoxDefaultButton),
+                                       default(RemoteMessageBoxOptions), TimeSpan.FromSeconds(seconds), true);
+                Console.WriteLine("Response: " + result);
+            }
+        }
+
+        private static void SendMessage(string[] args)
+        {
+            if (args.Length < 6)
+            {
+                Console.WriteLine("Usage: SessionInfo message [server] [session id] [icon] [caption] [text]");
+                return;
+            }
+            int sessionId = int.Parse(args[2]);
+            using (ITerminalServer server = GetServerFromName(args[1]))
+            {
+                server.Open();
+                ITerminalServicesSession session = server.GetSession(sessionId);
+                RemoteMessageBoxIcon icon =
+                    (RemoteMessageBoxIcon) Enum.Parse(typeof(RemoteMessageBoxIcon), args[3], true);
+                session.MessageBox(args[5], args[4], icon);
+            }
         }
 
         private static void GetSessionInfo(string[] args)
