@@ -287,6 +287,9 @@ namespace SessionInfo
             }
             Console.WriteLine("State: " + session.ConnectionState);
             Console.WriteLine("Logon Time: " + session.LoginTime);
+            Console.WriteLine(
+                string.Format("Client display: {0}x{1} with {2} bits per pixel", session.HorizontalResolution,
+                              session.VerticalResolution, session.BitsPerPixel));
             Console.WriteLine();
         }
     }

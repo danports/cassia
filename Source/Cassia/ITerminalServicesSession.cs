@@ -17,6 +17,9 @@ namespace Cassia
         string UserName { get; }
         string DomainName { get; }
         NTAccount Account { get; }
+        int BitsPerPixel { get; }
+        int HorizontalResolution { get; }
+        int VerticalResolution { get; }
         void Logoff();
         void Logoff(bool synchronous);
         void Disconnect();

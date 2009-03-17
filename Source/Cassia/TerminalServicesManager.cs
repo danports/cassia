@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Cassia
 {
@@ -13,7 +14,7 @@ namespace Cassia
                 using (ITerminalServer server = new TerminalServer())
                 {
                     server.Open();
-                    return new TerminalServicesSession(server, SessionHelper.GetCurrentSessionId(server.Handle));
+                    return new TerminalServicesSession(server, Process.GetCurrentProcess().SessionId);
                 }
             }
         }

@@ -6,29 +6,41 @@ namespace Cassia
 {
     public class TerminalServicesSession : ITerminalServicesSession
     {
+        private readonly int _bitsPerPixel;
         private readonly string _clientName;
         private readonly WTS_CONNECTSTATE_CLASS _connectionState;
         private readonly DateTime _connectTime;
         private readonly DateTime _currentTime;
         private readonly DateTime _disconnectTime;
         private readonly string _domainName;
+        private readonly int _horizontalResolution;
         private readonly DateTime _lastInputTime;
         private readonly DateTime _loginTime;
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
         private readonly string _userName;
 
+        private readonly int _verticalResolution;
+
         public TerminalServicesSession(ITerminalServer server, int sessionId)
         {
             _server = server;
             _sessionId = sessionId;
-            _connectionState = SessionHelper.GetConnectionState(server.Handle, sessionId);
-            _clientName = SessionHelper.GetClientName(server.Handle, sessionId);
+            _clientName =
+                SessionHelper.QuerySessionInformationForString(server.Handle, sessionId, WTS_INFO_CLASS.WTSClientName);
+            WTS_CLIENT_DISPLAY clientDisplay =
+                SessionHelper.QuerySessionInformationForStruct<WTS_CLIENT_DISPLAY>(server.Handle, sessionId,
+                                                                                   WTS_INFO_CLASS.WTSClientDisplay);
+            _horizontalResolution = clientDisplay.HorizontalResolution;
+            _verticalResolution = clientDisplay.VerticalResolution;
+            _bitsPerPixel = GetBitsPerPixel(clientDisplay.ColorDepth);
 
             if (Environment.OSVersion.Version > new Version(6, 0))
             {
                 // We can actually use documented APIs in Vista / Windows Server 2008+.
-                WTSINFO info = SessionHelper.GetWtsInfo(server.Handle, sessionId);
+                WTSINFO info =
+                    SessionHelper.QuerySessionInformationForStruct<WTSINFO>(server.Handle, sessionId,
+                                                                            WTS_INFO_CLASS.WTSSessionInfo);
                 _connectTime = DateTime.FromFileTime(info.ConnectTime);
                 _currentTime = DateTime.FromFileTime(info.CurrentTime);
                 _disconnectTime = DateTime.FromFileTime(info.DisconnectTime);
@@ -36,6 +48,7 @@ namespace Cassia
                 _loginTime = DateTime.FromFileTime(info.LogonTime);
                 _userName = info.UserName;
                 _domainName = info.Domain;
+                _connectionState = info.State;
             }
             else
             {
@@ -45,12 +58,31 @@ namespace Cassia
                 _disconnectTime = SessionHelper.FileTimeToDateTime(wsInfo.DisconnectTime);
                 _lastInputTime = SessionHelper.FileTimeToDateTime(wsInfo.LastInputTime);
                 _loginTime = SessionHelper.FileTimeToDateTime(wsInfo.LoginTime);
-                _userName = SessionHelper.GetUserName(server.Handle, sessionId);
-                _domainName = SessionHelper.GetDomainName(server.Handle, sessionId);
+                _connectionState = SessionHelper.GetConnectionState(server.Handle, sessionId);
+                _userName =
+                    SessionHelper.QuerySessionInformationForString(server.Handle, sessionId, WTS_INFO_CLASS.WTSUserName);
+                _domainName =
+                    SessionHelper.QuerySessionInformationForString(server.Handle, sessionId,
+                                                                   WTS_INFO_CLASS.WTSDomainName);
             }
         }
 
         #region ITerminalServicesSession Members
+
+        public int BitsPerPixel
+        {
+            get { return _bitsPerPixel; }
+        }
+
+        public int HorizontalResolution
+        {
+            get { return _horizontalResolution; }
+        }
+
+        public int VerticalResolution
+        {
+            get { return _verticalResolution; }
+        }
 
         public string DomainName
         {
@@ -168,5 +200,23 @@ namespace Cassia
         }
 
         #endregion
+
+        private static int GetBitsPerPixel(int colorDepth)
+        {
+            switch (colorDepth)
+            {
+                case 1:
+                    return 4;
+                case 2:
+                    return 8;
+                case 4:
+                    return 16;
+                case 8:
+                    return 24;
+                case 16:
+                    return 15;
+            }
+            return 0;
+        }
     }
 }

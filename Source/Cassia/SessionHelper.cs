@@ -37,13 +37,12 @@ namespace Cassia
             }
         }
 
-        public static string GetClientName(ITerminalServerHandle server, int sessionId)
+        public static string QuerySessionInformationForString(ITerminalServerHandle server, int sessionId,
+                                                              WTS_INFO_CLASS infoClass)
         {
             int returned;
             IntPtr mem;
-            if (
-                NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSClientName, out mem,
-                                                         out returned))
+            if (NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, infoClass, out mem, out returned))
             {
                 try
                 {
@@ -60,63 +59,16 @@ namespace Cassia
             }
         }
 
-        public static string GetUserName(ITerminalServerHandle server, int sessionId)
+        public static T QuerySessionInformationForStruct<T>(ITerminalServerHandle server, int sessionId,
+                                                            WTS_INFO_CLASS infoClass) where T : struct
         {
             int returned;
             IntPtr mem;
-            if (
-                NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSUserName, out mem,
-                                                         out returned))
+            if (NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, infoClass, out mem, out returned))
             {
                 try
                 {
-                    return Marshal.PtrToStringAuto(mem);
-                }
-                finally
-                {
-                    NativeMethods.WTSFreeMemory(mem);
-                }
-            }
-            else
-            {
-                throw new Win32Exception();
-            }
-        }
-
-        public static string GetDomainName(ITerminalServerHandle server, int sessionId)
-        {
-            int returned;
-            IntPtr mem;
-            if (
-                NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSDomainName, out mem,
-                                                         out returned))
-            {
-                try
-                {
-                    return Marshal.PtrToStringAuto(mem);
-                }
-                finally
-                {
-                    NativeMethods.WTSFreeMemory(mem);
-                }
-            }
-            else
-            {
-                throw new Win32Exception();
-            }
-        }
-
-        public static WTSINFO GetWtsInfo(ITerminalServerHandle server, int sessionId)
-        {
-            int returned;
-            IntPtr mem;
-            if (
-                NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSSessionInfo,
-                                                         out mem, out returned))
-            {
-                try
-                {
-                    return (WTSINFO) Marshal.PtrToStructure(mem, typeof(WTSINFO));
+                    return (T) Marshal.PtrToStructure(mem, typeof(T));
                 }
                 finally
                 {
@@ -170,29 +122,6 @@ namespace Cassia
             finally
             {
                 NativeMethods.WTSFreeMemory(ppSessionInfo);
-            }
-        }
-
-        public static int GetCurrentSessionId(ITerminalServerHandle server)
-        {
-            int returned;
-            IntPtr mem;
-            if (
-                NativeMethods.WTSQuerySessionInformation(server.Handle, NativeMethods.CurrentSessionId,
-                                                         WTS_INFO_CLASS.WTSSessionId, out mem, out returned))
-            {
-                try
-                {
-                    return Marshal.ReadInt32(mem);
-                }
-                finally
-                {
-                    NativeMethods.WTSFreeMemory(mem);
-                }
-            }
-            else
-            {
-                throw new Win32Exception();
             }
         }
 

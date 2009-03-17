@@ -8,6 +8,14 @@ namespace Cassia
     // resulting in access violations at runtime.
 
     [StructLayout(LayoutKind.Sequential)]
+    public struct WTS_CLIENT_DISPLAY
+    {
+        public int HorizontalResolution;
+        public int VerticalResolution;
+        public int ColorDepth;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
     public struct WTS_PROCESS_INFO
     {
         public int SessionId;
