@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Principal;
 
 namespace Cassia
 {
@@ -10,6 +11,7 @@ namespace Cassia
         private readonly DateTime _connectTime;
         private readonly DateTime _currentTime;
         private readonly DateTime _disconnectTime;
+        private readonly string _domainName;
         private readonly DateTime _lastInputTime;
         private readonly DateTime _loginTime;
         private readonly ITerminalServer _server;
@@ -33,6 +35,7 @@ namespace Cassia
                 _lastInputTime = DateTime.FromFileTime(info.LastInputTime);
                 _loginTime = DateTime.FromFileTime(info.LogonTime);
                 _userName = info.UserName;
+                _domainName = info.Domain;
             }
             else
             {
@@ -43,10 +46,21 @@ namespace Cassia
                 _lastInputTime = SessionHelper.FileTimeToDateTime(wsInfo.LastInputTime);
                 _loginTime = SessionHelper.FileTimeToDateTime(wsInfo.LoginTime);
                 _userName = SessionHelper.GetUserName(server.Handle, sessionId);
+                _domainName = SessionHelper.GetDomainName(server.Handle, sessionId);
             }
         }
 
         #region ITerminalServicesSession Members
+
+        public string DomainName
+        {
+            get { return _domainName; }
+        }
+
+        public NTAccount Account
+        {
+            get { return (string.IsNullOrEmpty(_userName) ? null : new NTAccount(_domainName, _userName)); }
+        }
 
         public string ClientName
         {

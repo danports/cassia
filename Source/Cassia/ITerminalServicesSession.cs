@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Principal;
 
 namespace Cassia
 {
@@ -14,6 +15,8 @@ namespace Cassia
         DateTime LoginTime { get; }
         int SessionId { get; }
         string UserName { get; }
+        string DomainName { get; }
+        NTAccount Account { get; }
         void Logoff();
         void Logoff(bool synchronous);
         void Disconnect();
@@ -23,8 +26,8 @@ namespace Cassia
         void MessageBox(string text, string caption, RemoteMessageBoxIcon icon);
 
         RemoteMessageBoxResult MessageBox(string text, string caption, RemoteMessageBoxButtons buttons,
-                                                 RemoteMessageBoxIcon icon, RemoteMessageBoxDefaultButton defaultButton,
-                                                 RemoteMessageBoxOptions options, TimeSpan timeout, bool synchronous);
+                                          RemoteMessageBoxIcon icon, RemoteMessageBoxDefaultButton defaultButton,
+                                          RemoteMessageBoxOptions options, TimeSpan timeout, bool synchronous);
 
         IList<ITerminalServicesProcess> GetProcesses();
     }

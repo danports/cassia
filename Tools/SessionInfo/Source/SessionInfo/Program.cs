@@ -281,7 +281,10 @@ namespace SessionInfo
         private static void WriteSessionInfo(ITerminalServicesSession session)
         {
             Console.WriteLine("Session ID: " + session.SessionId);
-            Console.WriteLine("User Name: " + session.UserName);
+            if (session.Account != null)
+            {
+                Console.WriteLine("User: " + session.Account);
+            }
             Console.WriteLine("State: " + session.ConnectionState);
             Console.WriteLine("Logon Time: " + session.LoginTime);
             Console.WriteLine();

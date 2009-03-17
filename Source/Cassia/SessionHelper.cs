@@ -83,6 +83,29 @@ namespace Cassia
             }
         }
 
+        public static string GetDomainName(ITerminalServerHandle server, int sessionId)
+        {
+            int returned;
+            IntPtr mem;
+            if (
+                NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSDomainName, out mem,
+                                                         out returned))
+            {
+                try
+                {
+                    return Marshal.PtrToStringAuto(mem);
+                }
+                finally
+                {
+                    NativeMethods.WTSFreeMemory(mem);
+                }
+            }
+            else
+            {
+                throw new Win32Exception();
+            }
+        }
+
         public static WTSINFO GetWtsInfo(ITerminalServerHandle server, int sessionId)
         {
             int returned;
