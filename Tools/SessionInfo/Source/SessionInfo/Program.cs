@@ -285,10 +285,11 @@ namespace SessionInfo
             {
                 Console.WriteLine("User: " + session.Account);
             }
+            Console.WriteLine("Window Station: " + session.WindowStationName);
             Console.WriteLine("State: " + session.ConnectionState);
             Console.WriteLine("Logon Time: " + session.LoginTime);
             Console.WriteLine(
-                string.Format("Client display: {0}x{1} with {2} bits per pixel", session.HorizontalResolution,
+                string.Format("Client Display: {0}x{1} with {2} bits per pixel", session.HorizontalResolution,
                               session.VerticalResolution, session.BitsPerPixel));
             Console.WriteLine();
         }

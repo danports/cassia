@@ -20,6 +20,7 @@ namespace Cassia
         int BitsPerPixel { get; }
         int HorizontalResolution { get; }
         int VerticalResolution { get; }
+        string WindowStationName { get; }
         void Logoff();
         void Logoff(bool synchronous);
         void Disconnect();

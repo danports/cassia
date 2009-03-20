@@ -19,8 +19,8 @@ namespace Cassia
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
         private readonly string _userName;
-
         private readonly int _verticalResolution;
+        private readonly string _windowStationName;
 
         public TerminalServicesSession(ITerminalServer server, int sessionId)
         {
@@ -49,6 +49,7 @@ namespace Cassia
                 _userName = info.UserName;
                 _domainName = info.Domain;
                 _connectionState = info.State;
+                _windowStationName = info.WinStationName;
             }
             else
             {
@@ -64,10 +65,18 @@ namespace Cassia
                 _domainName =
                     SessionHelper.QuerySessionInformationForString(server.Handle, sessionId,
                                                                    WTS_INFO_CLASS.WTSDomainName);
+                _windowStationName =
+                    SessionHelper.QuerySessionInformationForString(server.Handle, sessionId,
+                                                                   WTS_INFO_CLASS.WTSWinStationName);
             }
         }
 
         #region ITerminalServicesSession Members
+
+        public string WindowStationName
+        {
+            get { return _windowStationName; }
+        }
 
         public int BitsPerPixel
         {
