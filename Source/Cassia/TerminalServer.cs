@@ -107,7 +107,10 @@ namespace Cassia
         {
             if (disposing)
             {
-                _handle.Dispose();
+                if (_handle != null)
+                {
+                    _handle.Dispose();
+                }
                 _handle = null;
             }
         }
