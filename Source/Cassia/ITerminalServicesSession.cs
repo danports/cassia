@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Security.Principal;
 
 namespace Cassia
@@ -21,6 +22,8 @@ namespace Cassia
         int HorizontalResolution { get; }
         int VerticalResolution { get; }
         string WindowStationName { get; }
+        IPAddress IPAddress { get; }
+
         void Logoff();
         void Logoff(bool synchronous);
         void Disconnect();

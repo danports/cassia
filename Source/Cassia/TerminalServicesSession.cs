@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Sockets;
 using System.Security.Principal;
 
 namespace Cassia
@@ -14,6 +16,7 @@ namespace Cassia
         private readonly DateTime _disconnectTime;
         private readonly string _domainName;
         private readonly int _horizontalResolution;
+        private readonly IPAddress _ipAddress;
         private readonly DateTime _lastInputTime;
         private readonly DateTime _loginTime;
         private readonly ITerminalServer _server;
@@ -34,6 +37,16 @@ namespace Cassia
             _horizontalResolution = clientDisplay.HorizontalResolution;
             _verticalResolution = clientDisplay.VerticalResolution;
             _bitsPerPixel = GetBitsPerPixel(clientDisplay.ColorDepth);
+            WTS_CLIENT_ADDRESS clientAddress =
+                SessionHelper.QuerySessionInformationForStruct<WTS_CLIENT_ADDRESS>(server.Handle, sessionId,
+                                                                                   WTS_INFO_CLASS.WTSClientAddress);
+            AddressFamily addressFamily = (AddressFamily) clientAddress.AddressFamily;
+            if (addressFamily == AddressFamily.InterNetwork)
+            {
+                byte[] address = new byte[4];
+                Array.Copy(clientAddress.Address, 2, address, 0, 4);
+                _ipAddress = new IPAddress(address);
+            }
 
             if (Environment.OSVersion.Version > new Version(6, 0))
             {
@@ -69,6 +82,11 @@ namespace Cassia
                     SessionHelper.QuerySessionInformationForString(server.Handle, sessionId,
                                                                    WTS_INFO_CLASS.WTSWinStationName);
             }
+        }
+
+        public IPAddress IPAddress
+        {
+            get { return _ipAddress; }
         }
 
         #region ITerminalServicesSession Members

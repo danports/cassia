@@ -41,6 +41,7 @@ namespace Cassia
 
         public IList<ITerminalServicesSession> GetSessions()
         {
+            // TODO: better exceptions when server is not open
             List<ITerminalServicesSession> results = new List<ITerminalServicesSession>();
             IList<WTS_SESSION_INFO> sessionInfos = SessionHelper.GetSessionInfos(_handle);
             foreach (WTS_SESSION_INFO sessionInfo in sessionInfos)
@@ -68,6 +69,7 @@ namespace Cassia
 
         public void Close()
         {
+            // TODO: this is not right if we want to allow object to be used after this
             Dispose();
         }
 

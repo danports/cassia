@@ -285,6 +285,10 @@ namespace SessionInfo
             {
                 Console.WriteLine("User: " + session.Account);
             }
+            if (session.IPAddress != null)
+            {
+                Console.WriteLine("IP Address: " + session.IPAddress);
+            }
             Console.WriteLine("Window Station: " + session.WindowStationName);
             Console.WriteLine("State: " + session.ConnectionState);
             Console.WriteLine("Logon Time: " + session.LoginTime);
