@@ -3,13 +3,16 @@ using System.Security.Principal;
 
 namespace Cassia
 {
+    /// <summary>
+    /// Default implementation of <see cref="ITerminalServicesProcess" />.
+    /// </summary>
     public class TerminalServicesProcess : ITerminalServicesProcess
     {
         private readonly int _processId;
         private readonly string _processName;
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
-        private readonly SecurityIdentifier _sid;
+        private readonly SecurityIdentifier _securityIdentifier;
 
         public TerminalServicesProcess(ITerminalServer server, WTS_PROCESS_INFO processInfo)
         {
@@ -17,7 +20,7 @@ namespace Cassia
             _sessionId = processInfo.SessionId;
             _processId = processInfo.ProcessId;
             _processName = processInfo.ProcessName;
-            _sid = new SecurityIdentifier(processInfo.UserSid);
+            _securityIdentifier = new SecurityIdentifier(processInfo.UserSid);
         }
 
         #region ITerminalServicesProcess Members
@@ -37,9 +40,9 @@ namespace Cassia
             get { return _processName; }
         }
 
-        public SecurityIdentifier Sid
+        public SecurityIdentifier SecurityIdentifier
         {
-            get { return _sid; }
+            get { return _securityIdentifier; }
         }
 
         public void Kill()

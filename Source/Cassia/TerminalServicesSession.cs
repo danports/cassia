@@ -6,6 +6,9 @@ using System.Security.Principal;
 
 namespace Cassia
 {
+    /// <summary>
+    /// Default implementation of <see cref="ITerminalServicesSession" />.
+    /// </summary>
     public class TerminalServicesSession : ITerminalServicesSession
     {
         private readonly int _bitsPerPixel;

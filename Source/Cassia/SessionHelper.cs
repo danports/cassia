@@ -86,9 +86,9 @@ namespace Cassia
             int retLen = 0;
             WINSTATIONINFORMATIONW wsInfo = new WINSTATIONINFORMATIONW();
             if (
-                NativeMethods.WinStationQueryInformationW(server.Handle, sessionId,
-                                                          (int) WINSTATIONINFOCLASS.WinStationInformation, ref wsInfo,
-                                                          Marshal.SizeOf(typeof(WINSTATIONINFORMATIONW)), ref retLen)
+                NativeMethods.WinStationQueryInformation(server.Handle, sessionId,
+                                                         (int) WINSTATIONINFOCLASS.WinStationInformation, ref wsInfo,
+                                                         Marshal.SizeOf(typeof(WINSTATIONINFORMATIONW)), ref retLen)
                 != 0)
             {
                 return wsInfo;

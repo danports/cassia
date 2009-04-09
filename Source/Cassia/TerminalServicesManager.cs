@@ -3,6 +3,9 @@ using System.Diagnostics;
 
 namespace Cassia
 {
+    /// <summary>
+    /// Default implementation of <see cref="ITerminalServicesManager" />.
+    /// </summary>
     public class TerminalServicesManager : ITerminalServicesManager
     {
         #region ITerminalServicesManager Members

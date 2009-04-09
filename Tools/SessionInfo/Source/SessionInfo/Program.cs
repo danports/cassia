@@ -106,6 +106,7 @@ namespace SessionInfo
             if (args.Length < 2)
             {
                 Console.WriteLine("Usage: SessionInfo listprocesses [server]");
+                return;
             }
             using (ITerminalServer server = GetServerFromName(args[1]))
             {
@@ -127,7 +128,7 @@ namespace SessionInfo
             Console.WriteLine("Session ID: " + process.SessionId);
             Console.WriteLine("Process ID: " + process.ProcessId);
             Console.WriteLine("Process Name: " + process.ProcessName);
-            Console.WriteLine("SID: " + process.Sid);
+            Console.WriteLine("SID: " + process.SecurityIdentifier);
             Console.WriteLine("Working Set: " + process.GetProcessObject().WorkingSet64);
         }
 

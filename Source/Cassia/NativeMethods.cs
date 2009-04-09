@@ -31,10 +31,10 @@ namespace Cassia
         [DllImport("wtsapi32.dll", SetLastError = true)]
         public static extern int WTSDisconnectSession(IntPtr hServer, int sessionId, bool wait);
 
-        [DllImport("winsta.dll")]
-        public static extern int WinStationQueryInformationW(IntPtr hServer, int sessionId, int information,
-                                                             ref WINSTATIONINFORMATIONW buffer, int bufferLength,
-                                                             ref int returnedLength);
+        [DllImport("winsta.dll", CharSet = CharSet.Auto)]
+        public static extern int WinStationQueryInformation(IntPtr hServer, int sessionId, int information,
+                                                            ref WINSTATIONINFORMATIONW buffer, int bufferLength,
+                                                            ref int returnedLength);
 
         [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int WTSSendMessage(IntPtr hServer, int sessionId,

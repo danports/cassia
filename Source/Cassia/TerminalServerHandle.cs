@@ -3,6 +3,9 @@ using System.ComponentModel;
 
 namespace Cassia
 {
+    /// <summary>
+    /// Default implementation of <see cref="ITerminalServerHandle" />.
+    /// </summary>
     public class TerminalServerHandle : ITerminalServerHandle
     {
         private IntPtr _serverPtr;

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Cassia
 {
+    /// <summary>
+    /// Default implementation of <see cref="ITerminalServer" />.
+    /// </summary>
     public class TerminalServer : ITerminalServer
     {
         private readonly string _serverName;
