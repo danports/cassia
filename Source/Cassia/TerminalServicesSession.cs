@@ -11,46 +11,32 @@ namespace Cassia
     /// </summary>
     public class TerminalServicesSession : ITerminalServicesSession
     {
-        private readonly int _bitsPerPixel;
-        private readonly string _clientName;
         private readonly WTS_CONNECTSTATE_CLASS _connectionState;
         private readonly DateTime _connectTime;
         private readonly DateTime _currentTime;
         private readonly DateTime _disconnectTime;
         private readonly string _domainName;
-        private readonly int _horizontalResolution;
-        private readonly IPAddress _ipAddress;
         private readonly DateTime _lastInputTime;
         private readonly DateTime _loginTime;
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
         private readonly string _userName;
-        private readonly int _verticalResolution;
         private readonly string _windowStationName;
+        private int _bitsPerPixel;
+        private string _clientName;
+        private bool _fetchedClientDisplay;
+        private bool _fetchedClientName;
+        private bool _fetchedIpAddress;
+        private int _horizontalResolution;
+        private IPAddress _ipAddress;
+        private int _verticalResolution;
 
         public TerminalServicesSession(ITerminalServer server, int sessionId)
         {
             _server = server;
             _sessionId = sessionId;
-            _clientName =
-                SessionHelper.QuerySessionInformationForString(server.Handle, sessionId, WTS_INFO_CLASS.WTSClientName);
-            WTS_CLIENT_DISPLAY clientDisplay =
-                SessionHelper.QuerySessionInformationForStruct<WTS_CLIENT_DISPLAY>(server.Handle, sessionId,
-                                                                                   WTS_INFO_CLASS.WTSClientDisplay);
-            _horizontalResolution = clientDisplay.HorizontalResolution;
-            _verticalResolution = clientDisplay.VerticalResolution;
-            _bitsPerPixel = GetBitsPerPixel(clientDisplay.ColorDepth);
-            WTS_CLIENT_ADDRESS clientAddress =
-                SessionHelper.QuerySessionInformationForStruct<WTS_CLIENT_ADDRESS>(server.Handle, sessionId,
-                                                                                   WTS_INFO_CLASS.WTSClientAddress);
-            AddressFamily addressFamily = (AddressFamily) clientAddress.AddressFamily;
-            if (addressFamily == AddressFamily.InterNetwork)
-            {
-                byte[] address = new byte[4];
-                Array.Copy(clientAddress.Address, 2, address, 0, 4);
-                _ipAddress = new IPAddress(address);
-            }
 
+            // TODO: lazy loading.
             if (Environment.OSVersion.Version > new Version(6, 0))
             {
                 // We can actually use documented APIs in Vista / Windows Server 2008+.
@@ -87,12 +73,30 @@ namespace Cassia
             }
         }
 
-        public IPAddress IPAddress
-        {
-            get { return _ipAddress; }
-        }
-
         #region ITerminalServicesSession Members
+
+        public IPAddress ClientIPAddress
+        {
+            get
+            {
+                if (!_fetchedIpAddress)
+                {
+                    WTS_CLIENT_ADDRESS clientAddress =
+                        SessionHelper.QuerySessionInformationForStruct<WTS_CLIENT_ADDRESS>(_server.Handle, _sessionId,
+                                                                                           WTS_INFO_CLASS.
+                                                                                               WTSClientAddress);
+                    AddressFamily addressFamily = (AddressFamily) clientAddress.AddressFamily;
+                    if (addressFamily == AddressFamily.InterNetwork)
+                    {
+                        byte[] address = new byte[4];
+                        Array.Copy(clientAddress.Address, 2, address, 0, 4);
+                        _ipAddress = new IPAddress(address);
+                    }
+                    _fetchedIpAddress = true;
+                }
+                return _ipAddress;
+            }
+        }
 
         public string WindowStationName
         {
@@ -101,17 +105,29 @@ namespace Cassia
 
         public int BitsPerPixel
         {
-            get { return _bitsPerPixel; }
+            get
+            {
+                CheckClientDisplay();
+                return _bitsPerPixel;
+            }
         }
 
         public int HorizontalResolution
         {
-            get { return _horizontalResolution; }
+            get
+            {
+                CheckClientDisplay();
+                return _horizontalResolution;
+            }
         }
 
         public int VerticalResolution
         {
-            get { return _verticalResolution; }
+            get
+            {
+                CheckClientDisplay();
+                return _verticalResolution;
+            }
         }
 
         public string DomainName
@@ -126,7 +142,11 @@ namespace Cassia
 
         public string ClientName
         {
-            get { return _clientName; }
+            get
+            {
+                CheckClientName();
+                return _clientName;
+            }
         }
 
         public WTS_CONNECTSTATE_CLASS ConnectionState
@@ -230,6 +250,32 @@ namespace Cassia
         }
 
         #endregion
+
+        private void CheckClientName()
+        {
+            if (_fetchedClientName)
+            {
+                return;
+            }
+            _clientName =
+                SessionHelper.QuerySessionInformationForString(_server.Handle, _sessionId, WTS_INFO_CLASS.WTSClientName);
+            _fetchedClientName = true;
+        }
+
+        private void CheckClientDisplay()
+        {
+            if (_fetchedClientDisplay)
+            {
+                return;
+            }
+            WTS_CLIENT_DISPLAY clientDisplay =
+                SessionHelper.QuerySessionInformationForStruct<WTS_CLIENT_DISPLAY>(_server.Handle, _sessionId,
+                                                                                   WTS_INFO_CLASS.WTSClientDisplay);
+            _horizontalResolution = clientDisplay.HorizontalResolution;
+            _verticalResolution = clientDisplay.VerticalResolution;
+            _bitsPerPixel = GetBitsPerPixel(clientDisplay.ColorDepth);
+            _fetchedClientDisplay = true;
+        }
 
         private static int GetBitsPerPixel(int colorDepth)
         {

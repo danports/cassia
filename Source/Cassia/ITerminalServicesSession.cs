@@ -95,7 +95,7 @@ namespace Cassia
         /// <remarks>Note that this is not guaranteed to be the client's actual, remote 
         /// IP address -- if the client is behind a router with NAT, for example, the IP address
         /// reported will be the client's internal IP address on its LAN.</remarks>
-        IPAddress IPAddress { get; }
+        IPAddress ClientIPAddress { get; }
 
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.

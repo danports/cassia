@@ -286,9 +286,9 @@ namespace SessionInfo
             {
                 Console.WriteLine("User: " + session.Account);
             }
-            if (session.IPAddress != null)
+            if (session.ClientIPAddress != null)
             {
-                Console.WriteLine("IP Address: " + session.IPAddress);
+                Console.WriteLine("IP Address: " + session.ClientIPAddress);
             }
             Console.WriteLine("Window Station: " + session.WindowStationName);
             Console.WriteLine("State: " + session.ConnectionState);
