@@ -34,9 +34,10 @@ namespace Cassia
         {
             get
             {
-                if (_handle == null)
+                if (!IsOpen)
                 {
-                    throw new InvalidOperationException("Connection to server not open; did you forget to call Open?");
+                    throw new InvalidOperationException("Connection to server not open; "
+                                                        + "did you forget to call ITerminalServer.Open()?");
                 }
                 return _handle;
             }
@@ -44,9 +45,8 @@ namespace Cassia
 
         public IList<ITerminalServicesSession> GetSessions()
         {
-            // TODO: better exceptions when server is not open
             List<ITerminalServicesSession> results = new List<ITerminalServicesSession>();
-            IList<WTS_SESSION_INFO> sessionInfos = SessionHelper.GetSessionInfos(_handle);
+            IList<WTS_SESSION_INFO> sessionInfos = SessionHelper.GetSessionInfos(Handle);
             foreach (WTS_SESSION_INFO sessionInfo in sessionInfos)
             {
                 results.Add(new TerminalServicesSession(this, sessionInfo.SessionID));
@@ -72,8 +72,11 @@ namespace Cassia
 
         public void Close()
         {
-            // TODO: this is not right if we want to allow object to be used after this
-            Dispose();
+            if (_handle != null)
+            {
+                _handle.Dispose();
+                _handle = null;
+            }
         }
 
         public IList<ITerminalServicesProcess> GetProcesses()
@@ -112,11 +115,7 @@ namespace Cassia
         {
             if (disposing)
             {
-                if (_handle != null)
-                {
-                    _handle.Dispose();
-                }
-                _handle = null;
+                Close();
             }
         }
     }

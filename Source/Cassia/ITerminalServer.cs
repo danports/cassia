@@ -6,6 +6,9 @@ namespace Cassia
     /// <summary>
     /// Connection to a terminal server.
     /// </summary>
+    /// <remarks>
+    /// <see cref="Open" /> must be called before any operations can be performed on the terminal server.
+    /// </remarks>
     public interface ITerminalServer : IDisposable
     {
         /// <summary>
