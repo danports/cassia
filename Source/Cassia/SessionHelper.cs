@@ -100,8 +100,12 @@ namespace Cassia
             }
         }
 
-        public static DateTime FileTimeToDateTime(FILETIME ft)
+        public static DateTime? FileTimeToDateTime(FILETIME ft)
         {
+            if (ft.dwHighDateTime == 0 && ft.dwLowDateTime == 0)
+            {
+                return null;
+            }
             long hFT = (((long) ft.dwHighDateTime) << 32) + ft.dwLowDateTime;
             return DateTime.FromFileTime(hFT);
         }

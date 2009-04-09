@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Cassia;
 using Microsoft.Win32;
+using System.Threading;
 
 namespace SessionInfo
 {
@@ -292,6 +293,7 @@ namespace SessionInfo
             }
             Console.WriteLine("Window Station: " + session.WindowStationName);
             Console.WriteLine("State: " + session.ConnectionState);
+            Console.WriteLine("Connect Time: " + session.ConnectTime);
             Console.WriteLine("Logon Time: " + session.LoginTime);
             Console.WriteLine(
                 string.Format("Client Display: {0}x{1} with {2} bits per pixel", session.HorizontalResolution,

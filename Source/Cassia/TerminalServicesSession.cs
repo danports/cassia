@@ -12,12 +12,12 @@ namespace Cassia
     public class TerminalServicesSession : ITerminalServicesSession
     {
         private readonly WTS_CONNECTSTATE_CLASS _connectionState;
-        private readonly DateTime _connectTime;
-        private readonly DateTime _currentTime;
-        private readonly DateTime _disconnectTime;
+        private readonly DateTime? _connectTime;
+        private readonly DateTime? _currentTime;
+        private readonly DateTime? _disconnectTime;
         private readonly string _domainName;
-        private readonly DateTime _lastInputTime;
-        private readonly DateTime _loginTime;
+        private readonly DateTime? _lastInputTime;
+        private readonly DateTime? _loginTime;
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
         private readonly string _userName;
@@ -154,27 +154,27 @@ namespace Cassia
             get { return _connectionState; }
         }
 
-        public DateTime ConnectTime
+        public DateTime? ConnectTime
         {
             get { return _connectTime; }
         }
 
-        public DateTime CurrentTime
+        public DateTime? CurrentTime
         {
             get { return _currentTime; }
         }
 
-        public DateTime DisconnectTime
+        public DateTime? DisconnectTime
         {
             get { return _disconnectTime; }
         }
 
-        public DateTime LastInputTime
+        public DateTime? LastInputTime
         {
             get { return _lastInputTime; }
         }
 
-        public DateTime LoginTime
+        public DateTime? LoginTime
         {
             get { return _loginTime; }
         }

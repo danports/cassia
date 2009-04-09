@@ -23,27 +23,27 @@ namespace Cassia
         /// <summary>
         /// The time at which the user connected to this session.
         /// </summary>
-        DateTime ConnectTime { get; }
+        DateTime? ConnectTime { get; }
 
         /// <summary>
         /// The current time in the session.
         /// </summary>
-        DateTime CurrentTime { get; }
+        DateTime? CurrentTime { get; }
 
         /// <summary>
         /// The time at which the user disconnected from this session.
         /// </summary>
-        DateTime DisconnectTime { get; }
+        DateTime? DisconnectTime { get; }
 
         /// <summary>
         /// The time at which this session last received input -- mouse movements, key presses, etc.
         /// </summary>
-        DateTime LastInputTime { get; }
+        DateTime? LastInputTime { get; }
 
         /// <summary>
         /// The time at which the user logged into this session for the first time.
         /// </summary>
-        DateTime LoginTime { get; }
+        DateTime? LoginTime { get; }
 
         /// <summary>
         /// The ID of the session.
