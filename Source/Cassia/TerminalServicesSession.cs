@@ -18,6 +18,7 @@ namespace Cassia
         private readonly string _domainName;
         private readonly DateTime? _lastInputTime;
         private readonly DateTime? _loginTime;
+
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
         private readonly string _userName;
@@ -36,7 +37,10 @@ namespace Cassia
             _server = server;
             _sessionId = sessionId;
 
-            // TODO: lazy loading.
+            // TODO: more lazy loading here.
+            // TODO: MSDN says most of these properties should be null for the console session.
+            // I haven't observed this in practice on Windows Server 2003 and 2008, but perhaps this 
+            // should be considered.
             if (Environment.OSVersion.Version > new Version(6, 0))
             {
                 // We can actually use documented APIs in Vista / Windows Server 2008+.
@@ -74,6 +78,11 @@ namespace Cassia
         }
 
         #region ITerminalServicesSession Members
+
+        public ITerminalServer Server
+        {
+            get { return _server; }
+        }
 
         public IPAddress ClientIPAddress
         {

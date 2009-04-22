@@ -12,7 +12,7 @@ namespace Cassia
     public interface ITerminalServer : IDisposable
     {
         /// <summary>
-        /// Underlying Windows handle for the terminal server.
+        /// Underlying connection to the terminal server.
         /// </summary>
         ITerminalServerHandle Handle { get; }
 

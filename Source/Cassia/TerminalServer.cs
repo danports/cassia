@@ -8,39 +8,28 @@ namespace Cassia
     /// </summary>
     public class TerminalServer : ITerminalServer
     {
-        private readonly string _serverName;
-        private ITerminalServerHandle _handle;
+        private readonly ITerminalServerHandle _handle;
 
-        public TerminalServer() {}
-
-        public TerminalServer(string serverName)
+        public TerminalServer(ITerminalServerHandle handle)
         {
-            _serverName = serverName;
+            _handle = handle;
         }
 
         #region ITerminalServer Members
 
         public string ServerName
         {
-            get { return _serverName; }
+            get { return _handle.ServerName; }
         }
 
         public bool IsOpen
         {
-            get { return _handle != null; }
+            get { return _handle.IsOpen; }
         }
 
         public ITerminalServerHandle Handle
         {
-            get
-            {
-                if (!IsOpen)
-                {
-                    throw new InvalidOperationException("Connection to server not open; "
-                                                        + "did you forget to call ITerminalServer.Open()?");
-                }
-                return _handle;
-            }
+            get { return _handle; }
         }
 
         public IList<ITerminalServicesSession> GetSessions()
@@ -67,16 +56,12 @@ namespace Cassia
 
         public void Open()
         {
-            _handle = new TerminalServerHandle(_serverName);
+            _handle.Open();
         }
 
         public void Close()
         {
-            if (_handle != null)
-            {
-                _handle.Dispose();
-                _handle = null;
-            }
+            _handle.Close();
         }
 
         public IList<ITerminalServicesProcess> GetProcesses()
@@ -115,7 +100,7 @@ namespace Cassia
         {
             if (disposing)
             {
-                Close();
+                _handle.Dispose();
             }
         }
     }

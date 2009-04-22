@@ -46,6 +46,7 @@
     <Compile Include="ITerminalServicesManager.cs" />
     <Compile Include="ITerminalServicesProcess.cs" />
     <Compile Include="ITerminalServicesSession.cs" />
+    <Compile Include="LocalServerHandle.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteMessageBoxButtons.cs" />
@@ -56,7 +57,7 @@
     <Compile Include="SessionHelper.cs" />
     <Compile Include="ShutdownType.cs" />
     <Compile Include="TerminalServer.cs" />
-    <Compile Include="TerminalServerHandle.cs" />
+    <Compile Include="RemoteServerHandle.cs" />
     <Compile Include="TerminalServicesManager.cs" />
     <Compile Include="TerminalServicesProcess.cs" />
     <Compile Include="TerminalServicesSession.cs" />

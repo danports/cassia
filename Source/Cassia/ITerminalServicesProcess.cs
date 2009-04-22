@@ -29,6 +29,11 @@ namespace Cassia
         SecurityIdentifier SecurityIdentifier { get; }
 
         /// <summary>
+        /// The terminal server on which this process is running.
+        /// </summary>
+        ITerminalServer Server { get; }
+
+        /// <summary>
         /// Terminates the process immediately.
         /// </summary>
         void Kill();

@@ -98,6 +98,11 @@ namespace Cassia
         IPAddress ClientIPAddress { get; }
 
         /// <summary>
+        /// The terminal server on which this session is located.
+        /// </summary>
+        ITerminalServer Server { get; }
+
+        /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.
         /// </summary>
         /// <remarks>The logoff takes place asynchronously; this method returns immediately. 

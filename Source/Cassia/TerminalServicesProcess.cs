@@ -10,9 +10,10 @@ namespace Cassia
     {
         private readonly int _processId;
         private readonly string _processName;
+        private readonly SecurityIdentifier _securityIdentifier;
+
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
-        private readonly SecurityIdentifier _securityIdentifier;
 
         public TerminalServicesProcess(ITerminalServer server, WTS_PROCESS_INFO processInfo)
         {
@@ -24,6 +25,11 @@ namespace Cassia
         }
 
         #region ITerminalServicesProcess Members
+
+        public ITerminalServer Server
+        {
+            get { return _server; }
+        }
 
         public int SessionId
         {
