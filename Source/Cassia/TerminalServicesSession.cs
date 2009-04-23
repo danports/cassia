@@ -11,6 +11,7 @@ namespace Cassia
     /// </summary>
     public class TerminalServicesSession : ITerminalServicesSession
     {
+        private readonly string _clientName;
         private readonly WTS_CONNECTSTATE_CLASS _connectionState;
         private readonly DateTime? _connectTime;
         private readonly DateTime? _currentTime;
@@ -18,15 +19,14 @@ namespace Cassia
         private readonly string _domainName;
         private readonly DateTime? _lastInputTime;
         private readonly DateTime? _loginTime;
-
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
         private readonly string _userName;
         private readonly string _windowStationName;
         private int _bitsPerPixel;
-        private string _clientName;
+        private int _clientBuildNumber;
+        private bool _fetchedClientBuildNumber;
         private bool _fetchedClientDisplay;
-        private bool _fetchedClientName;
         private bool _fetchedIpAddress;
         private int _horizontalResolution;
         private IPAddress _ipAddress;
@@ -36,10 +36,12 @@ namespace Cassia
         {
             _server = server;
             _sessionId = sessionId;
+            _clientName =
+                SessionHelper.QuerySessionInformationForString(_server.Handle, _sessionId, WTS_INFO_CLASS.WTSClientName);
 
             // TODO: more lazy loading here.
             // TODO: MSDN says most of these properties should be null for the console session.
-            // I haven't observed this in practice on Windows Server 2003 and 2008, but perhaps this 
+            // I haven't observed this in practice on Windows Server 2000, 2003, or 2008, but perhaps this 
             // should be considered.
             if (Environment.OSVersion.Version > new Version(6, 0))
             {
@@ -78,6 +80,15 @@ namespace Cassia
         }
 
         #region ITerminalServicesSession Members
+
+        public int ClientBuildNumber
+        {
+            get
+            {
+                CheckClientBuildNumber();
+                return _clientBuildNumber;
+            }
+        }
 
         public ITerminalServer Server
         {
@@ -151,11 +162,7 @@ namespace Cassia
 
         public string ClientName
         {
-            get
-            {
-                CheckClientName();
-                return _clientName;
-            }
+            get { return _clientName; }
         }
 
         public WTS_CONNECTSTATE_CLASS ConnectionState
@@ -260,15 +267,14 @@ namespace Cassia
 
         #endregion
 
-        private void CheckClientName()
+        private void CheckClientBuildNumber()
         {
-            if (_fetchedClientName)
+            if (_fetchedClientBuildNumber)
             {
                 return;
             }
-            _clientName =
-                SessionHelper.QuerySessionInformationForString(_server.Handle, _sessionId, WTS_INFO_CLASS.WTSClientName);
-            _fetchedClientName = true;
+            _clientBuildNumber = SessionHelper.QuerySessionInformationForClientVersion(_server.Handle, _sessionId);
+            _fetchedClientBuildNumber = true;
         }
 
         private void CheckClientDisplay()

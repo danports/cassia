@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using Cassia;
 using Microsoft.Win32;
-using System.Threading;
 
 namespace SessionInfo
 {
@@ -220,7 +219,7 @@ namespace SessionInfo
         {
             if (args.Length < 2)
             {
-                Console.WriteLine("Usage: SessionInfo list [server]");
+                Console.WriteLine("Usage: SessionInfo listsessions [server]");
                 return;
             }
             using (ITerminalServer server = GetServerFromName(args[1]))
@@ -292,6 +291,7 @@ namespace SessionInfo
                 Console.WriteLine("IP Address: " + session.ClientIPAddress);
             }
             Console.WriteLine("Window Station: " + session.WindowStationName);
+            Console.WriteLine("Client Build Number: " + session.ClientBuildNumber);
             Console.WriteLine("State: " + session.ConnectionState);
             Console.WriteLine("Connect Time: " + session.ConnectTime);
             Console.WriteLine("Logon Time: " + session.LoginTime);

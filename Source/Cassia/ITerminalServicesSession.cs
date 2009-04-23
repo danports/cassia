@@ -103,6 +103,14 @@ namespace Cassia
         ITerminalServer Server { get; }
 
         /// <summary>
+        /// The build number of the client. Note that this does not include the major version, minor 
+        /// version, or revision number -- it is only the build number. For example, the full file version 
+        /// of the RDP 6 client on Windows XP is 6.0.6001.18000, so this property will return 6001
+        /// for this client.
+        /// </summary>
+        int ClientBuildNumber { get; }
+
+        /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.
         /// </summary>
         /// <remarks>The logoff takes place asynchronously; this method returns immediately. 

@@ -232,6 +232,29 @@ namespace Cassia
             }
         }
 
+        public static int QuerySessionInformationForClientVersion(ITerminalServerHandle server, int sessionId)
+        {
+            int returned;
+            IntPtr mem;
+            if (
+                NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSClientBuildNumber,
+                                                         out mem, out returned))
+            {
+                try
+                {
+                    return Marshal.ReadInt32(mem);
+                }
+                finally
+                {
+                    NativeMethods.WTSFreeMemory(mem);
+                }
+            }
+            else
+            {
+                throw new Win32Exception();
+            }
+        }
+
         public static void ShutdownSystem(ITerminalServerHandle server, int flags)
         {
             if (NativeMethods.WTSShutdownSystem(server.Handle, flags) == 0)
