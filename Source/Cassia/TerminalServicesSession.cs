@@ -37,7 +37,8 @@ namespace Cassia
             _server = server;
             _sessionId = sessionId;
             _clientName =
-                SessionHelper.QuerySessionInformationForString(_server.Handle, _sessionId, WTS_INFO_CLASS.WTSClientName);
+                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
+                                                                     WTS_INFO_CLASS.WTSClientName);
 
             // TODO: more lazy loading here.
             // TODO: MSDN says most of these properties should be null for the console session.
@@ -47,8 +48,8 @@ namespace Cassia
             {
                 // We can actually use documented APIs in Vista / Windows Server 2008+.
                 WTSINFO info =
-                    SessionHelper.QuerySessionInformationForStruct<WTSINFO>(server.Handle, sessionId,
-                                                                            WTS_INFO_CLASS.WTSSessionInfo);
+                    NativeMethodsHelper.QuerySessionInformationForStruct<WTSINFO>(server.Handle, sessionId,
+                                                                                  WTS_INFO_CLASS.WTSSessionInfo);
                 _connectTime = DateTime.FromFileTime(info.ConnectTime);
                 _currentTime = DateTime.FromFileTime(info.CurrentTime);
                 _disconnectTime = DateTime.FromFileTime(info.DisconnectTime);
@@ -61,21 +62,22 @@ namespace Cassia
             }
             else
             {
-                WINSTATIONINFORMATIONW wsInfo = SessionHelper.GetWinStationInformation(server.Handle, sessionId);
-                _connectTime = SessionHelper.FileTimeToDateTime(wsInfo.ConnectTime);
-                _currentTime = SessionHelper.FileTimeToDateTime(wsInfo.CurrentTime);
-                _disconnectTime = SessionHelper.FileTimeToDateTime(wsInfo.DisconnectTime);
-                _lastInputTime = SessionHelper.FileTimeToDateTime(wsInfo.LastInputTime);
-                _loginTime = SessionHelper.FileTimeToDateTime(wsInfo.LoginTime);
-                _connectionState = SessionHelper.GetConnectionState(server.Handle, sessionId);
+                WINSTATIONINFORMATIONW wsInfo = NativeMethodsHelper.GetWinStationInformation(server.Handle, sessionId);
+                _connectTime = NativeMethodsHelper.FileTimeToDateTime(wsInfo.ConnectTime);
+                _currentTime = NativeMethodsHelper.FileTimeToDateTime(wsInfo.CurrentTime);
+                _disconnectTime = NativeMethodsHelper.FileTimeToDateTime(wsInfo.DisconnectTime);
+                _lastInputTime = NativeMethodsHelper.FileTimeToDateTime(wsInfo.LastInputTime);
+                _loginTime = NativeMethodsHelper.FileTimeToDateTime(wsInfo.LoginTime);
+                _connectionState = NativeMethodsHelper.GetConnectionState(server.Handle, sessionId);
                 _userName =
-                    SessionHelper.QuerySessionInformationForString(server.Handle, sessionId, WTS_INFO_CLASS.WTSUserName);
+                    NativeMethodsHelper.QuerySessionInformationForString(server.Handle, sessionId,
+                                                                         WTS_INFO_CLASS.WTSUserName);
                 _domainName =
-                    SessionHelper.QuerySessionInformationForString(server.Handle, sessionId,
-                                                                   WTS_INFO_CLASS.WTSDomainName);
+                    NativeMethodsHelper.QuerySessionInformationForString(server.Handle, sessionId,
+                                                                         WTS_INFO_CLASS.WTSDomainName);
                 _windowStationName =
-                    SessionHelper.QuerySessionInformationForString(server.Handle, sessionId,
-                                                                   WTS_INFO_CLASS.WTSWinStationName);
+                    NativeMethodsHelper.QuerySessionInformationForString(server.Handle, sessionId,
+                                                                         WTS_INFO_CLASS.WTSWinStationName);
             }
         }
 
@@ -102,9 +104,10 @@ namespace Cassia
                 if (!_fetchedIpAddress)
                 {
                     WTS_CLIENT_ADDRESS clientAddress =
-                        SessionHelper.QuerySessionInformationForStruct<WTS_CLIENT_ADDRESS>(_server.Handle, _sessionId,
-                                                                                           WTS_INFO_CLASS.
-                                                                                               WTSClientAddress);
+                        NativeMethodsHelper.QuerySessionInformationForStruct<WTS_CLIENT_ADDRESS>(_server.Handle,
+                                                                                                 _sessionId,
+                                                                                                 WTS_INFO_CLASS.
+                                                                                                     WTSClientAddress);
                     AddressFamily addressFamily = (AddressFamily) clientAddress.AddressFamily;
                     if (addressFamily == AddressFamily.InterNetwork)
                     {
@@ -212,7 +215,7 @@ namespace Cassia
 
         public void Logoff(bool synchronous)
         {
-            SessionHelper.LogoffSession(_server.Handle, _sessionId, synchronous);
+            NativeMethodsHelper.LogoffSession(_server.Handle, _sessionId, synchronous);
         }
 
         public void Disconnect()
@@ -222,7 +225,7 @@ namespace Cassia
 
         public void Disconnect(bool synchronous)
         {
-            SessionHelper.DisconnectSession(_server.Handle, _sessionId, synchronous);
+            NativeMethodsHelper.DisconnectSession(_server.Handle, _sessionId, synchronous);
         }
 
         public void MessageBox(string text)
@@ -248,7 +251,8 @@ namespace Cassia
             int timeoutSeconds = (int) timeout.TotalSeconds;
             int style = (int) buttons | (int) icon | (int) defaultButton | (int) options;
             return
-                SessionHelper.SendMessage(_server.Handle, _sessionId, caption, text, style, timeoutSeconds, synchronous);
+                NativeMethodsHelper.SendMessage(_server.Handle, _sessionId, caption, text, style, timeoutSeconds,
+                                                synchronous);
         }
 
         public IList<ITerminalServicesProcess> GetProcesses()
@@ -273,7 +277,8 @@ namespace Cassia
             {
                 return;
             }
-            _clientBuildNumber = SessionHelper.QuerySessionInformationForClientVersion(_server.Handle, _sessionId);
+            _clientBuildNumber =
+                NativeMethodsHelper.QuerySessionInformationForClientBuildNumber(_server.Handle, _sessionId);
             _fetchedClientBuildNumber = true;
         }
 
@@ -284,8 +289,8 @@ namespace Cassia
                 return;
             }
             WTS_CLIENT_DISPLAY clientDisplay =
-                SessionHelper.QuerySessionInformationForStruct<WTS_CLIENT_DISPLAY>(_server.Handle, _sessionId,
-                                                                                   WTS_INFO_CLASS.WTSClientDisplay);
+                NativeMethodsHelper.QuerySessionInformationForStruct<WTS_CLIENT_DISPLAY>(_server.Handle, _sessionId,
+                                                                                         WTS_INFO_CLASS.WTSClientDisplay);
             _horizontalResolution = clientDisplay.HorizontalResolution;
             _verticalResolution = clientDisplay.VerticalResolution;
             _bitsPerPixel = GetBitsPerPixel(clientDisplay.ColorDepth);

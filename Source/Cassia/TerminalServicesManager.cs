@@ -46,7 +46,7 @@ namespace Cassia
         public IList<ITerminalServer> GetServers(string domainName)
         {
             List<ITerminalServer> servers = new List<ITerminalServer>();
-            foreach (WTS_SERVER_INFO serverInfo in SessionHelper.EnumerateServers(domainName))
+            foreach (WTS_SERVER_INFO serverInfo in NativeMethodsHelper.EnumerateServers(domainName))
             {
                 servers.Add(new TerminalServer(new RemoteServerHandle(serverInfo.ServerName)));
             }

@@ -35,7 +35,7 @@ namespace Cassia
         public IList<ITerminalServicesSession> GetSessions()
         {
             List<ITerminalServicesSession> results = new List<ITerminalServicesSession>();
-            IList<WTS_SESSION_INFO> sessionInfos = SessionHelper.GetSessionInfos(Handle);
+            IList<WTS_SESSION_INFO> sessionInfos = NativeMethodsHelper.GetSessionInfos(Handle);
             foreach (WTS_SESSION_INFO sessionInfo in sessionInfos)
             {
                 results.Add(new TerminalServicesSession(this, sessionInfo.SessionID));
@@ -67,7 +67,7 @@ namespace Cassia
         public IList<ITerminalServicesProcess> GetProcesses()
         {
             List<ITerminalServicesProcess> processes = new List<ITerminalServicesProcess>();
-            SessionHelper.ForEachProcessInfo(Handle,
+            NativeMethodsHelper.ForEachProcessInfo(Handle,
                                              delegate(WTS_PROCESS_INFO processInfo) { processes.Add(new TerminalServicesProcess(this, processInfo)); });
             return processes;
         }
@@ -86,7 +86,7 @@ namespace Cassia
 
         public void Shutdown(ShutdownType type)
         {
-            SessionHelper.ShutdownSystem(Handle, (int) type);
+            NativeMethodsHelper.ShutdownSystem(Handle, (int) type);
         }
 
         #endregion

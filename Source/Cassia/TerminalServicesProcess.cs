@@ -58,7 +58,7 @@ namespace Cassia
 
         public void Kill(int exitCode)
         {
-            SessionHelper.TerminateProcess(_server.Handle, _processId, exitCode);
+            NativeMethodsHelper.TerminateProcess(_server.Handle, _processId, exitCode);
         }
 
         public Process GetProcessObject()

@@ -54,7 +54,7 @@
     <Compile Include="RemoteMessageBoxIcon.cs" />
     <Compile Include="RemoteMessageBoxOptions.cs" />
     <Compile Include="RemoteMessageBoxResult.cs" />
-    <Compile Include="SessionHelper.cs" />
+    <Compile Include="NativeMethodsHelper.cs" />
     <Compile Include="ShutdownType.cs" />
     <Compile Include="TerminalServer.cs" />
     <Compile Include="RemoteServerHandle.cs" />

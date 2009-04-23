@@ -6,7 +6,7 @@ using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace Cassia
 {
-    internal static class SessionHelper
+    internal static class NativeMethodsHelper
     {
         #region Delegates
 
@@ -16,15 +16,21 @@ namespace Cassia
 
         public static WTS_CONNECTSTATE_CLASS GetConnectionState(ITerminalServerHandle server, int sessionId)
         {
+            ProcessSessionCallback<WTS_CONNECTSTATE_CLASS> callback =
+                delegate(IntPtr mem, int returned) { return (WTS_CONNECTSTATE_CLASS) Marshal.ReadInt32(mem); };
+            return QuerySessionInformation(server, sessionId, WTS_INFO_CLASS.WTSConnectState, callback);
+        }
+
+        private static T QuerySessionInformation<T>(ITerminalServerHandle server, int sessionId,
+                                                    WTS_INFO_CLASS infoClass, ProcessSessionCallback<T> callback)
+        {
             int returned;
             IntPtr mem;
-            if (
-                NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSConnectState,
-                                                         out mem, out returned))
+            if (NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, infoClass, out mem, out returned))
             {
                 try
                 {
-                    return (WTS_CONNECTSTATE_CLASS) Marshal.ReadInt32(mem);
+                    return callback(mem, returned);
                 }
                 finally
                 {
@@ -40,45 +46,17 @@ namespace Cassia
         public static string QuerySessionInformationForString(ITerminalServerHandle server, int sessionId,
                                                               WTS_INFO_CLASS infoClass)
         {
-            int returned;
-            IntPtr mem;
-            if (NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, infoClass, out mem, out returned))
-            {
-                try
-                {
-                    return Marshal.PtrToStringAuto(mem);
-                }
-                finally
-                {
-                    NativeMethods.WTSFreeMemory(mem);
-                }
-            }
-            else
-            {
-                throw new Win32Exception();
-            }
+            ProcessSessionCallback<string> callback =
+                delegate(IntPtr mem, int returned) { return Marshal.PtrToStringAuto(mem); };
+            return QuerySessionInformation(server, sessionId, infoClass, callback);
         }
 
         public static T QuerySessionInformationForStruct<T>(ITerminalServerHandle server, int sessionId,
                                                             WTS_INFO_CLASS infoClass) where T : struct
         {
-            int returned;
-            IntPtr mem;
-            if (NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, infoClass, out mem, out returned))
-            {
-                try
-                {
-                    return (T) Marshal.PtrToStructure(mem, typeof(T));
-                }
-                finally
-                {
-                    NativeMethods.WTSFreeMemory(mem);
-                }
-            }
-            else
-            {
-                throw new Win32Exception();
-            }
+            ProcessSessionCallback<T> callback =
+                delegate(IntPtr mem, int returned) { return (T) Marshal.PtrToStructure(mem, typeof(T)); };
+            return QuerySessionInformation(server, sessionId, infoClass, callback);
         }
 
         public static WINSTATIONINFORMATIONW GetWinStationInformation(ITerminalServerHandle server, int sessionId)
@@ -95,8 +73,7 @@ namespace Cassia
             }
             else
             {
-                // Not sure if the function used here sets the error code.
-                throw new Win32Exception("Failed to get information for session ID " + sessionId);
+                throw new Win32Exception();
             }
         }
 
@@ -232,27 +209,10 @@ namespace Cassia
             }
         }
 
-        public static int QuerySessionInformationForClientVersion(ITerminalServerHandle server, int sessionId)
+        public static int QuerySessionInformationForClientBuildNumber(ITerminalServerHandle server, int sessionId)
         {
-            int returned;
-            IntPtr mem;
-            if (
-                NativeMethods.WTSQuerySessionInformation(server.Handle, sessionId, WTS_INFO_CLASS.WTSClientBuildNumber,
-                                                         out mem, out returned))
-            {
-                try
-                {
-                    return Marshal.ReadInt32(mem);
-                }
-                finally
-                {
-                    NativeMethods.WTSFreeMemory(mem);
-                }
-            }
-            else
-            {
-                throw new Win32Exception();
-            }
+            ProcessSessionCallback<int> callback = delegate(IntPtr mem, int returned) { return Marshal.ReadInt32(mem); };
+            return QuerySessionInformation(server, sessionId, WTS_INFO_CLASS.WTSClientBuildNumber, callback);
         }
 
         public static void ShutdownSystem(ITerminalServerHandle server, int flags)
@@ -262,5 +222,11 @@ namespace Cassia
                 throw new Win32Exception();
             }
         }
+
+        #region Nested type: ProcessSessionCallback
+
+        private delegate T ProcessSessionCallback<T>(IntPtr mem, int returnedBytes);
+
+        #endregion
     }
 }
