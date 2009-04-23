@@ -40,12 +40,15 @@
     <Compile Include="..\..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="ClientDisplay.cs" />
     <Compile Include="ExternalStructs.cs" />
+    <Compile Include="IClientDisplay.cs" />
     <Compile Include="ITerminalServer.cs" />
     <Compile Include="ITerminalServerHandle.cs" />
     <Compile Include="ITerminalServicesManager.cs" />
     <Compile Include="ITerminalServicesProcess.cs" />
     <Compile Include="ITerminalServicesSession.cs" />
+    <Compile Include="LazyLoadedProperty.cs" />
     <Compile Include="LocalServerHandle.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

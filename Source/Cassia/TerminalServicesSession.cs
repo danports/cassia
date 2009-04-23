@@ -11,6 +11,9 @@ namespace Cassia
     /// </summary>
     public class TerminalServicesSession : ITerminalServicesSession
     {
+        private readonly LazyLoadedProperty<int> _clientBuildNumber;
+        private readonly LazyLoadedProperty<IClientDisplay> _clientDisplay;
+        private readonly LazyLoadedProperty<IPAddress> _clientIPAddress;
         private readonly string _clientName;
         private readonly WTS_CONNECTSTATE_CLASS _connectionState;
         private readonly DateTime? _connectTime;
@@ -23,28 +26,22 @@ namespace Cassia
         private readonly int _sessionId;
         private readonly string _userName;
         private readonly string _windowStationName;
-        private int _bitsPerPixel;
-        private int _clientBuildNumber;
-        private bool _fetchedClientBuildNumber;
-        private bool _fetchedClientDisplay;
-        private bool _fetchedIpAddress;
-        private int _horizontalResolution;
-        private IPAddress _ipAddress;
-        private int _verticalResolution;
 
         public TerminalServicesSession(ITerminalServer server, int sessionId)
         {
             _server = server;
             _sessionId = sessionId;
+            _clientBuildNumber = new LazyLoadedProperty<int>(GetClientBuildNumber);
+            _clientIPAddress = new LazyLoadedProperty<IPAddress>(GetClientIPAddress);
+            _clientDisplay = new LazyLoadedProperty<IClientDisplay>(GetClientDisplay);
             _clientName =
                 NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
                                                                      WTS_INFO_CLASS.WTSClientName);
 
-            // TODO: more lazy loading here.
             // TODO: MSDN says most of these properties should be null for the console session.
             // I haven't observed this in practice on Windows Server 2000, 2003, or 2008, but perhaps this 
             // should be considered.
-            if (Environment.OSVersion.Version > new Version(6, 0))
+            if (Environment.OSVersion.Version >= new Version(6, 0))
             {
                 // We can actually use documented APIs in Vista / Windows Server 2008+.
                 WTSINFO info =
@@ -83,13 +80,14 @@ namespace Cassia
 
         #region ITerminalServicesSession Members
 
+        public IClientDisplay ClientDisplay
+        {
+            get { return _clientDisplay.Value; }
+        }
+
         public int ClientBuildNumber
         {
-            get
-            {
-                CheckClientBuildNumber();
-                return _clientBuildNumber;
-            }
+            get { return _clientBuildNumber.Value; }
         }
 
         public ITerminalServer Server
@@ -99,58 +97,12 @@ namespace Cassia
 
         public IPAddress ClientIPAddress
         {
-            get
-            {
-                if (!_fetchedIpAddress)
-                {
-                    WTS_CLIENT_ADDRESS clientAddress =
-                        NativeMethodsHelper.QuerySessionInformationForStruct<WTS_CLIENT_ADDRESS>(_server.Handle,
-                                                                                                 _sessionId,
-                                                                                                 WTS_INFO_CLASS.
-                                                                                                     WTSClientAddress);
-                    AddressFamily addressFamily = (AddressFamily) clientAddress.AddressFamily;
-                    if (addressFamily == AddressFamily.InterNetwork)
-                    {
-                        byte[] address = new byte[4];
-                        Array.Copy(clientAddress.Address, 2, address, 0, 4);
-                        _ipAddress = new IPAddress(address);
-                    }
-                    _fetchedIpAddress = true;
-                }
-                return _ipAddress;
-            }
+            get { return _clientIPAddress.Value; }
         }
 
         public string WindowStationName
         {
             get { return _windowStationName; }
-        }
-
-        public int BitsPerPixel
-        {
-            get
-            {
-                CheckClientDisplay();
-                return _bitsPerPixel;
-            }
-        }
-
-        public int HorizontalResolution
-        {
-            get
-            {
-                CheckClientDisplay();
-                return _horizontalResolution;
-            }
-        }
-
-        public int VerticalResolution
-        {
-            get
-            {
-                CheckClientDisplay();
-                return _verticalResolution;
-            }
         }
 
         public string DomainName
@@ -271,48 +223,33 @@ namespace Cassia
 
         #endregion
 
-        private void CheckClientBuildNumber()
+        private IClientDisplay GetClientDisplay()
         {
-            if (_fetchedClientBuildNumber)
-            {
-                return;
-            }
-            _clientBuildNumber =
-                NativeMethodsHelper.QuerySessionInformationForClientBuildNumber(_server.Handle, _sessionId);
-            _fetchedClientBuildNumber = true;
-        }
-
-        private void CheckClientDisplay()
-        {
-            if (_fetchedClientDisplay)
-            {
-                return;
-            }
             WTS_CLIENT_DISPLAY clientDisplay =
                 NativeMethodsHelper.QuerySessionInformationForStruct<WTS_CLIENT_DISPLAY>(_server.Handle, _sessionId,
                                                                                          WTS_INFO_CLASS.WTSClientDisplay);
-            _horizontalResolution = clientDisplay.HorizontalResolution;
-            _verticalResolution = clientDisplay.VerticalResolution;
-            _bitsPerPixel = GetBitsPerPixel(clientDisplay.ColorDepth);
-            _fetchedClientDisplay = true;
+            return new ClientDisplay(clientDisplay);
         }
 
-        private static int GetBitsPerPixel(int colorDepth)
+        private IPAddress GetClientIPAddress()
         {
-            switch (colorDepth)
+            WTS_CLIENT_ADDRESS clientAddress =
+                NativeMethodsHelper.QuerySessionInformationForStruct<WTS_CLIENT_ADDRESS>(_server.Handle, _sessionId,
+                                                                                         WTS_INFO_CLASS.WTSClientAddress);
+            AddressFamily addressFamily = (AddressFamily) clientAddress.AddressFamily;
+            if (addressFamily == AddressFamily.InterNetwork)
             {
-                case 1:
-                    return 4;
-                case 2:
-                    return 8;
-                case 4:
-                    return 16;
-                case 8:
-                    return 24;
-                case 16:
-                    return 15;
+                byte[] address = new byte[4];
+                Array.Copy(clientAddress.Address, 2, address, 0, 4);
+                return new IPAddress(address);
             }
-            return 0;
+            // TODO: support IPv6
+            return null;
+        }
+
+        private int GetClientBuildNumber()
+        {
+            return NativeMethodsHelper.QuerySessionInformationForClientBuildNumber(_server.Handle, _sessionId);
         }
     }
 }
