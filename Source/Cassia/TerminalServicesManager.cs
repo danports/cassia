@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 
+/// <summary>
+/// Primary namespace.
+/// </summary>
 namespace Cassia
 {
     /// <summary>

@@ -35,5 +35,9 @@
     <Zip Files="@(PackageFiles)" ZipFileName="$(DropPath)$(PackageLabel)" />
   </Target>
 
-  <Target Name="All" DependsOnTargets="Build;Package" />
+  <Target Name="Documentation">
+	<MSBuild Projects="Cassia.shfbproj" Properties="Configuration=Release;Platform=AnyCPU" />
+  </Target>
+  
+  <Target Name="All" DependsOnTargets="Build;Package;Documentation" />
 </Project>

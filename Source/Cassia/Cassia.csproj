@@ -50,6 +50,7 @@
     <Compile Include="ITerminalServicesSession.cs" />
     <Compile Include="LazyLoadedProperty.cs" />
     <Compile Include="LocalServerHandle.cs" />
+    <Compile Include="NamespaceDoc.cs" />
     <Compile Include="NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteMessageBoxButtons.cs" />
