@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using Cassia.Impl;
 
-namespace Cassia
+namespace Cassia.Impl
 {
     /// <summary>
     /// Default implementation of <see cref="ITerminalServer" />.
@@ -68,7 +69,7 @@ namespace Cassia
         {
             List<ITerminalServicesProcess> processes = new List<ITerminalServicesProcess>();
             NativeMethodsHelper.ForEachProcessInfo(Handle,
-                                             delegate(WTS_PROCESS_INFO processInfo) { processes.Add(new TerminalServicesProcess(this, processInfo)); });
+                                                   delegate(WTS_PROCESS_INFO processInfo) { processes.Add(new TerminalServicesProcess(this, processInfo)); });
             return processes;
         }
 

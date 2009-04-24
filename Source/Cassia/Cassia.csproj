@@ -40,31 +40,32 @@
     <Compile Include="..\..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="ClientDisplay.cs" />
-    <Compile Include="ExternalStructs.cs" />
+    <Compile Include="Impl\ClientDisplay.cs" />
+    <Compile Include="Impl\ExternalStructs.cs" />
     <Compile Include="IClientDisplay.cs" />
+    <Compile Include="Impl\NamespaceDoc.cs" />
     <Compile Include="ITerminalServer.cs" />
     <Compile Include="ITerminalServerHandle.cs" />
     <Compile Include="ITerminalServicesManager.cs" />
     <Compile Include="ITerminalServicesProcess.cs" />
     <Compile Include="ITerminalServicesSession.cs" />
-    <Compile Include="LazyLoadedProperty.cs" />
-    <Compile Include="LocalServerHandle.cs" />
+    <Compile Include="Impl\LazyLoadedProperty.cs" />
+    <Compile Include="Impl\LocalServerHandle.cs" />
     <Compile Include="NamespaceDoc.cs" />
-    <Compile Include="NativeMethods.cs" />
+    <Compile Include="Impl\NativeMethods.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RemoteMessageBoxButtons.cs" />
     <Compile Include="RemoteMessageBoxDefaultButton.cs" />
     <Compile Include="RemoteMessageBoxIcon.cs" />
     <Compile Include="RemoteMessageBoxOptions.cs" />
     <Compile Include="RemoteMessageBoxResult.cs" />
-    <Compile Include="NativeMethodsHelper.cs" />
+    <Compile Include="Impl\NativeMethodsHelper.cs" />
     <Compile Include="ShutdownType.cs" />
-    <Compile Include="TerminalServer.cs" />
-    <Compile Include="RemoteServerHandle.cs" />
+    <Compile Include="Impl\TerminalServer.cs" />
+    <Compile Include="Impl\RemoteServerHandle.cs" />
     <Compile Include="TerminalServicesManager.cs" />
-    <Compile Include="TerminalServicesProcess.cs" />
-    <Compile Include="TerminalServicesSession.cs" />
+    <Compile Include="Impl\TerminalServicesProcess.cs" />
+    <Compile Include="Impl\TerminalServicesSession.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Target Name="BeforeBuild">

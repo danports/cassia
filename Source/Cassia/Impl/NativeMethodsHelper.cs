@@ -2,9 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
+using Cassia.Impl;
 using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
 
-namespace Cassia
+namespace Cassia.Impl
 {
     internal static class NativeMethodsHelper
     {

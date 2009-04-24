@@ -2,7 +2,7 @@ using System;
 using System.Runtime.InteropServices;
 using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
 
-namespace Cassia
+namespace Cassia.Impl
 {
     // DO NOT RESHARPER THIS FILE. R# will reorder members of unmanaged structs,
     // resulting in access violations at runtime.

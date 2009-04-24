@@ -1,4 +1,4 @@
-namespace Cassia
+namespace Cassia.Impl
 {
     /// <summary>
     /// Default implementation of <see cref="IClientDisplay" />.

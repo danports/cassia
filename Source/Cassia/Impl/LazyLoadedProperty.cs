@@ -1,4 +1,4 @@
-namespace Cassia
+namespace Cassia.Impl
 {
     public delegate T PropertyLoader<T>();
 

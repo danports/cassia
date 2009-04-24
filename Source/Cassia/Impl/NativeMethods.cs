@@ -1,7 +1,8 @@
 using System;
 using System.Runtime.InteropServices;
+using Cassia.Impl;
 
-namespace Cassia
+namespace Cassia.Impl
 {
     internal static class NativeMethods
     {

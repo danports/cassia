@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Principal;
+using Cassia.Impl;
 
-namespace Cassia
+namespace Cassia.Impl
 {
     /// <summary>
     /// Default implementation of <see cref="ITerminalServicesSession" />.

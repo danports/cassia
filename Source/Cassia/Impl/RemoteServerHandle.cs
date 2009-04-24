@@ -1,7 +1,8 @@
 using System;
 using System.ComponentModel;
+using Cassia.Impl;
 
-namespace Cassia
+namespace Cassia.Impl
 {
     public class RemoteServerHandle : ITerminalServerHandle
     {

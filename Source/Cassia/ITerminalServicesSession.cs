@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Security.Principal;
+using Cassia.Impl;
 
 namespace Cassia
 {

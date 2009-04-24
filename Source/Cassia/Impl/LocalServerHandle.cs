@@ -1,6 +1,6 @@
 using System;
 
-namespace Cassia
+namespace Cassia.Impl
 {
     public class LocalServerHandle : ITerminalServerHandle
     {

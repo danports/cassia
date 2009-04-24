@@ -1,7 +1,8 @@
 using System.Diagnostics;
 using System.Security.Principal;
+using Cassia.Impl;
 
-namespace Cassia
+namespace Cassia.Impl
 {
     /// <summary>
     /// Default implementation of <see cref="ITerminalServicesProcess" />.
