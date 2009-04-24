@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Principal;
-using Cassia.Impl;
 
 namespace Cassia.Impl
 {
@@ -29,9 +28,19 @@ namespace Cassia.Impl
         private readonly string _windowStationName;
 
         public TerminalServicesSession(ITerminalServer server, int sessionId)
+            : this(
+                server, sessionId,
+                NativeMethodsHelper.QuerySessionInformationForString(server.Handle, sessionId,
+                                                                     WTS_INFO_CLASS.WTSWinStationName),
+                NativeMethodsHelper.GetConnectionState(server.Handle, sessionId)) {}
+
+        public TerminalServicesSession(ITerminalServer server, int sessionId, string windowStationName,
+                                       ConnectionState connectionState)
         {
             _server = server;
             _sessionId = sessionId;
+            _windowStationName = windowStationName;
+            _connectionState = connectionState;
             _clientBuildNumber = new LazyLoadedProperty<int>(GetClientBuildNumber);
             _clientIPAddress = new LazyLoadedProperty<IPAddress>(GetClientIPAddress);
             _clientDisplay = new LazyLoadedProperty<IClientDisplay>(GetClientDisplay);
@@ -46,7 +55,7 @@ namespace Cassia.Impl
             {
                 // We can actually use documented APIs in Vista / Windows Server 2008+.
                 WTSINFO info =
-                    NativeMethodsHelper.QuerySessionInformationForStruct<WTSINFO>(server.Handle, sessionId,
+                    NativeMethodsHelper.QuerySessionInformationForStruct<WTSINFO>(server.Handle, _sessionId,
                                                                                   WTS_INFO_CLASS.WTSSessionInfo);
                 _connectTime = DateTime.FromFileTime(info.ConnectTime);
                 _currentTime = DateTime.FromFileTime(info.CurrentTime);
@@ -55,29 +64,26 @@ namespace Cassia.Impl
                 _loginTime = DateTime.FromFileTime(info.LogonTime);
                 _userName = info.UserName;
                 _domainName = info.Domain;
-                _connectionState = info.State;
-                _windowStationName = info.WinStationName;
             }
             else
             {
-                WINSTATIONINFORMATIONW wsInfo = NativeMethodsHelper.GetWinStationInformation(server.Handle, sessionId);
+                WINSTATIONINFORMATIONW wsInfo = NativeMethodsHelper.GetWinStationInformation(server.Handle, _sessionId);
                 _connectTime = NativeMethodsHelper.FileTimeToDateTime(wsInfo.ConnectTime);
                 _currentTime = NativeMethodsHelper.FileTimeToDateTime(wsInfo.CurrentTime);
                 _disconnectTime = NativeMethodsHelper.FileTimeToDateTime(wsInfo.DisconnectTime);
                 _lastInputTime = NativeMethodsHelper.FileTimeToDateTime(wsInfo.LastInputTime);
                 _loginTime = NativeMethodsHelper.FileTimeToDateTime(wsInfo.LoginTime);
-                _connectionState = NativeMethodsHelper.GetConnectionState(server.Handle, sessionId);
                 _userName =
-                    NativeMethodsHelper.QuerySessionInformationForString(server.Handle, sessionId,
+                    NativeMethodsHelper.QuerySessionInformationForString(server.Handle, _sessionId,
                                                                          WTS_INFO_CLASS.WTSUserName);
                 _domainName =
-                    NativeMethodsHelper.QuerySessionInformationForString(server.Handle, sessionId,
+                    NativeMethodsHelper.QuerySessionInformationForString(server.Handle, _sessionId,
                                                                          WTS_INFO_CLASS.WTSDomainName);
-                _windowStationName =
-                    NativeMethodsHelper.QuerySessionInformationForString(server.Handle, sessionId,
-                                                                         WTS_INFO_CLASS.WTSWinStationName);
             }
         }
+
+        public TerminalServicesSession(ITerminalServer server, WTS_SESSION_INFO sessionInfo)
+            : this(server, sessionInfo.SessionID, sessionInfo.WinStationName, sessionInfo.State) {}
 
         #region ITerminalServicesSession Members
 

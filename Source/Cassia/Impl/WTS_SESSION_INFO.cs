@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace Cassia.Impl
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct WTS_SESSION_INFO
+    public struct WTS_SESSION_INFO
     {
         public int SessionID;
         [MarshalAs(UnmanagedType.LPTStr)]

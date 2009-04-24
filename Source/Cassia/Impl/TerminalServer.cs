@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using Cassia.Impl;
 
 namespace Cassia.Impl
 {
@@ -39,7 +38,7 @@ namespace Cassia.Impl
             IList<WTS_SESSION_INFO> sessionInfos = NativeMethodsHelper.GetSessionInfos(Handle);
             foreach (WTS_SESSION_INFO sessionInfo in sessionInfos)
             {
-                results.Add(new TerminalServicesSession(this, sessionInfo.SessionID));
+                results.Add(new TerminalServicesSession(this, sessionInfo));
             }
             return results;
         }
