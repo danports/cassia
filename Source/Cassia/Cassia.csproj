@@ -41,9 +41,18 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="Impl\ClientDisplay.cs" />
-    <Compile Include="Impl\ExternalStructs.cs" />
     <Compile Include="IClientDisplay.cs" />
     <Compile Include="Impl\NamespaceDoc.cs" />
+    <Compile Include="ConnectionState.cs" />
+    <Compile Include="Impl\WINSTATIONINFOCLASS.cs" />
+    <Compile Include="Impl\WINSTATIONINFORMATIONW.cs" />
+    <Compile Include="Impl\WTSINFO.cs" />
+    <Compile Include="Impl\WTS_CLIENT_ADDRESS.cs" />
+    <Compile Include="Impl\WTS_CLIENT_DISPLAY.cs" />
+    <Compile Include="Impl\WTS_INFO_CLASS.cs" />
+    <Compile Include="Impl\WTS_PROCESS_INFO.cs" />
+    <Compile Include="Impl\WTS_SERVER_INFO.cs" />
+    <Compile Include="Impl\WTS_SESSION_INFO.cs" />
     <Compile Include="ITerminalServer.cs" />
     <Compile Include="ITerminalServerHandle.cs" />
     <Compile Include="ITerminalServicesManager.cs" />

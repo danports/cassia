@@ -15,10 +15,10 @@ namespace Cassia.Impl
 
         #endregion
 
-        public static WTS_CONNECTSTATE_CLASS GetConnectionState(ITerminalServerHandle server, int sessionId)
+        public static ConnectionState GetConnectionState(ITerminalServerHandle server, int sessionId)
         {
-            ProcessSessionCallback<WTS_CONNECTSTATE_CLASS> callback =
-                delegate(IntPtr mem, int returned) { return (WTS_CONNECTSTATE_CLASS) Marshal.ReadInt32(mem); };
+            ProcessSessionCallback<ConnectionState> callback =
+                delegate(IntPtr mem, int returned) { return (ConnectionState) Marshal.ReadInt32(mem); };
             return QuerySessionInformation(server, sessionId, WTS_INFO_CLASS.WTSConnectState, callback);
         }
 

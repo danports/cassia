@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Security.Principal;
-using Cassia.Impl;
 
 namespace Cassia
 {
@@ -19,7 +18,7 @@ namespace Cassia
         /// <summary>
         /// The connection state of the session.
         /// </summary>
-        WTS_CONNECTSTATE_CLASS ConnectionState { get; }
+        ConnectionState ConnectionState { get; }
 
         /// <summary>
         /// The time at which the user connected to this session.

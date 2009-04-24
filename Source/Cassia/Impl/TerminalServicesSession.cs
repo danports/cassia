@@ -16,7 +16,7 @@ namespace Cassia.Impl
         private readonly LazyLoadedProperty<IClientDisplay> _clientDisplay;
         private readonly LazyLoadedProperty<IPAddress> _clientIPAddress;
         private readonly string _clientName;
-        private readonly WTS_CONNECTSTATE_CLASS _connectionState;
+        private readonly ConnectionState _connectionState;
         private readonly DateTime? _connectTime;
         private readonly DateTime? _currentTime;
         private readonly DateTime? _disconnectTime;
@@ -121,7 +121,7 @@ namespace Cassia.Impl
             get { return _clientName; }
         }
 
-        public WTS_CONNECTSTATE_CLASS ConnectionState
+        public ConnectionState ConnectionState
         {
             get { return _connectionState; }
         }
