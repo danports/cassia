@@ -5,14 +5,14 @@
     </ItemGroup>
     <PropertyGroup>
       <BuildPath>Bin\</BuildPath>
+      <DocPath>Doc\</DocPath>
       <PackageLabel>Cassia-$(CCNetLabel).zip</PackageLabel>
       <DropPath>..\Drops\Cassia\</DropPath>
     </PropertyGroup>
     
     <Target Name="Clean">
-        <RemoveDir Directories="$(BuildPath)" />
-        <MakeDir Directories="$(DropPath)" />
-        <MakeDir Directories="$(BuildPath)" />
+        <RemoveDir Directories="$(BuildPath);$(DocPath)" />
+        <MakeDir Directories="$(DropPath);$(BuildPath);$(DocPath)" />
     </Target>
     
   <Target Name="Build" DependsOnTargets="Clean">
