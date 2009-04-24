@@ -15,10 +15,11 @@
     <Name>Documentation</Name>
     <!-- SHFB properties -->
     <OutputPath>.\Doc\</OutputPath>
-    <HtmlHelpName>Documentation</HtmlHelpName>
+    <HtmlHelpName>Cassia</HtmlHelpName>
     <DocumentationSources>
       <DocumentationSource sourceFile="Source\Cassia\Cassia.csproj" xmlns="" />
     </DocumentationSources>
+    <HelpTitle>Cassia: .NET Terminal Services Library</HelpTitle>
   </PropertyGroup>
   <!-- There are no properties for these two groups but they need to appear in
        order for Visual Studio to perform the build. -->
