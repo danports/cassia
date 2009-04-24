@@ -29,7 +29,7 @@
   </Target>
     
   <Target Name="Package">
-    <CreateItem Include="**\*.*" Exclude="**\obj\**\*.*;**\*.suo;**\*.user;**\.svn\**\*.*;**\*Resharper*\**\*.*">
+    <CreateItem Include="**\*.*" Exclude="**\obj\**\*.*;**\*.suo;**\*.user;**\*.log;**\*.cache;**\.svn\**\*.*;**\*Resharper*\**\*.*">
       <Output TaskParameter="Include" ItemName="PackageFiles" />
     </CreateItem>
     <Zip Files="@(PackageFiles)" ZipFileName="$(DropPath)$(PackageLabel)" />
@@ -39,5 +39,5 @@
 	<MSBuild Projects="Cassia.shfbproj" Properties="Configuration=Release;Platform=AnyCPU" />
   </Target>
   
-  <Target Name="All" DependsOnTargets="Build;Package;Documentation" />
+  <Target Name="All" DependsOnTargets="Build;Documentation;Package" />
 </Project>
