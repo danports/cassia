@@ -37,7 +37,7 @@ namespace Cassia
         /// Gets a <see cref="System.Diagnostics.Process" /> object that represents the process.
         /// </summary>
         /// <returns>A <see cref="System.Diagnostics.Process" /> object.</returns>
-        Process ProcessObject { get; }
+        Process UnderlyingProcess { get; }
 
         /// <overloads>
         /// <summary>

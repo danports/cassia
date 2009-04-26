@@ -61,7 +61,7 @@ namespace Cassia.Impl
             NativeMethodsHelper.TerminateProcess(_server.Handle, _processId, exitCode);
         }
 
-        public Process ProcessObject
+        public Process UnderlyingProcess
         {
             get
             {

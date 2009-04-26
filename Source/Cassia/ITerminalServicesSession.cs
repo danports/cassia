@@ -99,6 +99,11 @@ namespace Cassia
         /// </summary>
         IClientDisplay ClientDisplay { get; }
 
+        /// <overloads>
+        /// <summary>
+        /// Logs the session off, disconnecting any user that might be attached.
+        /// </summary>
+        /// </overloads>
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.
         /// </summary>
@@ -114,6 +119,11 @@ namespace Cassia
         /// the session may not be completely logged off yet.</param>
         void Logoff(bool synchronous);
 
+        /// <overloads>
+        /// <summary>
+        /// Disconnects any attached user from the session.
+        /// </summary>
+        /// </overloads>
         /// <summary>
         /// Disconnects any attached user from the session.
         /// </summary>
@@ -129,6 +139,11 @@ namespace Cassia
         /// the session may not be completely disconnected yet.</param>
         void Disconnect(bool synchronous);
 
+        /// <overloads>
+        /// <summary>
+        /// Displays a message box in the session.
+        /// </summary>
+        /// </overloads>
         /// <summary>
         /// Displays a message box in the session.
         /// </summary>

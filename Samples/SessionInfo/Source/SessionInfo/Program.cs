@@ -129,7 +129,7 @@ namespace SessionInfo
             Console.WriteLine("Process ID: " + process.ProcessId);
             Console.WriteLine("Process Name: " + process.ProcessName);
             Console.WriteLine("SID: " + process.SecurityIdentifier);
-            Console.WriteLine("Working Set: " + process.ProcessObject.WorkingSet64);
+            Console.WriteLine("Working Set: " + process.UnderlyingProcess.WorkingSet64);
         }
 
         private static void ListServers(string[] args)
