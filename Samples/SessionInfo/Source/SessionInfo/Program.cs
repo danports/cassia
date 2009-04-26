@@ -11,54 +11,61 @@ namespace SessionInfo
 
         private static void Main(string[] args)
         {
-            if (args.Length == 0)
+            try
             {
-                ShowCurrentSession();
-                return;
-            }
-            switch (args[0].ToLower())
-            {
-                case "waitforevents":
-                    WaitForEvents();
-                    return;
-                case "current":
+                if (args.Length == 0)
+                {
                     ShowCurrentSession();
                     return;
-                case "get":
-                    GetSessionInfo(args);
-                    return;
-                case "listservers":
-                    ListServers(args);
-                    return;
-                case "listsessions":
-                    ListSessions(args);
-                    return;
-                case "listsessionprocesses":
-                    ListSessionProcesses(args);
-                    return;
-                case "listprocesses":
-                    ListProcesses(args);
-                    return;
-                case "killprocess":
-                    KillProcess(args);
-                    return;
-                case "logoff":
-                    LogoffSession(args);
-                    return;
-                case "disconnect":
-                    DisconnectSession(args);
-                    return;
-                case "message":
-                    SendMessage(args);
-                    return;
-                case "ask":
-                    AskQuestion(args);
-                    return;
-                case "shutdown":
-                    Shutdown(args);
-                    return;
+                }
+                switch (args[0].ToLower())
+                {
+                    case "waitforevents":
+                        WaitForEvents();
+                        return;
+                    case "current":
+                        ShowCurrentSession();
+                        return;
+                    case "get":
+                        GetSessionInfo(args);
+                        return;
+                    case "listservers":
+                        ListServers(args);
+                        return;
+                    case "listsessions":
+                        ListSessions(args);
+                        return;
+                    case "listsessionprocesses":
+                        ListSessionProcesses(args);
+                        return;
+                    case "listprocesses":
+                        ListProcesses(args);
+                        return;
+                    case "killprocess":
+                        KillProcess(args);
+                        return;
+                    case "logoff":
+                        LogoffSession(args);
+                        return;
+                    case "disconnect":
+                        DisconnectSession(args);
+                        return;
+                    case "message":
+                        SendMessage(args);
+                        return;
+                    case "ask":
+                        AskQuestion(args);
+                        return;
+                    case "shutdown":
+                        Shutdown(args);
+                        return;
+                }
+                Console.WriteLine("Unknown command: " + args[0]);
             }
-            Console.WriteLine("Unknown command: " + args[0]);
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
         }
 
         private static void WaitForEvents()
