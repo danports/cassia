@@ -34,6 +34,17 @@ namespace Cassia
         ITerminalServer Server { get; }
 
         /// <summary>
+        /// Gets a <see cref="System.Diagnostics.Process" /> object that represents the process.
+        /// </summary>
+        /// <returns>A <see cref="System.Diagnostics.Process" /> object.</returns>
+        Process ProcessObject { get; }
+
+        /// <overloads>
+        /// <summary>
+        /// Terminates the process.
+        /// </summary>
+        /// </overloads>
+        /// <summary>
         /// Terminates the process immediately.
         /// </summary>
         void Kill();
@@ -43,11 +54,5 @@ namespace Cassia
         /// </summary>
         /// <param name="exitCode">The exit code for the process.</param>
         void Kill(int exitCode);
-
-        /// <summary>
-        /// Gets a <see cref="System.Diagnostics.Process" /> that represents the process.
-        /// </summary>
-        /// <returns>A <see cref="System.Diagnostics.Process" /> object.</returns>
-        Process GetProcessObject();
     }
 }

@@ -7,13 +7,18 @@ namespace Cassia
     /// Connection to a terminal server.
     /// </summary>
     /// <remarks>
-    /// <see cref="Open" /> must be called before any operations can be performed on the terminal server.
+    /// <see cref="Open" /> must be called before any operations can be performed on 
+    /// a remote terminal server.
     /// </remarks>
     public interface ITerminalServer : IDisposable
     {
         /// <summary>
         /// Underlying connection to the terminal server.
         /// </summary>
+        /// <remarks>
+        /// You can use this to access the underlying Windows terminal server handle if you 
+        /// want to perform an operation that Cassia does not yet support.
+        /// </remarks>
         ITerminalServerHandle Handle { get; }
 
         /// <summary>
@@ -44,9 +49,13 @@ namespace Cassia
         ITerminalServicesSession GetSession(int sessionId);
 
         /// <summary>
-        /// Opens a connection to the server. Call this before attempting operations that access 
-        /// information or perform operations on the server.
+        /// Opens a connection to the server.
         /// </summary>
+        /// <remarks>
+        /// Call this before attempting operations that access information or perform operations
+        /// on a remote server. You can call this method for the local terminal server, but it is 
+        /// not necessary.
+        /// </remarks>
         void Open();
 
         /// <summary>

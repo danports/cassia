@@ -4,7 +4,7 @@ using System.Collections.Generic;
 namespace Cassia
 {
     /// <summary>
-    /// Top-level class that enumerates and creates connections to terminal servers.
+    /// Top-level interface for enumerating and creating connections to terminal servers.
     /// </summary>
     public interface ITerminalServicesManager
     {

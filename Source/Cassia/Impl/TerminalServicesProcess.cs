@@ -1,6 +1,5 @@
 using System.Diagnostics;
 using System.Security.Principal;
-using Cassia.Impl;
 
 namespace Cassia.Impl
 {
@@ -62,12 +61,15 @@ namespace Cassia.Impl
             NativeMethodsHelper.TerminateProcess(_server.Handle, _processId, exitCode);
         }
 
-        public Process GetProcessObject()
+        public Process ProcessObject
         {
-            return
-                _server.ServerName == null
-                    ? Process.GetProcessById(_processId)
-                    : Process.GetProcessById(_processId, _server.ServerName);
+            get
+            {
+                return
+                    _server.ServerName == null
+                        ? Process.GetProcessById(_processId)
+                        : Process.GetProcessById(_processId, _server.ServerName);
+            }
         }
 
         #endregion
