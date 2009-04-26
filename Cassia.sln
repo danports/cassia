@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 9.00
 # Visual Studio 2005
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cassia", "Source\Cassia\Cassia.csproj", "{FA7C09C9-33DE-459E-8299-DE57834CEC15}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionInfo", "Tools\SessionInfo\Source\SessionInfo\SessionInfo.csproj", "{B649FF4B-ECBC-4955-BC17-B02903924165}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionInfo", "Samples\SessionInfo\Source\SessionInfo\SessionInfo.csproj", "{B649FF4B-ECBC-4955-BC17-B02903924165}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
