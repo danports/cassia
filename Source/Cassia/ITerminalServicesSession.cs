@@ -46,6 +46,13 @@ namespace Cassia
         DateTime? LoginTime { get; }
 
         /// <summary>
+        /// Time since the session last received user input.
+        /// </summary>
+        /// <remarks>This will return <c>TimeSpan.Zero</c> if there is no user connected to the 
+        /// session, or the user is currently active.</remarks>
+        TimeSpan IdleTime { get; }
+
+        /// <summary>
         /// The ID of the session.
         /// </summary>
         int SessionId { get; }
@@ -63,7 +70,7 @@ namespace Cassia
         /// <summary>
         /// The user account that last connected to the session.
         /// </summary>
-        NTAccount Account { get; }
+        NTAccount UserAccount { get; }
 
         /// <summary>
         /// The name of the session's window station.

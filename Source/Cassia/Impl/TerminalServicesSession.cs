@@ -117,7 +117,7 @@ namespace Cassia.Impl
             get { return _domainName; }
         }
 
-        public NTAccount Account
+        public NTAccount UserAccount
         {
             get { return (string.IsNullOrEmpty(_userName) ? null : new NTAccount(_domainName, _userName)); }
         }
@@ -155,6 +155,17 @@ namespace Cassia.Impl
         public DateTime? LoginTime
         {
             get { return _loginTime; }
+        }
+
+        public TimeSpan IdleTime
+        {
+            get
+            {
+                return
+                    (_currentTime != null && _lastInputTime != null)
+                        ? _currentTime.Value - _lastInputTime.Value
+                        : TimeSpan.Zero;
+            }
         }
 
         public int SessionId

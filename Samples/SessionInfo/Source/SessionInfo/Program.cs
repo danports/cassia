@@ -282,9 +282,9 @@ namespace SessionInfo
         private static void WriteSessionInfo(ITerminalServicesSession session)
         {
             Console.WriteLine("Session ID: " + session.SessionId);
-            if (session.Account != null)
+            if (session.UserAccount != null)
             {
-                Console.WriteLine("User: " + session.Account);
+                Console.WriteLine("User: " + session.UserAccount);
             }
             if (session.ClientIPAddress != null)
             {
@@ -295,6 +295,7 @@ namespace SessionInfo
             Console.WriteLine("State: " + session.ConnectionState);
             Console.WriteLine("Connect Time: " + session.ConnectTime);
             Console.WriteLine("Logon Time: " + session.LoginTime);
+            Console.WriteLine("Idle Time: " + session.IdleTime);
             Console.WriteLine(
                 string.Format("Client Display: {0}x{1} with {2} bits per pixel",
                               session.ClientDisplay.HorizontalResolution, session.ClientDisplay.VerticalResolution,
