@@ -2,13 +2,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using Cassia.Impl;
 
-/// <summary>
-/// Primary namespace.
-/// </summary>
 namespace Cassia
 {
     /// <summary>
-    /// Default implementation of <see cref="ITerminalServicesManager" />.
+    /// The main Cassia class, and the only class you should directly construct from your application code.
+    /// Provides a default implementation of <see cref="ITerminalServicesManager" />.
     /// </summary>
     public class TerminalServicesManager : ITerminalServicesManager
     {
