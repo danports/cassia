@@ -2,6 +2,9 @@ using System;
 
 namespace Cassia.Impl
 {
+    /// <summary>
+    /// Connection to the local terminal server.
+    /// </summary>
     public class LocalServerHandle : ITerminalServerHandle
     {
         public IntPtr Handle

@@ -18,6 +18,7 @@ namespace Cassia
             get { return new TerminalServicesSession(GetLocalServer(), Process.GetCurrentProcess().SessionId); }
         }
 
+        /// <overloads><inheritdoc /></overloads>
         /// <inheritdoc />
         public IList<ITerminalServicesSession> GetSessions(string serverName)
         {

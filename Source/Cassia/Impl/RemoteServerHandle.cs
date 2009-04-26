@@ -4,6 +4,9 @@ using Cassia.Impl;
 
 namespace Cassia.Impl
 {
+    /// <summary>
+    /// Connection to a remote terminal server.
+    /// </summary>
     public class RemoteServerHandle : ITerminalServerHandle
     {
         private const string _connectionClosedMessage =

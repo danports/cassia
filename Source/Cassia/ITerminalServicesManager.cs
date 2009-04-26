@@ -16,14 +16,22 @@ namespace Cassia
         /// <overloads>
         /// <summary>
         /// Lists the sessions on a given terminal server. Obsolete; use 
-        /// <see cref="ITerminalServer.GetSessions()" />.
+        /// <see cref="ITerminalServer.GetSessions()">ITerminalServer.GetSessions()</see>.
         /// </summary>
         /// </overloads>
+        /// <summary>
+        /// Lists the sessions on a given terminal server. Obsolete; use 
+        /// <see cref="ITerminalServer.GetSessions()">ITerminalServer.GetSessions()</see>.
+        /// </summary>
         /// <param name="serverName">The name of the terminal server.</param>
         /// <returns>A list of sessions on the terminal server.</returns>
         [Obsolete("Use ITerminalServer.GetSessions() instead.")]
         IList<ITerminalServicesSession> GetSessions(string serverName);
 
+        /// <summary>
+        /// Lists the sessions on a given terminal server. Obsolete; use 
+        /// <see cref="ITerminalServer.GetSessions()">ITerminalServer.GetSessions()</see>.
+        /// </summary>
         /// <returns>A list of sessions on the local server.</returns>
         [Obsolete("Use ITerminalServer.GetSessions() instead.")]
         IList<ITerminalServicesSession> GetSessions();
