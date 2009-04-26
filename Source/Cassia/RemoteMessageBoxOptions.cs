@@ -3,8 +3,9 @@ using System;
 namespace Cassia
 {
     /// <summary>
-    /// Specifies additional options for a message box shown with
-    /// <see cref="ITerminalServicesSession.MessageBox(string, string, RemoteMessageBoxButtons, RemoteMessageBoxIcon, RemoteMessageBoxDefaultButton, RemoteMessageBoxOptions, TimeSpan, bool)" />.
+    /// Specifies additional options for a message box shown with the
+    /// <see cref="ITerminalServicesSession.MessageBox(string, string, RemoteMessageBoxButtons, RemoteMessageBoxIcon, RemoteMessageBoxDefaultButton, RemoteMessageBoxOptions, TimeSpan, bool)">
+    /// ITerminalServicesSession.MessageBox</see> method.
     /// </summary>
     [Flags]
     public enum RemoteMessageBoxOptions
