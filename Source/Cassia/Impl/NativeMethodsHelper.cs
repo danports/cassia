@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
-using Cassia.Impl;
 using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace Cassia.Impl
@@ -222,6 +221,15 @@ namespace Cassia.Impl
             {
                 throw new Win32Exception();
             }
+        }
+
+        public static DateTime? FileTimeToDateTime(long fileTime)
+        {
+            if (fileTime == 0)
+            {
+                return null;
+            }
+            return DateTime.FromFileTime(fileTime);
         }
 
         #region Nested type: ProcessSessionCallback

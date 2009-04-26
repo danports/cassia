@@ -57,11 +57,11 @@ namespace Cassia.Impl
                 WTSINFO info =
                     NativeMethodsHelper.QuerySessionInformationForStruct<WTSINFO>(server.Handle, _sessionId,
                                                                                   WTS_INFO_CLASS.WTSSessionInfo);
-                _connectTime = DateTime.FromFileTime(info.ConnectTime);
-                _currentTime = DateTime.FromFileTime(info.CurrentTime);
-                _disconnectTime = DateTime.FromFileTime(info.DisconnectTime);
-                _lastInputTime = DateTime.FromFileTime(info.LastInputTime);
-                _loginTime = DateTime.FromFileTime(info.LogonTime);
+                _connectTime = NativeMethodsHelper.FileTimeToDateTime(info.ConnectTime);
+                _currentTime = NativeMethodsHelper.FileTimeToDateTime(info.CurrentTime);
+                _disconnectTime = NativeMethodsHelper.FileTimeToDateTime(info.DisconnectTime);
+                _lastInputTime = NativeMethodsHelper.FileTimeToDateTime(info.LastInputTime);
+                _loginTime = NativeMethodsHelper.FileTimeToDateTime(info.LogonTime);
                 _userName = info.UserName;
                 _domainName = info.Domain;
             }
