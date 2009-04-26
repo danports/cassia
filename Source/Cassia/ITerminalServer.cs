@@ -24,6 +24,10 @@ namespace Cassia
         /// <summary>
         /// The name of the terminal server.
         /// </summary>
+        /// <remarks>
+        /// It is not necessary to have a connection to the server open before 
+        /// retrieving this value.
+        /// </remarks>
         string ServerName { get; }
 
         /// <summary>
@@ -40,7 +44,8 @@ namespace Cassia
         ITerminalServicesSession GetSession(int sessionId);
 
         /// <summary>
-        /// Opens a connection to the server.
+        /// Opens a connection to the server. Call this before attempting operations that access 
+        /// information or perform operations on the server.
         /// </summary>
         void Open();
 

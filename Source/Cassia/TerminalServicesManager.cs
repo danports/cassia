@@ -12,11 +12,13 @@ namespace Cassia
     {
         #region ITerminalServicesManager Members
 
+        /// <inheritdoc />
         public ITerminalServicesSession CurrentSession
         {
             get { return new TerminalServicesSession(GetLocalServer(), Process.GetCurrentProcess().SessionId); }
         }
 
+        /// <inheritdoc />
         public IList<ITerminalServicesSession> GetSessions(string serverName)
         {
             using (ITerminalServer server = GetRemoteServer(serverName))
@@ -26,6 +28,7 @@ namespace Cassia
             }
         }
 
+        /// <inheritdoc />
         public IList<ITerminalServicesSession> GetSessions()
         {
             using (ITerminalServer server = GetLocalServer())
@@ -35,16 +38,19 @@ namespace Cassia
             }
         }
 
+        /// <inheritdoc />
         public ITerminalServer GetRemoteServer(string serverName)
         {
             return new TerminalServer(new RemoteServerHandle(serverName));
         }
 
+        /// <inheritdoc />
         public ITerminalServer GetLocalServer()
         {
             return new TerminalServer(new LocalServerHandle());
         }
 
+        /// <inheritdoc />
         public IList<ITerminalServer> GetServers(string domainName)
         {
             List<ITerminalServer> servers = new List<ITerminalServer>();
