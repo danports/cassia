@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.Security.Principal;
 
@@ -11,7 +12,6 @@ namespace Cassia.Impl
         private readonly int _processId;
         private readonly string _processName;
         private readonly SecurityIdentifier _securityIdentifier;
-
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
 
@@ -21,7 +21,11 @@ namespace Cassia.Impl
             _sessionId = processInfo.SessionId;
             _processId = processInfo.ProcessId;
             _processName = processInfo.ProcessName;
-            _securityIdentifier = new SecurityIdentifier(processInfo.UserSid);
+            // The SID could be null on some platforms; e.g. for the System process on Windows Server 2008.
+            if (processInfo.UserSid != IntPtr.Zero)
+            {
+                _securityIdentifier = new SecurityIdentifier(processInfo.UserSid);
+            }
         }
 
         #region ITerminalServicesProcess Members
