@@ -182,7 +182,8 @@ namespace Cassia
         /// <param name="defaultButton">The button that should be selected by default in the message box.</param>
         /// <param name="options">Options for the message box.</param>
         /// <param name="timeout">The amount of time to wait for a response from the user 
-        /// before closing the message box. This will be treated as a integer number of seconds --
+        /// before closing the message box. The system will wait forever if this is set to <c>TimeSpan.Zero</c>.
+        /// This will be treated as a integer number of seconds --
         /// specifying <c>TimeSpan.FromSeconds(2.5)</c> will produce the same result as 
         /// <c>TimeSpan.FromSeconds(2)</c>.</param>
         /// <param name="synchronous">If <c>true</c>, wait for and return the user's response to the

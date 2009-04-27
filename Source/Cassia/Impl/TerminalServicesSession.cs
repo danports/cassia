@@ -220,6 +220,8 @@ namespace Cassia.Impl
         {
             int timeoutSeconds = (int) timeout.TotalSeconds;
             int style = (int) buttons | (int) icon | (int) defaultButton | (int) options;
+            // TODO: Win 2003 Server doesn't start timeout counter until user moves mouse in session.
+            // TODO: Windows Server 2008 R2 beta returns 0 if the timeout expires.
             return
                 NativeMethodsHelper.SendMessage(_server.Handle, _sessionId, caption, text, style, timeoutSeconds,
                                                 synchronous);

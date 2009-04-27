@@ -13,7 +13,7 @@ namespace Cassia
         /// </summary>
         LogoffAllSessions = 0x00000001,
         /// <summary>
-        /// Shuts down the server.
+        /// Shuts down the server without powering it off.
         /// </summary>
         Shutdown = 0x00000002,
         /// <summary>
