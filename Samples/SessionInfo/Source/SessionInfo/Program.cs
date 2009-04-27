@@ -248,7 +248,7 @@ namespace SessionInfo
         {
             if (args.Length < 3)
             {
-                Console.WriteLine("Usage: SessionInfo disconnect [server] [session id]");
+                Console.WriteLine("Usage: SessionInfo logoff [server] [session id]");
                 return;
             }
             string serverName = args[1];

@@ -21,7 +21,9 @@ namespace Cassia.Impl
             _sessionId = processInfo.SessionId;
             _processId = processInfo.ProcessId;
             _processName = processInfo.ProcessName;
-            // The SID could be null on some platforms; e.g. for the System process on Windows Server 2008.
+            // The SID could be null sometimes.
+            // TODO: Windows 2008 R2 beta (locally) runs null for all processes except 
+            // those owned by the current user; is this expected? (works fine from XP client)
             if (processInfo.UserSid != IntPtr.Zero)
             {
                 _securityIdentifier = new SecurityIdentifier(processInfo.UserSid);
