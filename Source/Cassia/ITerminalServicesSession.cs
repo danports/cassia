@@ -8,6 +8,12 @@ namespace Cassia
     /// <summary>
     /// A session on a terminal server.
     /// </summary>
+    /// <remarks>
+    /// Note that many of the properties exposed by this interface may only be loaded on demand,
+    /// so ensure that a connection to the terminal server is open 
+    /// (by calling <see cref="ITerminalServer.Open()" />) before accessing properties or performing
+    /// operations on a session.
+    /// </remarks>
     public interface ITerminalServicesSession
     {
         /// <summary>
@@ -23,26 +29,41 @@ namespace Cassia
         /// <summary>
         /// The time at which the user connected to this session.
         /// </summary>
+        /// <remarks>
+        /// May be <c>null</c>, e.g. for a listening session.
+        /// </remarks>
         DateTime? ConnectTime { get; }
 
         /// <summary>
         /// The current time in the session.
         /// </summary>
+        /// <remarks>
+        /// May be <c>null</c>, e.g. for a listening session.
+        /// </remarks>
         DateTime? CurrentTime { get; }
 
         /// <summary>
         /// The time at which the user disconnected from this session.
         /// </summary>
+        /// <remarks>
+        /// May be <c>null</c>, e.g. if the user has never disconnected from the session.
+        /// </remarks>
         DateTime? DisconnectTime { get; }
 
         /// <summary>
         /// The time at which this session last received input -- mouse movements, key presses, etc.
         /// </summary>
+        /// <remarks>
+        /// May be <c>null</c>, e.g. for a listening session that receives no user input.
+        /// </remarks>
         DateTime? LastInputTime { get; }
 
         /// <summary>
         /// The time at which the user logged into this session for the first time.
         /// </summary>
+        /// <remarks>
+        /// May be <c>null</c>, e.g. for a listening session.
+        /// </remarks>
         DateTime? LoginTime { get; }
 
         /// <summary>
