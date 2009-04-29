@@ -115,10 +115,11 @@ namespace Cassia
         /// The build number of the client.
         /// </summary>
         /// <remarks>
-        /// Note that this does not include the major version, minor 
+        /// <para>Note that this does not include the major version, minor 
         /// version, or revision number -- it is only the build number. For example, the full file version 
         /// of the RDP 6 client on Windows XP is 6.0.6001.18000, so this property will return 6001
-        /// for this client.
+        /// for this client.</para>
+        /// <para>May be zero, e.g. for a listening session.</para>
         /// </remarks>
         int ClientBuildNumber { get; }
 
