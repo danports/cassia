@@ -35,7 +35,7 @@ namespace Cassia
             using (ITerminalServer server = GetLocalServer())
             {
                 server.Open();
-                return GetSessions(null);
+                return server.GetSessions();
             }
         }
 
