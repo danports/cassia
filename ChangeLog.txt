@@ -1,7 +1,27 @@
-Cassia Change Log
+===============
+Cassia
+Version History
+===============
 
-Next Version
+Next Version:
 
-Version 2.0.0
+Version 2.0.0:
+- Feature: Fetching client display details, client-reported IP address, client build number, and other information for a session
+- Feature: Logging off a session
+- Feature: Disconnecting a session
+- Feature: Displaying a message box in a session
+- Feature: Enumerating all terminal servers on a domain
+- Feature: Shutting down or rebooting a terminal server
+- Feature: Enumerating all processes running on a terminal server
+- Feature: Killing a process on a terminal server
+- Improvement: API documentation
 
-Version 1.0.1
+Breaking changes:
+- WTS_CONNECTSTATE_CLASS has been renamed to ConnectionState, and the names of its members have been shortened.
+- The ConnectTime, CurrentTime, DisconnectTime, LastInputTime, and LoginTime properties of ITerminalServicesSession are now nullable.
+- ITerminalServicesSession.SessionId is an int rather than a long.
+- ITerminalServicesSession no longer has setters for any of its properties.
+- ITerminalServicesManager.GetSessions() is deprecated. Use ITerminalServer.GetSessions() instead.
+
+Version 1.0.1:
+- Feature: Enumerating sessions locally and remotely
