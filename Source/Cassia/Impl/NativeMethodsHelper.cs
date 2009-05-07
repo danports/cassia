@@ -233,6 +233,14 @@ namespace Cassia.Impl
             return DateTime.FromFileTime(fileTime);
         }
 
+        public static short QuerySessionInformationForShort(ITerminalServerHandle server, int sessionId,
+                                                            WTS_INFO_CLASS infoClass)
+        {
+            return
+                QuerySessionInformation<short>(server, sessionId, infoClass,
+                                               delegate(IntPtr mem, int returned) { return Marshal.ReadInt16(mem); });
+        }
+
         #region Nested type: ProcessSessionCallback
 
         private delegate T ProcessSessionCallback<T>(IntPtr mem, int returnedBytes);

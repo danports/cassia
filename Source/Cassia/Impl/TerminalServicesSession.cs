@@ -17,6 +17,7 @@ namespace Cassia.Impl
         private readonly LazyLoadedProperty<int> _clientHardwareId;
         private readonly LazyLoadedProperty<IPAddress> _clientIPAddress;
         private readonly string _clientName;
+        private readonly LazyLoadedProperty<short> _clientProductId;
         private readonly ConnectionState _connectionState;
         private readonly DateTime? _connectTime;
         private readonly DateTime? _currentTime;
@@ -48,6 +49,7 @@ namespace Cassia.Impl
             _clientDisplay = new LazyLoadedProperty<IClientDisplay>(GetClientDisplay);
             _clientDirectory = new LazyLoadedProperty<string>(GetClientDirectory);
             _clientHardwareId = new LazyLoadedProperty<int>(GetClientHardwareId);
+            _clientProductId = new LazyLoadedProperty<short>(GetClientProductId);
             _clientName =
                 NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
                                                                      WTS_INFO_CLASS.WTSClientName);
@@ -90,6 +92,11 @@ namespace Cassia.Impl
             : this(server, sessionInfo.SessionID, sessionInfo.WinStationName, sessionInfo.State) {}
 
         #region ITerminalServicesSession Members
+
+        public short ClientProductId
+        {
+            get { return _clientProductId.Value; }
+        }
 
         public int ClientHardwareId
         {
@@ -258,6 +265,13 @@ namespace Cassia.Impl
         }
 
         #endregion
+
+        private short GetClientProductId()
+        {
+            return
+                NativeMethodsHelper.QuerySessionInformationForShort(_server.Handle, _sessionId,
+                                                                    WTS_INFO_CLASS.WTSClientProductId);
+        }
 
         private int GetClientHardwareId()
         {

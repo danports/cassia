@@ -145,6 +145,14 @@ namespace Cassia
         /// </remarks>
         int ClientHardwareId { get; }
 
+        /// <summary>
+        /// Client-specific product identifier.
+        /// </summary>
+        /// <remarks>
+        /// This value is typically <c>1</c> for the standard RDP client.
+        /// </remarks>
+        short ClientProductId { get; }
+
         /// <overloads>
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.
