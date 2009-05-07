@@ -298,6 +298,7 @@ namespace SessionInfo
                 Console.WriteLine("IP Address: " + session.ClientIPAddress);
             }
             Console.WriteLine("Window Station: " + session.WindowStationName);
+            Console.WriteLine("Client Directory: " + session.ClientDirectory);
             Console.WriteLine("Client Build Number: " + session.ClientBuildNumber);
             Console.WriteLine("State: " + session.ConnectionState);
             Console.WriteLine("Connect Time: " + session.ConnectTime);

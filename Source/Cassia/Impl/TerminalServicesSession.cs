@@ -12,6 +12,7 @@ namespace Cassia.Impl
     public class TerminalServicesSession : ITerminalServicesSession
     {
         private readonly LazyLoadedProperty<int> _clientBuildNumber;
+        private readonly LazyLoadedProperty<string> _clientDirectory;
         private readonly LazyLoadedProperty<IClientDisplay> _clientDisplay;
         private readonly LazyLoadedProperty<IPAddress> _clientIPAddress;
         private readonly string _clientName;
@@ -44,6 +45,7 @@ namespace Cassia.Impl
             _clientBuildNumber = new LazyLoadedProperty<int>(GetClientBuildNumber);
             _clientIPAddress = new LazyLoadedProperty<IPAddress>(GetClientIPAddress);
             _clientDisplay = new LazyLoadedProperty<IClientDisplay>(GetClientDisplay);
+            _clientDirectory = new LazyLoadedProperty<string>(GetClientDirectory);
             _clientName =
                 NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
                                                                      WTS_INFO_CLASS.WTSClientName);
@@ -86,6 +88,11 @@ namespace Cassia.Impl
             : this(server, sessionInfo.SessionID, sessionInfo.WinStationName, sessionInfo.State) {}
 
         #region ITerminalServicesSession Members
+
+        public string ClientDirectory
+        {
+            get { return _clientDirectory.Value; }
+        }
 
         public IClientDisplay ClientDisplay
         {
@@ -244,6 +251,13 @@ namespace Cassia.Impl
         }
 
         #endregion
+
+        private string GetClientDirectory()
+        {
+            return
+                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
+                                                                     WTS_INFO_CLASS.WTSClientDirectory);
+        }
 
         private IClientDisplay GetClientDisplay()
         {

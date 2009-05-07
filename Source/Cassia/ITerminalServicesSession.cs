@@ -128,6 +128,15 @@ namespace Cassia
         /// </summary>
         IClientDisplay ClientDisplay { get; }
 
+        /// <summary>
+        /// Directory on the client computer in which the client software is installed.
+        /// </summary>
+        /// <remarks>
+        /// This is typically the full path to the RDP ActiveX control DLL on the client machine; e.g.
+        /// <c>C:\WINDOWS\SYSTEM32\mstscax.dll</c>.
+        /// </remarks>
+        string ClientDirectory { get; }
+
         /// <overloads>
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.
