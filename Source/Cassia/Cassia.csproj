@@ -40,6 +40,7 @@
     <Compile Include="..\..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="ClientProtocolType.cs" />
     <Compile Include="Impl\ClientDisplay.cs" />
     <Compile Include="IClientDisplay.cs" />
     <Compile Include="Impl\NamespaceDoc.cs" />

@@ -153,6 +153,11 @@ namespace Cassia
         /// </remarks>
         short ClientProductId { get; }
 
+        /// <summary>
+        /// The protocol that the client is using to connect to the session.
+        /// </summary>
+        ClientProtocolType ClientProtocolType { get; }
+
         /// <overloads>
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.

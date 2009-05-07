@@ -302,6 +302,7 @@ namespace SessionInfo
             Console.WriteLine("Client Build Number: " + session.ClientBuildNumber);
             Console.WriteLine("Client Hardware ID: " + session.ClientHardwareId);
             Console.WriteLine("Client Product ID: " + session.ClientProductId);
+            Console.WriteLine("Client Protocol Type: " + session.ClientProtocolType);
             Console.WriteLine("State: " + session.ConnectionState);
             Console.WriteLine("Connect Time: " + session.ConnectTime);
             Console.WriteLine("Logon Time: " + session.LoginTime);

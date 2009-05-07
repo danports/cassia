@@ -18,6 +18,7 @@ namespace Cassia.Impl
         private readonly LazyLoadedProperty<IPAddress> _clientIPAddress;
         private readonly string _clientName;
         private readonly LazyLoadedProperty<short> _clientProductId;
+        private readonly LazyLoadedProperty<ClientProtocolType> _clientProtocolType;
         private readonly ConnectionState _connectionState;
         private readonly DateTime? _connectTime;
         private readonly DateTime? _currentTime;
@@ -50,6 +51,7 @@ namespace Cassia.Impl
             _clientDirectory = new LazyLoadedProperty<string>(GetClientDirectory);
             _clientHardwareId = new LazyLoadedProperty<int>(GetClientHardwareId);
             _clientProductId = new LazyLoadedProperty<short>(GetClientProductId);
+            _clientProtocolType = new LazyLoadedProperty<ClientProtocolType>(GetClientProtocolType);
             _clientName =
                 NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
                                                                      WTS_INFO_CLASS.WTSClientName);
@@ -92,6 +94,11 @@ namespace Cassia.Impl
             : this(server, sessionInfo.SessionID, sessionInfo.WinStationName, sessionInfo.State) {}
 
         #region ITerminalServicesSession Members
+
+        public ClientProtocolType ClientProtocolType
+        {
+            get { return _clientProtocolType.Value; }
+        }
 
         public short ClientProductId
         {
@@ -265,6 +272,14 @@ namespace Cassia.Impl
         }
 
         #endregion
+
+        private ClientProtocolType GetClientProtocolType()
+        {
+            return
+                (ClientProtocolType)
+                NativeMethodsHelper.QuerySessionInformationForShort(_server.Handle, _sessionId,
+                                                                    WTS_INFO_CLASS.WTSClientProtocolType);
+        }
 
         private short GetClientProductId()
         {
