@@ -14,6 +14,7 @@ namespace Cassia.Impl
         private readonly LazyLoadedProperty<int> _clientBuildNumber;
         private readonly LazyLoadedProperty<string> _clientDirectory;
         private readonly LazyLoadedProperty<IClientDisplay> _clientDisplay;
+        private readonly LazyLoadedProperty<int> _clientHardwareId;
         private readonly LazyLoadedProperty<IPAddress> _clientIPAddress;
         private readonly string _clientName;
         private readonly ConnectionState _connectionState;
@@ -46,6 +47,7 @@ namespace Cassia.Impl
             _clientIPAddress = new LazyLoadedProperty<IPAddress>(GetClientIPAddress);
             _clientDisplay = new LazyLoadedProperty<IClientDisplay>(GetClientDisplay);
             _clientDirectory = new LazyLoadedProperty<string>(GetClientDirectory);
+            _clientHardwareId = new LazyLoadedProperty<int>(GetClientHardwareId);
             _clientName =
                 NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
                                                                      WTS_INFO_CLASS.WTSClientName);
@@ -88,6 +90,11 @@ namespace Cassia.Impl
             : this(server, sessionInfo.SessionID, sessionInfo.WinStationName, sessionInfo.State) {}
 
         #region ITerminalServicesSession Members
+
+        public int ClientHardwareId
+        {
+            get { return _clientHardwareId.Value; }
+        }
 
         public string ClientDirectory
         {
@@ -252,6 +259,13 @@ namespace Cassia.Impl
 
         #endregion
 
+        private int GetClientHardwareId()
+        {
+            return
+                NativeMethodsHelper.QuerySessionInformationForInt(_server.Handle, _sessionId,
+                                                                  WTS_INFO_CLASS.WTSClientHardwareId);
+        }
+
         private string GetClientDirectory()
         {
             return
@@ -285,7 +299,9 @@ namespace Cassia.Impl
 
         private int GetClientBuildNumber()
         {
-            return NativeMethodsHelper.QuerySessionInformationForClientBuildNumber(_server.Handle, _sessionId);
+            return
+                NativeMethodsHelper.QuerySessionInformationForInt(_server.Handle, _sessionId,
+                                                                  WTS_INFO_CLASS.WTSClientBuildNumber);
         }
     }
 }

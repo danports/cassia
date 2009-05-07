@@ -209,10 +209,11 @@ namespace Cassia.Impl
             }
         }
 
-        public static int QuerySessionInformationForClientBuildNumber(ITerminalServerHandle server, int sessionId)
+        public static int QuerySessionInformationForInt(ITerminalServerHandle server, int sessionId,
+                                                        WTS_INFO_CLASS infoClass)
         {
             ProcessSessionCallback<int> callback = delegate(IntPtr mem, int returned) { return Marshal.ReadInt32(mem); };
-            return QuerySessionInformation(server, sessionId, WTS_INFO_CLASS.WTSClientBuildNumber, callback);
+            return QuerySessionInformation(server, sessionId, infoClass, callback);
         }
 
         public static void ShutdownSystem(ITerminalServerHandle server, int flags)

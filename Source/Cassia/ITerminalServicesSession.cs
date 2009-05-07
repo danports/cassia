@@ -137,6 +137,14 @@ namespace Cassia
         /// </remarks>
         string ClientDirectory { get; }
 
+        /// <summary>
+        /// Client-specific hardware identifier.
+        /// </summary>
+        /// <remarks>
+        /// This value is typically <c>0</c>.
+        /// </remarks>
+        int ClientHardwareId { get; }
+
         /// <overloads>
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.
