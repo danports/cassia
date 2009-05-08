@@ -303,6 +303,12 @@ namespace SessionInfo
             Console.WriteLine("Client Hardware ID: " + session.ClientHardwareId);
             Console.WriteLine("Client Product ID: " + session.ClientProductId);
             Console.WriteLine("Client Protocol Type: " + session.ClientProtocolType);
+            if (session.ClientProtocolType != ClientProtocolType.Console)
+            {
+                // These properties often throw exceptions for the console session.
+                Console.WriteLine("Initial Program: " + session.InitialProgram);
+                Console.WriteLine("Initial Working Directory: " + session.WorkingDirectory);
+            }
             Console.WriteLine("State: " + session.ConnectionState);
             Console.WriteLine("Connect Time: " + session.ConnectTime);
             Console.WriteLine("Logon Time: " + session.LoginTime);

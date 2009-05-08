@@ -158,6 +158,24 @@ namespace Cassia
         /// </summary>
         ClientProtocolType ClientProtocolType { get; }
 
+        /// <summary>
+        /// The working directory used when launching the initial program.
+        /// </summary>
+        /// <remarks>
+        /// This property may throw an exception for the console session (where 
+        /// <see cref="ClientProtocolType"/> is <see cref="Cassia.ClientProtocolType.Console" />).
+        /// </remarks>
+        string WorkingDirectory { get; }
+
+        /// <summary>
+        /// The initial program run when the session started.
+        /// </summary>
+        /// <remarks>
+        /// This property may throw an exception for the console session (where 
+        /// <see cref="ClientProtocolType"/> is <see cref="Cassia.ClientProtocolType.Console" />).
+        /// </remarks>
+        string InitialProgram { get; }
+
         /// <overloads>
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.

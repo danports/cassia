@@ -24,12 +24,15 @@ namespace Cassia.Impl
         private readonly DateTime? _currentTime;
         private readonly DateTime? _disconnectTime;
         private readonly string _domainName;
+        private readonly LazyLoadedProperty<string> _initialProgram;
         private readonly DateTime? _lastInputTime;
         private readonly DateTime? _loginTime;
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
         private readonly string _userName;
         private readonly string _windowStationName;
+
+        private readonly LazyLoadedProperty<string> _workingDirectory;
 
         public TerminalServicesSession(ITerminalServer server, int sessionId)
             : this(
@@ -45,10 +48,13 @@ namespace Cassia.Impl
             _sessionId = sessionId;
             _windowStationName = windowStationName;
             _connectionState = connectionState;
+            // TODO: on Windows Server 2008, most of these values can be fetched in one shot from WTSCLIENT.
             _clientBuildNumber = new LazyLoadedProperty<int>(GetClientBuildNumber);
             _clientIPAddress = new LazyLoadedProperty<IPAddress>(GetClientIPAddress);
             _clientDisplay = new LazyLoadedProperty<IClientDisplay>(GetClientDisplay);
             _clientDirectory = new LazyLoadedProperty<string>(GetClientDirectory);
+            _workingDirectory = new LazyLoadedProperty<string>(GetWorkingDirectory);
+            _initialProgram = new LazyLoadedProperty<string>(GetInitialProgram);
             _clientHardwareId = new LazyLoadedProperty<int>(GetClientHardwareId);
             _clientProductId = new LazyLoadedProperty<short>(GetClientProductId);
             _clientProtocolType = new LazyLoadedProperty<ClientProtocolType>(GetClientProtocolType);
@@ -94,6 +100,16 @@ namespace Cassia.Impl
             : this(server, sessionInfo.SessionID, sessionInfo.WinStationName, sessionInfo.State) {}
 
         #region ITerminalServicesSession Members
+
+        public string InitialProgram
+        {
+            get { return _initialProgram.Value; }
+        }
+
+        public string WorkingDirectory
+        {
+            get { return _workingDirectory.Value; }
+        }
 
         public ClientProtocolType ClientProtocolType
         {
@@ -272,6 +288,20 @@ namespace Cassia.Impl
         }
 
         #endregion
+
+        private string GetInitialProgram()
+        {
+            return
+                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
+                                                                     WTS_INFO_CLASS.WTSInitialProgram);
+        }
+
+        private string GetWorkingDirectory()
+        {
+            return
+                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
+                                                                     WTS_INFO_CLASS.WTSWorkingDirectory);
+        }
 
         private ClientProtocolType GetClientProtocolType()
         {

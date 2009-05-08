@@ -34,7 +34,10 @@ namespace Cassia.Impl
                 }
                 finally
                 {
-                    NativeMethods.WTSFreeMemory(mem);
+                    if (mem != IntPtr.Zero)
+                    {
+                        NativeMethods.WTSFreeMemory(mem);
+                    }
                 }
             }
             else
@@ -47,7 +50,7 @@ namespace Cassia.Impl
                                                               WTS_INFO_CLASS infoClass)
         {
             ProcessSessionCallback<string> callback =
-                delegate(IntPtr mem, int returned) { return Marshal.PtrToStringAuto(mem); };
+                delegate(IntPtr mem, int returned) { return mem == IntPtr.Zero ? null : Marshal.PtrToStringAuto(mem); };
             return QuerySessionInformation(server, sessionId, infoClass, callback);
         }
 
