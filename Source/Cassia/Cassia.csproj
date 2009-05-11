@@ -47,6 +47,7 @@
     <Compile Include="ConnectionState.cs" />
     <Compile Include="Impl\WINSTATIONINFOCLASS.cs" />
     <Compile Include="Impl\WINSTATIONINFORMATIONW.cs" />
+    <Compile Include="Impl\WINSTATIONREMOTEADDRESS.cs" />
     <Compile Include="Impl\WTSINFO.cs" />
     <Compile Include="Impl\WTS_CLIENT_ADDRESS.cs" />
     <Compile Include="Impl\WTS_CLIENT_DISPLAY.cs" />

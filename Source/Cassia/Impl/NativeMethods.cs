@@ -1,6 +1,5 @@
 using System;
 using System.Runtime.InteropServices;
-using Cassia.Impl;
 
 namespace Cassia.Impl
 {
@@ -37,6 +36,13 @@ namespace Cassia.Impl
                                                             ref WINSTATIONINFORMATIONW buffer, int bufferLength,
                                                             ref int returnedLength);
 
+        [DllImport("winsta.dll", CharSet = CharSet.Unicode, EntryPoint = "WinStationQueryInformationW",
+            SetLastError = true)]
+        public static extern int WinStationQueryInformationRemoteAddress(IntPtr hServer, int sessionId,
+                                                                         WINSTATIONINFOCLASS information,
+                                                                         ref WINSTATIONREMOTEADDRESS buffer,
+                                                                         int bufferLength, out int returnedLength);
+
         [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int WTSSendMessage(IntPtr hServer, int sessionId,
                                                 [MarshalAs(UnmanagedType.LPTStr)] string title, int titleLength,
@@ -56,5 +62,8 @@ namespace Cassia.Impl
 
         [DllImport("wtsapi32.dll", SetLastError = true)]
         public static extern int WTSTerminateProcess(IntPtr hServer, int processId, int exitCode);
+
+        [DllImport("Ws2_32.dll")]
+        public static extern ushort ntohs(ushort netValue);
     }
 }

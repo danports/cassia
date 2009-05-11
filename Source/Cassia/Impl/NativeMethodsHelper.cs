@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Net;
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
 
@@ -242,6 +244,33 @@ namespace Cassia.Impl
             return
                 QuerySessionInformation<short>(server, sessionId, infoClass,
                                                delegate(IntPtr mem, int returned) { return Marshal.ReadInt16(mem); });
+        }
+
+        public static EndPoint QuerySessionInformationForEndPoint(ITerminalServerHandle server, int sessionId)
+        {
+            int retLen;
+            WINSTATIONREMOTEADDRESS remoteAddress = new WINSTATIONREMOTEADDRESS();
+            if (
+                NativeMethods.WinStationQueryInformationRemoteAddress(server.Handle, sessionId,
+                                                                      WINSTATIONINFOCLASS.WinStationRemoteAddress,
+                                                                      ref remoteAddress,
+                                                                      Marshal.SizeOf(typeof(WINSTATIONREMOTEADDRESS)),
+                                                                      out retLen) != 0)
+            {
+                if (remoteAddress.Family == (int) AddressFamily.InterNetwork)
+                {
+                    byte[] addr = new byte[4];
+                    Array.Copy(remoteAddress.Address, 2, addr, 0, 4);
+                    int port = NativeMethods.ntohs((ushort) remoteAddress.Port);
+                    return new IPEndPoint(new IPAddress(addr), port);
+                }
+                // TODO: IPv6 support
+                return null;
+            }
+            else
+            {
+                throw new Win32Exception();
+            }
         }
 
         #region Nested type: ProcessSessionCallback

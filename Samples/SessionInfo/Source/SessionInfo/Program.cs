@@ -297,6 +297,10 @@ namespace SessionInfo
             {
                 Console.WriteLine("IP Address: " + session.ClientIPAddress);
             }
+            if (session.RemoteEndPoint != null)
+            {
+                Console.WriteLine("Remote endpoint: " + session.RemoteEndPoint);
+            }
             Console.WriteLine("Window Station: " + session.WindowStationName);
             Console.WriteLine("Client Directory: " + session.ClientDirectory);
             Console.WriteLine("Client Build Number: " + session.ClientBuildNumber);

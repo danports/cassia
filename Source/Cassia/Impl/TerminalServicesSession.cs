@@ -27,11 +27,11 @@ namespace Cassia.Impl
         private readonly LazyLoadedProperty<string> _initialProgram;
         private readonly DateTime? _lastInputTime;
         private readonly DateTime? _loginTime;
+        private readonly LazyLoadedProperty<EndPoint> _remoteEndPoint;
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
         private readonly string _userName;
         private readonly string _windowStationName;
-
         private readonly LazyLoadedProperty<string> _workingDirectory;
 
         public TerminalServicesSession(ITerminalServer server, int sessionId)
@@ -51,6 +51,7 @@ namespace Cassia.Impl
             // TODO: on Windows Server 2008, most of these values can be fetched in one shot from WTSCLIENT.
             _clientBuildNumber = new LazyLoadedProperty<int>(GetClientBuildNumber);
             _clientIPAddress = new LazyLoadedProperty<IPAddress>(GetClientIPAddress);
+            _remoteEndPoint = new LazyLoadedProperty<EndPoint>(GetRemoteEndPoint);
             _clientDisplay = new LazyLoadedProperty<IClientDisplay>(GetClientDisplay);
             _clientDirectory = new LazyLoadedProperty<string>(GetClientDirectory);
             _workingDirectory = new LazyLoadedProperty<string>(GetWorkingDirectory);
@@ -100,6 +101,11 @@ namespace Cassia.Impl
             : this(server, sessionInfo.SessionID, sessionInfo.WinStationName, sessionInfo.State) {}
 
         #region ITerminalServicesSession Members
+
+        public EndPoint RemoteEndPoint
+        {
+            get { return _remoteEndPoint.Value; }
+        }
 
         public string InitialProgram
         {
@@ -288,6 +294,11 @@ namespace Cassia.Impl
         }
 
         #endregion
+
+        private EndPoint GetRemoteEndPoint()
+        {
+            return NativeMethodsHelper.QuerySessionInformationForEndPoint(_server.Handle, _sessionId);
+        }
 
         private string GetInitialProgram()
         {

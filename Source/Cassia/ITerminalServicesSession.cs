@@ -176,6 +176,15 @@ namespace Cassia
         /// </remarks>
         string InitialProgram { get; }
 
+        /// <summary>
+        /// The remote endpoint (IP address and port) of the client connected to the session.
+        /// </summary>
+        /// <remarks>
+        /// This property currently supports only IPv4 addresses, and will be <c>null</c> if 
+        /// no client is connected to the session.
+        /// </remarks>
+        EndPoint RemoteEndPoint { get; }
+
         /// <overloads>
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.
