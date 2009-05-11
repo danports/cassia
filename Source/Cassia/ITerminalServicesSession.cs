@@ -185,6 +185,15 @@ namespace Cassia
         /// </remarks>
         EndPoint RemoteEndPoint { get; }
 
+        /// <summary>
+        /// Name of the published application that this session is running.
+        /// </summary>
+        /// <remarks>
+        /// This property may throw an exception for the console session (where 
+        /// <see cref="ClientProtocolType"/> is <see cref="Cassia.ClientProtocolType.Console" />).
+        /// </remarks>
+        string ApplicationName { get; }
+
         /// <overloads>
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.

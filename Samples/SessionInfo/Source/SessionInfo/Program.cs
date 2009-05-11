@@ -310,6 +310,7 @@ namespace SessionInfo
             if (session.ClientProtocolType != ClientProtocolType.Console)
             {
                 // These properties often throw exceptions for the console session.
+                Console.WriteLine("Application Name: " + session.ApplicationName);
                 Console.WriteLine("Initial Program: " + session.InitialProgram);
                 Console.WriteLine("Initial Working Directory: " + session.WorkingDirectory);
             }

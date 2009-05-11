@@ -11,6 +11,7 @@ namespace Cassia.Impl
     /// </summary>
     public class TerminalServicesSession : ITerminalServicesSession
     {
+        private readonly LazyLoadedProperty<string> _applicationName;
         private readonly LazyLoadedProperty<int> _clientBuildNumber;
         private readonly LazyLoadedProperty<string> _clientDirectory;
         private readonly LazyLoadedProperty<IClientDisplay> _clientDisplay;
@@ -56,6 +57,7 @@ namespace Cassia.Impl
             _clientDirectory = new LazyLoadedProperty<string>(GetClientDirectory);
             _workingDirectory = new LazyLoadedProperty<string>(GetWorkingDirectory);
             _initialProgram = new LazyLoadedProperty<string>(GetInitialProgram);
+            _applicationName = new LazyLoadedProperty<string>(GetApplicationName);
             _clientHardwareId = new LazyLoadedProperty<int>(GetClientHardwareId);
             _clientProductId = new LazyLoadedProperty<short>(GetClientProductId);
             _clientProtocolType = new LazyLoadedProperty<ClientProtocolType>(GetClientProtocolType);
@@ -101,6 +103,11 @@ namespace Cassia.Impl
             : this(server, sessionInfo.SessionID, sessionInfo.WinStationName, sessionInfo.State) {}
 
         #region ITerminalServicesSession Members
+
+        public string ApplicationName
+        {
+            get { return _applicationName.Value; }
+        }
 
         public EndPoint RemoteEndPoint
         {
@@ -294,6 +301,13 @@ namespace Cassia.Impl
         }
 
         #endregion
+
+        private string GetApplicationName()
+        {
+            return
+                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
+                                                                     WTS_INFO_CLASS.WTSApplicationName);
+        }
 
         private EndPoint GetRemoteEndPoint()
         {
