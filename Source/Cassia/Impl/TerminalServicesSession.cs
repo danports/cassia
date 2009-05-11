@@ -218,10 +218,21 @@ namespace Cassia.Impl
         {
             get
             {
-                return
-                    (_currentTime != null && _lastInputTime != null)
-                        ? _currentTime.Value - _lastInputTime.Value
-                        : TimeSpan.Zero;
+                if (_connectionState == ConnectionState.Disconnected)
+                {
+                    if (_currentTime != null && _disconnectTime != null)
+                    {
+                        return _currentTime.Value - _disconnectTime.Value;
+                    }
+                }
+                else
+                {
+                    if (_currentTime != null && _lastInputTime != null)
+                    {
+                        return _currentTime.Value - _lastInputTime.Value;
+                    }
+                }
+                return TimeSpan.Zero;
             }
         }
 

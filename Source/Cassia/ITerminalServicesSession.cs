@@ -67,10 +67,15 @@ namespace Cassia
         DateTime? LoginTime { get; }
 
         /// <summary>
-        /// Time since the session last received user input.
+        /// Length of time that the session has been idle.
         /// </summary>
-        /// <remarks>This will return <c>TimeSpan.Zero</c> if there is no user connected to the 
-        /// session, or the user is currently active.</remarks>
+        /// <remarks>
+        /// <para>For connected sessions, this will return the time since the session 
+        /// last received user input.</para>
+        /// <para>For disconnected sessions, this will return the length of time that the user 
+        /// has been disconnected from the session.</para>
+        /// <para>This will return <c>TimeSpan.Zero</c> if the idle time could not be determined.</para>
+        /// </remarks>
         TimeSpan IdleTime { get; }
 
         /// <summary>
