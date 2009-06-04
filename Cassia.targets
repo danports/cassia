@@ -7,12 +7,12 @@
       <BuildPath>Bin\</BuildPath>
       <DocPath>Doc\</DocPath>
       <PackageLabel>Cassia-$(CCNetLabel).zip</PackageLabel>
-      <DropPath>..\Drops\Cassia\</DropPath>
+      <DropPath>$(BuildPath)Publish\</DropPath>
     </PropertyGroup>
     
     <Target Name="Clean">
         <RemoveDir Directories="$(BuildPath);$(DocPath)" />
-        <MakeDir Directories="$(DropPath);$(BuildPath);$(DocPath)" />
+        <MakeDir Directories="$(BuildPath);$(DropPath);$(DocPath)" />
     </Target>
     
   <Target Name="Build" DependsOnTargets="Clean">
@@ -29,7 +29,7 @@
   </Target>
     
   <Target Name="Package">
-    <CreateItem Include="**\*.*" Exclude="**\obj\**\*.*;**\*.suo;**\*.user;**\*.log;**\*.cache;**\.svn\**\*.*;**\*Resharper*\**\*.*">
+    <CreateItem Include="**\*.*" Exclude="**\obj\**\*.*;**\*.suo;**\*.user;**\*.log;**\*.cache;**\.svn\**\*.*;**\*Resharper*\**\*.*;$(DropPath)**\*.*">
       <Output TaskParameter="Include" ItemName="PackageFiles" />
     </CreateItem>
     <Zip Files="@(PackageFiles)" ZipFileName="$(DropPath)$(PackageLabel)" />
