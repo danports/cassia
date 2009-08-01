@@ -248,7 +248,7 @@ namespace Cassia.Impl
 
         public void Logoff()
         {
-            Logoff(false);
+            Logoff(true);
         }
 
         public void Logoff(bool synchronous)
@@ -258,7 +258,7 @@ namespace Cassia.Impl
 
         public void Disconnect()
         {
-            Disconnect(false);
+            Disconnect(true);
         }
 
         public void Disconnect(bool synchronous)

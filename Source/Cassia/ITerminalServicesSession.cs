@@ -207,8 +207,8 @@ namespace Cassia
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.
         /// </summary>
-        /// <remarks>The logoff takes place asynchronously; this method returns immediately. 
-        /// This is the same as calling <c>Logoff(false)</c>.</remarks>
+        /// <remarks>The logoff takes place synchronously; this method returns after the operation is complete. 
+        /// This is the same as calling <c>Logoff(true)</c>.</remarks>
         void Logoff();
 
         /// <summary>
@@ -227,8 +227,8 @@ namespace Cassia
         /// <summary>
         /// Disconnects any attached user from the session.
         /// </summary>
-        /// <remarks>The disconnection takes place asynchronously; this method returns immediately. 
-        /// This is the same as calling <c>Disconnect(false)</c>.</remarks>
+        /// <remarks>The disconnection takes place synchronously; this method returns after the operation is complete.
+        /// This is the same as calling <c>Disconnect(true)</c>.</remarks>
         void Disconnect();
 
         /// <summary>
