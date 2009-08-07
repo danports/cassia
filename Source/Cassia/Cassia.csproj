@@ -47,6 +47,7 @@
     <Compile Include="ConnectionState.cs" />
     <Compile Include="Impl\PROTOCOLCOUNTERS.cs" />
     <Compile Include="Impl\PROTOCOLSTATUS.cs" />
+    <Compile Include="Impl\SYSTEMTIME.cs" />
     <Compile Include="Impl\WINSTATIONINFOCLASS.cs" />
     <Compile Include="Impl\WINSTATIONINFORMATIONW.cs" />
     <Compile Include="Impl\WINSTATIONREMOTEADDRESS.cs" />
