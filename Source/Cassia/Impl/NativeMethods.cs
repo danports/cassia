@@ -1,5 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
+using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace Cassia.Impl
 {
@@ -65,5 +66,8 @@ namespace Cassia.Impl
 
         [DllImport("Ws2_32.dll")]
         public static extern ushort ntohs(ushort netValue);
+
+        [DllImport("kernel32.dll")]
+        public static extern int FileTimeToSystemTime(ref FILETIME fileTime, ref SYSTEMTIME systemTime);
     }
 }

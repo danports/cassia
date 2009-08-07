@@ -71,8 +71,8 @@ namespace Cassia.Impl
             if (
                 NativeMethods.WinStationQueryInformation(server.Handle, sessionId,
                                                          (int) WINSTATIONINFOCLASS.WinStationInformation, ref wsInfo,
-                                                         Marshal.SizeOf(typeof(WINSTATIONINFORMATIONW)), ref retLen)
-                != 0)
+                                                         Marshal.SizeOf(typeof(WINSTATIONINFORMATIONW)), ref retLen) !=
+                0)
             {
                 return wsInfo;
             }
@@ -84,12 +84,18 @@ namespace Cassia.Impl
 
         public static DateTime? FileTimeToDateTime(FILETIME ft)
         {
-            if (ft.dwHighDateTime == 0 && ft.dwLowDateTime == 0)
+            if (ft.Equals(new FILETIME()))
             {
                 return null;
             }
-            long hFT = (((long) ft.dwHighDateTime) << 32) + ft.dwLowDateTime;
-            return DateTime.FromFileTime(hFT);
+            SYSTEMTIME sysTime = new SYSTEMTIME();
+            if (NativeMethods.FileTimeToSystemTime(ref ft, ref sysTime) == 0)
+            {
+                return null;
+            }
+            return
+                new DateTime(sysTime.Year, sysTime.Month, sysTime.Day, sysTime.Hour, sysTime.Minute, sysTime.Second,
+                             sysTime.Milliseconds, DateTimeKind.Utc).ToLocalTime();
         }
 
         public static IList<WTS_SESSION_INFO> GetSessionInfos(ITerminalServerHandle server)
@@ -134,10 +140,9 @@ namespace Cassia.Impl
             title = title ?? string.Empty;
             message = message ?? string.Empty;
             if (
-                NativeMethods.WTSSendMessage(server.Handle, sessionId, title,
-                                             title.Length * Marshal.SystemDefaultCharSize, message,
-                                             message.Length * Marshal.SystemDefaultCharSize, style, timeout, out result,
-                                             wait) == 0)
+                NativeMethods.WTSSendMessage(server.Handle, sessionId, title, title.Length*Marshal.SystemDefaultCharSize,
+                                             message, message.Length*Marshal.SystemDefaultCharSize, style, timeout,
+                                             out result, wait) == 0)
             {
                 throw new Win32Exception();
             }
