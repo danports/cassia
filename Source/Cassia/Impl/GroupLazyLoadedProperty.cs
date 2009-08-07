@@ -1,18 +1,16 @@
+using System;
+
 namespace Cassia.Impl
 {
-    public delegate T PropertyLoader<T>();
+    public delegate void GroupPropertyLoader();
 
-    /// <summary>
-    /// A property that is evaluated lazily.
-    /// </summary>
-    /// <typeparam name="T">The type of the property value.</typeparam>
-    public class LazyLoadedProperty<T>
+    public class GroupLazyLoadedProperty<T>
     {
-        private readonly PropertyLoader<T> _loader;
+        private readonly GroupPropertyLoader _loader;
         private bool _loaded;
         private T _value;
 
-        public LazyLoadedProperty(PropertyLoader<T> loader)
+        public GroupLazyLoadedProperty(GroupPropertyLoader loader)
         {
             _loader = loader;
         }
@@ -23,8 +21,11 @@ namespace Cassia.Impl
             {
                 if (!_loaded)
                 {
-                    _value = _loader();
-                    _loaded = true;
+                    _loader();
+                    if (!_loaded)
+                    {
+                        throw new InvalidOperationException("Property value should have been set by now");
+                    }
                 }
                 return _value;
             }

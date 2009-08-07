@@ -41,6 +41,7 @@
     <Compile Include="ClientProtocolType.cs" />
     <Compile Include="Impl\ClientDisplay.cs" />
     <Compile Include="IClientDisplay.cs" />
+    <Compile Include="Impl\GroupLazyLoadedProperty.cs" />
     <Compile Include="Impl\NamespaceDoc.cs" />
     <Compile Include="ConnectionState.cs" />
     <Compile Include="Impl\WINSTATIONINFOCLASS.cs" />
