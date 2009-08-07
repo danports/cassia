@@ -310,17 +310,12 @@ namespace Cassia.Impl
             _disconnectTime.Value = NativeMethodsHelper.FileTimeToDateTime(wsInfo.DisconnectTime);
             _lastInputTime.Value = NativeMethodsHelper.FileTimeToDateTime(wsInfo.LastInputTime);
             _loginTime.Value = NativeMethodsHelper.FileTimeToDateTime(wsInfo.LoginTime);
-            _userName.Value =
-                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
-                                                                     WTS_INFO_CLASS.WTSUserName);
-            _domainName.Value =
-                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
-                                                                     WTS_INFO_CLASS.WTSDomainName);
+            _userName.Value = wsInfo.UserName;
+            _domainName.Value = wsInfo.Domain;
         }
 
         private void LoadWtsInfoProperties()
         {
-            // We can actually use documented APIs in Vista / Windows Server 2008+.
             WTSINFO info =
                 NativeMethodsHelper.QuerySessionInformationForStruct<WTSINFO>(_server.Handle, _sessionId,
                                                                               WTS_INFO_CLASS.WTSSessionInfo);

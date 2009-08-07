@@ -39,11 +39,14 @@
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
     <Compile Include="ClientProtocolType.cs" />
+    <Compile Include="Impl\CACHE_STATISTICS.cs" />
     <Compile Include="Impl\ClientDisplay.cs" />
     <Compile Include="IClientDisplay.cs" />
     <Compile Include="Impl\GroupLazyLoadedProperty.cs" />
     <Compile Include="Impl\NamespaceDoc.cs" />
     <Compile Include="ConnectionState.cs" />
+    <Compile Include="Impl\PROTOCOLCOUNTERS.cs" />
+    <Compile Include="Impl\PROTOCOLSTATUS.cs" />
     <Compile Include="Impl\WINSTATIONINFOCLASS.cs" />
     <Compile Include="Impl\WINSTATIONINFORMATIONW.cs" />
     <Compile Include="Impl\WINSTATIONREMOTEADDRESS.cs" />
