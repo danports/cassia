@@ -26,6 +26,9 @@ namespace SessionInfo
                     case "current":
                         ShowCurrentSession();
                         return;
+                    case "console":
+                        ShowActiveConsoleSession();
+                        return;
                     case "get":
                         GetSessionInfo(args);
                         return;
@@ -66,6 +69,12 @@ namespace SessionInfo
             {
                 Console.WriteLine(ex);
             }
+        }
+
+        private static void ShowActiveConsoleSession()
+        {
+            Console.WriteLine("Active console session:");
+            WriteSessionInfo(_manager.ActiveConsoleSession);
         }
 
         private static void WaitForEvents()
@@ -241,6 +250,7 @@ namespace SessionInfo
 
         private static void ShowCurrentSession()
         {
+            Console.WriteLine("Current session:");
             WriteSessionInfo(_manager.CurrentSession);
         }
 
@@ -288,6 +298,10 @@ namespace SessionInfo
 
         private static void WriteSessionInfo(ITerminalServicesSession session)
         {
+            if (session == null)
+            {
+                return;
+            }
             Console.WriteLine("Session ID: " + session.SessionId);
             if (session.UserAccount != null)
             {

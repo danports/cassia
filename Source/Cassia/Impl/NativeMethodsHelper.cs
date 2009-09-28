@@ -42,10 +42,7 @@ namespace Cassia.Impl
                     }
                 }
             }
-            else
-            {
-                throw new Win32Exception();
-            }
+            throw new Win32Exception();
         }
 
         public static string QuerySessionInformationForString(ITerminalServerHandle server, int sessionId,
@@ -76,10 +73,7 @@ namespace Cassia.Impl
             {
                 return wsInfo;
             }
-            else
-            {
-                throw new Win32Exception();
-            }
+            throw new Win32Exception();
         }
 
         public static DateTime? FileTimeToDateTime(FILETIME ft)
@@ -246,9 +240,8 @@ namespace Cassia.Impl
         public static short QuerySessionInformationForShort(ITerminalServerHandle server, int sessionId,
                                                             WTS_INFO_CLASS infoClass)
         {
-            return
-                QuerySessionInformation<short>(server, sessionId, infoClass,
-                                               delegate(IntPtr mem, int returned) { return Marshal.ReadInt16(mem); });
+            return QuerySessionInformation<short>(server, sessionId, infoClass,
+                                                  delegate(IntPtr mem, int returned) { return Marshal.ReadInt16(mem); });
         }
 
         public static EndPoint QuerySessionInformationForEndPoint(ITerminalServerHandle server, int sessionId)
@@ -272,10 +265,13 @@ namespace Cassia.Impl
                 // TODO: IPv6 support
                 return null;
             }
-            else
-            {
-                throw new Win32Exception();
-            }
+            throw new Win32Exception();
+        }
+
+        public static int? GetActiveConsoleSessionId()
+        {
+            int sessionId = NativeMethods.WTSGetActiveConsoleSessionId();
+            return sessionId == -1 ? (int?) null : sessionId;
         }
 
         #region Nested type: ProcessSessionCallback

@@ -9,9 +9,18 @@ namespace Cassia
     public interface ITerminalServicesManager
     {
         /// <summary>
-        /// Provides information about the session in which the current process is running.
+        /// The session in which the current process is running.
         /// </summary>
         ITerminalServicesSession CurrentSession { get; }
+
+        /// <summary>
+        /// The session to which the physical keyboard and mouse are connected.
+        /// </summary>
+        /// <remarks>
+        /// Returns <c>null</c> if there is no active console session. This could occur if the 
+        /// physical console session is in the process of being connected or disconnected.
+        /// </remarks>
+        ITerminalServicesSession ActiveConsoleSession { get; }
 
         /// <overloads>
         /// <summary>

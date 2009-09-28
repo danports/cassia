@@ -69,5 +69,8 @@ namespace Cassia.Impl
 
         [DllImport("kernel32.dll")]
         public static extern int FileTimeToSystemTime(ref FILETIME fileTime, ref SYSTEMTIME systemTime);
+
+        [DllImport("kernel32.dll")]
+        public static extern int WTSGetActiveConsoleSessionId();
     }
 }
