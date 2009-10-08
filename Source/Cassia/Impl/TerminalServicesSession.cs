@@ -304,6 +304,13 @@ namespace Cassia.Impl
             }
         }
 
+        public void StopRemoteControl()
+        {
+            // We could use WTSStopRemoteControlSession on Windows Server 2008+ here, 
+            // but that doesn't give us the option of stopping remote control of a session on another server.
+            NativeMethodsHelper.StopRemoteControl(_server.Handle, _sessionId, true);
+        }
+
         #endregion
 
         private ConnectionState GetConnectionState()

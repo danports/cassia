@@ -80,5 +80,8 @@ namespace Cassia.Impl
         [DllImport("winsta.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int WinStationShadow(IntPtr hServer, string serverName, int targetSessionId, int hotkeyVk,
                                                   int hotkeyModifier);
+
+        [DllImport("winsta.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int WinStationShadowStop(IntPtr hServer, int targetSessionId, bool wait);
     }
 }

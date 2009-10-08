@@ -290,6 +290,15 @@ namespace Cassia.Impl
             }
         }
 
+        public static void StopRemoteControl(ITerminalServerHandle server, int sessionId, bool wait)
+        {
+            // TODO: Odd that this doesn't return an error code for sessions that do not exist.
+            if (NativeMethods.WinStationShadowStop(server.Handle, sessionId, wait) == 0)
+            {
+                throw new Win32Exception();
+            }
+        }
+
         public static int? GetActiveConsoleSessionId()
         {
             int sessionId = NativeMethods.WTSGetActiveConsoleSessionId();

@@ -303,8 +303,17 @@ namespace Cassia
         /// <remarks>
         /// This method can only be called while running in a remote session. It blocks until remote control
         /// has ended, which could result from pressing the hotkey, logging off the target session, 
-        /// or disconnecting the target session.
+        /// or disconnecting the target session (among other things).
         /// </remarks>
         void StartRemoteControl(ConsoleKey hotkey, RemoteControlHotkeyModifiers hotkeyModifiers);
+
+        /// <summary>
+        /// Stops remote control of the session.
+        /// </summary>
+        /// <remarks>
+        /// This method should be called on the session that is being shadowed, not on the session that 
+        /// is shadowing.
+        /// </remarks>
+        void StopRemoteControl();
     }
 }

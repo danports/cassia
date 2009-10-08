@@ -62,8 +62,11 @@ namespace SessionInfo
                     case "shutdown":
                         Shutdown(args);
                         return;
-                    case "remotecontrol":
+                    case "startremotecontrol":
                         StartRemoteControl(args);
+                        return;
+                    case "stopremotecontrol":
+                        StopRemoteControl(args);
                         return;
                 }
                 Console.WriteLine("Unknown command: " + args[0]);
@@ -74,11 +77,26 @@ namespace SessionInfo
             }
         }
 
+        private static void StopRemoteControl(string[] args)
+        {
+            if (args.Length < 3)
+            {
+                Console.WriteLine("Usage: SessionInfo stopremotecontrol [server] [session id]");
+                return;
+            }
+            using (ITerminalServer server = GetServerFromName(args[1]))
+            {
+                server.Open();
+                ITerminalServicesSession session = server.GetSession(int.Parse(args[2]));
+                session.StopRemoteControl();
+            }
+        }
+
         private static void StartRemoteControl(string[] args)
         {
             if (args.Length < 5)
             {
-                Console.WriteLine("Usage: SessionInfo remotecontrol [server] [session id] [modifier] [hotkey]");
+                Console.WriteLine("Usage: SessionInfo startremotecontrol [server] [session id] [modifier] [hotkey]");
                 return;
             }
             using (ITerminalServer server = GetServerFromName(args[1]))
