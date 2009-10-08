@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace Cassia.Impl
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct WINSTATIONREMOTEADDRESS
+    public struct WINSTATIONREMOTEADDRESS
     {
         public int Family;
         public short Port;

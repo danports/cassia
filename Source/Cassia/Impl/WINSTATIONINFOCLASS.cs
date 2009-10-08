@@ -1,6 +1,6 @@
 namespace Cassia.Impl
 {
-    internal enum WINSTATIONINFOCLASS
+    public enum WINSTATIONINFOCLASS
     {
         WinStationCreateData,
         WinStationConfiguration,

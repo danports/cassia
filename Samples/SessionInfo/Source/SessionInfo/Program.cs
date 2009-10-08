@@ -62,12 +62,34 @@ namespace SessionInfo
                     case "shutdown":
                         Shutdown(args);
                         return;
+                    case "remotecontrol":
+                        StartRemoteControl(args);
+                        return;
                 }
                 Console.WriteLine("Unknown command: " + args[0]);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
+            }
+        }
+
+        private static void StartRemoteControl(string[] args)
+        {
+            if (args.Length < 5)
+            {
+                Console.WriteLine("Usage: SessionInfo remotecontrol [server] [session id] [modifier] [hotkey]");
+                return;
+            }
+            using (ITerminalServer server = GetServerFromName(args[1]))
+            {
+                server.Open();
+                ITerminalServicesSession session = server.GetSession(int.Parse(args[2]));
+                RemoteControlHotkeyModifiers modifier =
+                    (RemoteControlHotkeyModifiers)
+                    Enum.Parse(typeof(RemoteControlHotkeyModifiers), args[3].Replace('+', ','), true);
+                ConsoleKey hotkey = (ConsoleKey) Enum.Parse(typeof(ConsoleKey), args[4], true);
+                session.StartRemoteControl(hotkey, modifier);
             }
         }
 
@@ -175,9 +197,10 @@ namespace SessionInfo
                     (RemoteMessageBoxIcon) Enum.Parse(typeof(RemoteMessageBoxIcon), args[3], true);
                 RemoteMessageBoxButtons buttons =
                     (RemoteMessageBoxButtons) Enum.Parse(typeof(RemoteMessageBoxButtons), args[7], true);
-                RemoteMessageBoxResult result =
-                    session.MessageBox(args[5], args[4], buttons, icon, default(RemoteMessageBoxDefaultButton),
-                                       default(RemoteMessageBoxOptions), TimeSpan.FromSeconds(seconds), true);
+                RemoteMessageBoxResult result = session.MessageBox(args[5], args[4], buttons, icon,
+                                                                   default(RemoteMessageBoxDefaultButton),
+                                                                   default(RemoteMessageBoxOptions),
+                                                                   TimeSpan.FromSeconds(seconds), true);
                 Console.WriteLine("Response: " + result);
             }
         }
@@ -273,10 +296,9 @@ namespace SessionInfo
 
         private static ITerminalServer GetServerFromName(string serverName)
         {
-            return
-                (serverName.Equals("local", StringComparison.InvariantCultureIgnoreCase)
-                     ? _manager.GetLocalServer()
-                     : _manager.GetRemoteServer(serverName));
+            return (serverName.Equals("local", StringComparison.InvariantCultureIgnoreCase)
+                        ? _manager.GetLocalServer()
+                        : _manager.GetRemoteServer(serverName));
         }
 
         private static void DisconnectSession(string[] args)
@@ -332,10 +354,9 @@ namespace SessionInfo
             Console.WriteLine("Connect Time: " + session.ConnectTime);
             Console.WriteLine("Logon Time: " + session.LoginTime);
             Console.WriteLine("Idle Time: " + session.IdleTime);
-            Console.WriteLine(
-                string.Format("Client Display: {0}x{1} with {2} bits per pixel",
-                              session.ClientDisplay.HorizontalResolution, session.ClientDisplay.VerticalResolution,
-                              session.ClientDisplay.BitsPerPixel));
+            Console.WriteLine(string.Format("Client Display: {0}x{1} with {2} bits per pixel",
+                                            session.ClientDisplay.HorizontalResolution,
+                                            session.ClientDisplay.VerticalResolution, session.ClientDisplay.BitsPerPixel));
             Console.WriteLine();
         }
     }

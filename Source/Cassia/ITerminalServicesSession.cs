@@ -294,5 +294,17 @@ namespace Cassia
         /// </summary>
         /// <returns>A list of processes.</returns>
         IList<ITerminalServicesProcess> GetProcesses();
+
+        /// <summary>
+        /// Starts remote control of the session.
+        /// </summary>
+        /// <param name="hotkey">The key to press to stop remote control of the session.</param>
+        /// <param name="hotkeyModifiers">The modifiers for the key to press to stop remote control.s</param>
+        /// <remarks>
+        /// This method can only be called while running in a remote session. It blocks until remote control
+        /// has ended, which could result from pressing the hotkey, logging off the target session, 
+        /// or disconnecting the target session.
+        /// </remarks>
+        void StartRemoteControl(ConsoleKey hotkey, RemoteControlHotkeyModifiers hotkeyModifiers);
     }
 }

@@ -68,7 +68,7 @@ namespace Cassia.Impl
     /// } WINSTATIONINFORMATION, * PWINSTATIONINFORMATION;
     /// </summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
-    internal struct WINSTATIONINFORMATIONW
+    public struct WINSTATIONINFORMATIONW
     {
         public ConnectionState State;
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]

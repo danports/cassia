@@ -60,7 +60,7 @@ namespace Cassia.Impl
             // TODO: MSDN says most of these properties should be null for the console session.
             // I haven't observed this in practice on Windows Server 2000, 2003, or 2008, but perhaps this 
             // should be considered.
-            GroupPropertyLoader loader = Environment.OSVersion.Version >= new Version(6, 0)
+            GroupPropertyLoader loader = IsVistaSp1OrHigher
                                              ? (GroupPropertyLoader) LoadWtsInfoProperties
                                              : LoadWinStationInformationProperties;
             _connectTime = new GroupLazyLoadedProperty<DateTime?>(loader);
@@ -77,6 +77,11 @@ namespace Cassia.Impl
         {
             _windowStationName.Value = sessionInfo.WinStationName;
             _connectionState.Value = sessionInfo.State;
+        }
+
+        private static bool IsVistaSp1OrHigher
+        {
+            get { return Environment.OSVersion.Version >= new Version(6, 0, 6001); }
         }
 
         #region ITerminalServicesSession Members
@@ -266,9 +271,8 @@ namespace Cassia.Impl
             int timeoutSeconds = (int) timeout.TotalSeconds;
             int style = (int) buttons | (int) icon | (int) defaultButton | (int) options;
             // TODO: Win 2003 Server doesn't start timeout counter until user moves mouse in session.
-            RemoteMessageBoxResult result =
-                NativeMethodsHelper.SendMessage(_server.Handle, _sessionId, caption, text, style, timeoutSeconds,
-                                                synchronous);
+            RemoteMessageBoxResult result = NativeMethodsHelper.SendMessage(_server.Handle, _sessionId, caption, text,
+                                                                            style, timeoutSeconds, synchronous);
             // TODO: Windows Server 2008 R2 beta returns 0 if the timeout expires.
             // find out why this happens or file a bug report.
             return result == 0 ? RemoteMessageBoxResult.Timeout : result;
@@ -288,6 +292,18 @@ namespace Cassia.Impl
             return results;
         }
 
+        public void StartRemoteControl(ConsoleKey hotkey, RemoteControlHotkeyModifiers hotkeyModifiers)
+        {
+            if (IsVistaSp1OrHigher)
+            {
+                NativeMethodsHelper.StartRemoteControl(_server.Handle, _sessionId, hotkey, hotkeyModifiers);
+            }
+            else
+            {
+                NativeMethodsHelper.LegacyStartRemoteControl(_server.Handle, _sessionId, hotkey, hotkeyModifiers);
+            }
+        }
+
         #endregion
 
         private ConnectionState GetConnectionState()
@@ -297,9 +313,8 @@ namespace Cassia.Impl
 
         private string GetWindowStationName()
         {
-            return
-                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
-                                                                     WTS_INFO_CLASS.WTSWinStationName);
+            return NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
+                                                                        WTS_INFO_CLASS.WTSWinStationName);
         }
 
         private void LoadWinStationInformationProperties()
@@ -316,9 +331,8 @@ namespace Cassia.Impl
 
         private void LoadWtsInfoProperties()
         {
-            WTSINFO info =
-                NativeMethodsHelper.QuerySessionInformationForStruct<WTSINFO>(_server.Handle, _sessionId,
-                                                                              WTS_INFO_CLASS.WTSSessionInfo);
+            WTSINFO info = NativeMethodsHelper.QuerySessionInformationForStruct<WTSINFO>(_server.Handle, _sessionId,
+                                                                                         WTS_INFO_CLASS.WTSSessionInfo);
             _connectTime.Value = NativeMethodsHelper.FileTimeToDateTime(info.ConnectTime);
             _currentTime.Value = NativeMethodsHelper.FileTimeToDateTime(info.CurrentTime);
             _disconnectTime.Value = NativeMethodsHelper.FileTimeToDateTime(info.DisconnectTime);
@@ -330,16 +344,14 @@ namespace Cassia.Impl
 
         private string GetClientName()
         {
-            return
-                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
-                                                                     WTS_INFO_CLASS.WTSClientName);
+            return NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
+                                                                        WTS_INFO_CLASS.WTSClientName);
         }
 
         private string GetApplicationName()
         {
-            return
-                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
-                                                                     WTS_INFO_CLASS.WTSApplicationName);
+            return NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
+                                                                        WTS_INFO_CLASS.WTSApplicationName);
         }
 
         private EndPoint GetRemoteEndPoint()
@@ -349,16 +361,14 @@ namespace Cassia.Impl
 
         private string GetInitialProgram()
         {
-            return
-                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
-                                                                     WTS_INFO_CLASS.WTSInitialProgram);
+            return NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
+                                                                        WTS_INFO_CLASS.WTSInitialProgram);
         }
 
         private string GetWorkingDirectory()
         {
-            return
-                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
-                                                                     WTS_INFO_CLASS.WTSWorkingDirectory);
+            return NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
+                                                                        WTS_INFO_CLASS.WTSWorkingDirectory);
         }
 
         private ClientProtocolType GetClientProtocolType()
@@ -371,23 +381,20 @@ namespace Cassia.Impl
 
         private short GetClientProductId()
         {
-            return
-                NativeMethodsHelper.QuerySessionInformationForShort(_server.Handle, _sessionId,
-                                                                    WTS_INFO_CLASS.WTSClientProductId);
+            return NativeMethodsHelper.QuerySessionInformationForShort(_server.Handle, _sessionId,
+                                                                       WTS_INFO_CLASS.WTSClientProductId);
         }
 
         private int GetClientHardwareId()
         {
-            return
-                NativeMethodsHelper.QuerySessionInformationForInt(_server.Handle, _sessionId,
-                                                                  WTS_INFO_CLASS.WTSClientHardwareId);
+            return NativeMethodsHelper.QuerySessionInformationForInt(_server.Handle, _sessionId,
+                                                                     WTS_INFO_CLASS.WTSClientHardwareId);
         }
 
         private string GetClientDirectory()
         {
-            return
-                NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
-                                                                     WTS_INFO_CLASS.WTSClientDirectory);
+            return NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
+                                                                        WTS_INFO_CLASS.WTSClientDirectory);
         }
 
         private IClientDisplay GetClientDisplay()
@@ -416,9 +423,8 @@ namespace Cassia.Impl
 
         private int GetClientBuildNumber()
         {
-            return
-                NativeMethodsHelper.QuerySessionInformationForInt(_server.Handle, _sessionId,
-                                                                  WTS_INFO_CLASS.WTSClientBuildNumber);
+            return NativeMethodsHelper.QuerySessionInformationForInt(_server.Handle, _sessionId,
+                                                                     WTS_INFO_CLASS.WTSClientBuildNumber);
         }
     }
 }

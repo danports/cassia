@@ -7,6 +7,8 @@ namespace Cassia.Impl
     /// </summary>
     public class LocalServerHandle : ITerminalServerHandle
     {
+        #region ITerminalServerHandle Members
+
         public IntPtr Handle
         {
             get { return NativeMethods.LocalServerHandle; }
@@ -14,7 +16,7 @@ namespace Cassia.Impl
 
         public string ServerName
         {
-            get { return null; }
+            get { return Environment.MachineName; }
         }
 
         public bool IsOpen
@@ -27,5 +29,7 @@ namespace Cassia.Impl
         public void Close() {}
 
         public void Dispose() {}
+
+        #endregion
     }
 }

@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace Cassia.Impl
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct SYSTEMTIME
+    public struct SYSTEMTIME
     {
         public short Year;
         public short Month;

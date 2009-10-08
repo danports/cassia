@@ -1,6 +1,5 @@
 using System;
 using System.ComponentModel;
-using Cassia.Impl;
 
 namespace Cassia.Impl
 {
@@ -10,9 +9,9 @@ namespace Cassia.Impl
     public class RemoteServerHandle : ITerminalServerHandle
     {
         private const string _connectionClosedMessage =
-            "Connection to remote server not open. Did you: (1) forget to call ITerminalServer.Open, "
-            + "or (2) did you try to perform operations on a session or process after closing the "
-            + "connection to the server?";
+            "Connection to remote server not open. Did you: (1) forget to call ITerminalServer.Open, " +
+            "or (2) did you try to perform operations on a session or process after closing the " +
+            "connection to the server?";
 
         private readonly string _serverName;
         private IntPtr _serverPtr;
@@ -25,6 +24,8 @@ namespace Cassia.Impl
             }
             _serverName = serverName;
         }
+
+        #region ITerminalServerHandle Members
 
         public IntPtr Handle
         {
@@ -71,8 +72,6 @@ namespace Cassia.Impl
             NativeMethods.WTSCloseServer(_serverPtr);
             _serverPtr = IntPtr.Zero;
         }
-
-        #region IDisposable Members
 
         public void Dispose()
         {

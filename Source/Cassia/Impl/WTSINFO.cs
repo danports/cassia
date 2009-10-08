@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace Cassia.Impl
 {
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    internal struct WTSINFO
+    public struct WTSINFO
     {
         public ConnectionState State;
         public int SessionId;

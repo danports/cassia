@@ -72,5 +72,13 @@ namespace Cassia.Impl
 
         [DllImport("kernel32.dll")]
         public static extern int WTSGetActiveConsoleSessionId();
+
+        [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern int WTSStartRemoteControlSession(string serverName, int targetSessionId, byte hotkeyVk,
+                                                              short hotkeyModifiers);
+
+        [DllImport("winsta.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int WinStationShadow(IntPtr hServer, string serverName, int targetSessionId, int hotkeyVk,
+                                                  int hotkeyModifier);
     }
 }

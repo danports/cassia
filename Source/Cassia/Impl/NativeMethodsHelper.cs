@@ -8,7 +8,7 @@ using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace Cassia.Impl
 {
-    internal static class NativeMethodsHelper
+    public static class NativeMethodsHelper
     {
         #region Delegates
 
@@ -266,6 +266,28 @@ namespace Cassia.Impl
                 return null;
             }
             throw new Win32Exception();
+        }
+
+        public static void LegacyStartRemoteControl(ITerminalServerHandle server, int sessionId, ConsoleKey hotkey,
+                                                    RemoteControlHotkeyModifiers hotkeyModifiers)
+        {
+            if (
+                NativeMethods.WinStationShadow(server.Handle, server.ServerName, sessionId, (int) hotkey,
+                                               (int) hotkeyModifiers) == 0)
+            {
+                throw new Win32Exception();
+            }
+        }
+
+        public static void StartRemoteControl(ITerminalServerHandle server, int sessionId, ConsoleKey hotkey,
+                                              RemoteControlHotkeyModifiers hotkeyModifiers)
+        {
+            if (
+                NativeMethods.WTSStartRemoteControlSession(server.ServerName, sessionId, (byte) hotkey,
+                                                           (short) hotkeyModifiers) == 0)
+            {
+                throw new Win32Exception();
+            }
         }
 
         public static int? GetActiveConsoleSessionId()

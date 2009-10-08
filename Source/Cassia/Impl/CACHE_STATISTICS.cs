@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace Cassia.Impl
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct CACHE_STATISTICS
+    public struct CACHE_STATISTICS
     {
         short ProtocolType;
         short Length;

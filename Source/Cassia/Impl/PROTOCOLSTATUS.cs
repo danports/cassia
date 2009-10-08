@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace Cassia.Impl
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct PROTOCOLSTATUS
+    public struct PROTOCOLSTATUS
     {
         public PROTOCOLCOUNTERS Output;
         public PROTOCOLCOUNTERS Input;

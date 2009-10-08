@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 namespace Cassia.Impl
 {
     [StructLayout(LayoutKind.Sequential)]
-    internal struct PROTOCOLCOUNTERS
+    public struct PROTOCOLCOUNTERS
     {
         public int WdBytes;
         public int WdFrames;
