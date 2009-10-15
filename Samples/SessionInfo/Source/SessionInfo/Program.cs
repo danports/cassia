@@ -68,6 +68,9 @@ namespace SessionInfo
                     case "stopremotecontrol":
                         StopRemoteControl(args);
                         return;
+                    case "connect":
+                        Connect(args);
+                        return;
                 }
                 Console.WriteLine("Unknown command: " + args[0]);
             }
@@ -77,17 +80,35 @@ namespace SessionInfo
             }
         }
 
-        private static void StopRemoteControl(string[] args)
+        private static void Connect(string[] args)
         {
-            if (args.Length < 3)
+            if (args.Length < 4)
             {
-                Console.WriteLine("Usage: SessionInfo stopremotecontrol [server] [session id]");
+                Console.WriteLine(
+                    "Usage: SessionInfo connect [source session id] [target session id] [password]");
                 return;
             }
-            using (ITerminalServer server = GetServerFromName(args[1]))
+            using (ITerminalServer server = _manager.GetLocalServer())
             {
                 server.Open();
-                ITerminalServicesSession session = server.GetSession(int.Parse(args[2]));
+                ITerminalServicesSession source = server.GetSession(int.Parse(args[1]));
+                ITerminalServicesSession target = server.GetSession(int.Parse(args[2]));
+                string password = args[3];
+                source.Connect(target, password, true);
+            }
+        }
+
+        private static void StopRemoteControl(string[] args)
+        {
+            if (args.Length < 2)
+            {
+                Console.WriteLine("Usage: SessionInfo stopremotecontrol [session id]");
+                return;
+            }
+            using (ITerminalServer server = _manager.GetLocalServer())
+            {
+                server.Open();
+                ITerminalServicesSession session = server.GetSession(int.Parse(args[1]));
                 session.StopRemoteControl();
             }
         }

@@ -36,6 +36,11 @@ namespace Cassia
         string ServerName { get; }
 
         /// <summary>
+        /// Gets a value indicating whether this server is the local terminal server.
+        /// </summary>
+        bool Local { get; }
+
+        /// <summary>
         /// Lists the sessions on the terminal server.
         /// </summary>
         /// <returns>A list of sessions.</returns>

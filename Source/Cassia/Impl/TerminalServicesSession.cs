@@ -91,6 +91,11 @@ namespace Cassia.Impl
             get { return _applicationName.Value; }
         }
 
+        public bool Local
+        {
+            get { return _server.Local; }
+        }
+
         public EndPoint RemoteEndPoint
         {
             get { return _remoteEndPoint.Value; }
@@ -306,9 +311,35 @@ namespace Cassia.Impl
 
         public void StopRemoteControl()
         {
-            // We could use WTSStopRemoteControlSession on Windows Server 2008+ here, 
-            // but that doesn't give us the option of stopping remote control of a session on another server.
-            NativeMethodsHelper.StopRemoteControl(_server.Handle, _sessionId, true);
+            if (!Local)
+            {
+                throw new InvalidOperationException(
+                    "Cannot stop remote control on sessions that are running on remote servers");
+            }
+            if (IsVistaSp1OrHigher)
+            {
+                NativeMethodsHelper.StopRemoteControl(_sessionId);
+            }
+            else
+            {
+                NativeMethodsHelper.LegacyStopRemoteControl(_server.Handle, _sessionId, true);
+            }
+        }
+
+        public void Connect(ITerminalServicesSession target, string password, bool synchronous)
+        {
+            if (!Local)
+            {
+                throw new InvalidOperationException("Cannot connect sessions that are running on remote servers");
+            }
+            if (IsVistaSp1OrHigher)
+            {
+                NativeMethodsHelper.Connect(_sessionId, target.SessionId, password, synchronous);
+            }
+            else
+            {
+                NativeMethodsHelper.LegacyConnect(_server.Handle, _sessionId, target.SessionId, password, synchronous);
+            }
         }
 
         #endregion

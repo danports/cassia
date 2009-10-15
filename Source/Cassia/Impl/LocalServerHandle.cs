@@ -28,6 +28,11 @@ namespace Cassia.Impl
 
         public void Close() {}
 
+        public bool Local
+        {
+            get { return true; }
+        }
+
         public void Dispose() {}
 
         #endregion

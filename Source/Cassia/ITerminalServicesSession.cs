@@ -199,6 +199,11 @@ namespace Cassia
         /// </remarks>
         string ApplicationName { get; }
 
+        /// <summary>
+        /// Gets a value indicating whether this session is running on the local terminal server.
+        /// </summary>
+        bool Local { get; }
+
         /// <overloads>
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.
@@ -308,12 +313,27 @@ namespace Cassia
         void StartRemoteControl(ConsoleKey hotkey, RemoteControlHotkeyModifiers hotkeyModifiers);
 
         /// <summary>
-        /// Stops remote control of the session.
+        /// Stops remote control of the session. The session must be running on the local server.
         /// </summary>
         /// <remarks>
         /// This method should be called on the session that is being shadowed, not on the session that 
         /// is shadowing.
         /// </remarks>
         void StopRemoteControl();
+
+        /// <summary>
+        /// Connects this session to an existing session. Both sessions must be running on the local server.
+        /// </summary>
+        /// <param name="target">The session to which to connect.</param>
+        /// <param name="password">The password of the user logged on to the target session.
+        /// If the user logged on to the target session is the same as the user logged on to this session,
+        /// this parameter can be an empty string.</param>
+        /// <param name="synchronous">If <c>true</c>, waits until the operation has completed 
+        /// before returning from the method. If <c>false</c>, returns immediately, even though
+        /// the operation may not be complete yet.</param>
+        /// <remarks>
+        /// The user logged on to this session must have permissions to connect to the target session.
+        /// </remarks>
+        void Connect(ITerminalServicesSession target, string password, bool synchronous);
     }
 }

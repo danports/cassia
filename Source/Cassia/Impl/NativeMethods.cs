@@ -44,17 +44,17 @@ namespace Cassia.Impl
                                                                          ref WINSTATIONREMOTEADDRESS buffer,
                                                                          int bufferLength, out int returnedLength);
 
-        [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int WTSSendMessage(IntPtr hServer, int sessionId,
                                                 [MarshalAs(UnmanagedType.LPTStr)] string title, int titleLength,
                                                 [MarshalAs(UnmanagedType.LPTStr)] string message, int messageLength,
                                                 int style, int timeout, out RemoteMessageBoxResult result, bool wait);
 
-        [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int WTSEnumerateServers([MarshalAs(UnmanagedType.LPTStr)] string pDomainName, int reserved,
                                                      int version, out IntPtr ppServerInfo, out int pCount);
 
-        [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int WTSEnumerateProcesses(IntPtr hServer, int reserved, int version,
                                                        out IntPtr ppProcessInfo, out int count);
 
@@ -64,7 +64,7 @@ namespace Cassia.Impl
         [DllImport("wtsapi32.dll", SetLastError = true)]
         public static extern int WTSTerminateProcess(IntPtr hServer, int processId, int exitCode);
 
-        [DllImport("Ws2_32.dll")]
+        [DllImport("ws2_32.dll")]
         public static extern ushort ntohs(ushort netValue);
 
         [DllImport("kernel32.dll")]
@@ -73,7 +73,7 @@ namespace Cassia.Impl
         [DllImport("kernel32.dll")]
         public static extern int WTSGetActiveConsoleSessionId();
 
-        [DllImport("Wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
         public static extern int WTSStartRemoteControlSession(string serverName, int targetSessionId, byte hotkeyVk,
                                                               short hotkeyModifiers);
 
@@ -83,5 +83,15 @@ namespace Cassia.Impl
 
         [DllImport("winsta.dll", CharSet = CharSet.Unicode, SetLastError = true)]
         public static extern int WinStationShadowStop(IntPtr hServer, int targetSessionId, bool wait);
+
+        [DllImport("winsta.dll", CharSet = CharSet.Unicode, SetLastError = true)]
+        public static extern int WinStationConnectW(IntPtr hServer, int targetSessionId, int sourceSessionId,
+                                                    string password, bool wait);
+
+        [DllImport("wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        public static extern int WTSConnectSession(int sourceSessionId, int targetSessionId, string password, bool wait);
+
+        [DllImport("wtsapi32.dll", SetLastError = true)]
+        public static extern int WTSStopRemoteControlSession(int targetSessionId);
     }
 }

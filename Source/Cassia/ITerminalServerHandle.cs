@@ -22,9 +22,14 @@ namespace Cassia
         string ServerName { get; }
 
         /// <summary>
-        /// Returns <c>true</c> if the connection to the server is currently open.
+        /// Gets a value indicating whether the connection to the server is currently open.
         /// </summary>
         bool IsOpen { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the handle is for the local server.
+        /// </summary>
+        bool Local { get; }
 
         /// <summary>
         /// Opens the terminal server handle.

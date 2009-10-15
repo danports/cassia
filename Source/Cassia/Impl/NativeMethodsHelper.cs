@@ -290,10 +290,35 @@ namespace Cassia.Impl
             }
         }
 
-        public static void StopRemoteControl(ITerminalServerHandle server, int sessionId, bool wait)
+        public static void LegacyStopRemoteControl(ITerminalServerHandle server, int sessionId, bool wait)
         {
             // TODO: Odd that this doesn't return an error code for sessions that do not exist.
             if (NativeMethods.WinStationShadowStop(server.Handle, sessionId, wait) == 0)
+            {
+                throw new Win32Exception();
+            }
+        }
+
+        public static void StopRemoteControl(int sessionId)
+        {
+            if (NativeMethods.WTSStopRemoteControlSession(sessionId) == 0)
+            {
+                throw new Win32Exception();
+            }
+        }
+
+        public static void LegacyConnect(ITerminalServerHandle server, int sourceSessionId, int targetSessionId,
+                                         string password, bool wait)
+        {
+            if (NativeMethods.WinStationConnectW(server.Handle, targetSessionId, sourceSessionId, password, wait) == 0)
+            {
+                throw new Win32Exception();
+            }
+        }
+
+        public static void Connect(int sourceSessionId, int targetSessionId, string password, bool wait)
+        {
+            if (NativeMethods.WTSConnectSession(sourceSessionId, targetSessionId, password, wait) == 0)
             {
                 throw new Win32Exception();
             }

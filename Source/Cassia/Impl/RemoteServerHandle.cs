@@ -73,6 +73,11 @@ namespace Cassia.Impl
             _serverPtr = IntPtr.Zero;
         }
 
+        public bool Local
+        {
+            get { return false; }
+        }
+
         public void Dispose()
         {
             Dispose(true);

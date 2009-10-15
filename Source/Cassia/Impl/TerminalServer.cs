@@ -22,6 +22,11 @@ namespace Cassia.Impl
             get { return _handle.ServerName; }
         }
 
+        public bool Local
+        {
+            get { return _handle.Local; }
+        }
+
         public bool IsOpen
         {
             get { return _handle.IsOpen; }
