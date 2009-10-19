@@ -39,5 +39,5 @@
 	<MSBuild Projects="Cassia.shfbproj" Properties="Configuration=Release;Platform=AnyCPU" />
   </Target>
   
-  <Target Name="All" DependsOnTargets="Build;Documentation;Package" />
+  <Target Name="All" DependsOnTargets="Build;Package" />
 </Project>
