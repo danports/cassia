@@ -1,15 +1,17 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="All">
-    <Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
     <ItemGroup>
       <Projects Include="Cassia.sln" />
     </ItemGroup>
     <PropertyGroup>
-      <BuildPath>Bin\</BuildPath>
-      <DocPath>Doc\</DocPath>
+      <BuildPath>Bin</BuildPath>
+      <DocPath>Doc</DocPath>
       <PackageLabel>Cassia-$(CCNetLabel).zip</PackageLabel>
-      <DropPath>$(BuildPath)Publish\</DropPath>
+      <DropPath>$(BuildPath)\Publish</DropPath>
+	  <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
     </PropertyGroup>
-    
+
+    <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+	    
     <Target Name="Clean">
         <RemoveDir Directories="$(BuildPath);$(DocPath)" />
         <MakeDir Directories="$(BuildPath);$(DropPath);$(DocPath)" />
@@ -29,15 +31,15 @@
   </Target>
     
   <Target Name="Package">
-    <CreateItem Include="**\*.*" Exclude="**\obj\**\*.*;**\*.suo;**\*.user;**\*.log;**\*.cache;**\.svn\**\*.*;**\*Resharper*\**\*.*;$(DropPath)**\*.*">
+    <CreateItem Include="**\*.*" Exclude="**\obj\**\*.*;**\*.suo;**\*.user;**\*.log;**\*.cache;**\.svn\**\*.*;**\*Resharper*\**\*.*;$(DropPath)\**\*.*">
       <Output TaskParameter="Include" ItemName="PackageFiles" />
     </CreateItem>
-    <Zip Files="@(PackageFiles)" ZipFileName="$(DropPath)$(PackageLabel)" />
+    <Zip Files="@(PackageFiles)" ZipFileName="$(DropPath)\$(PackageLabel)" />
   </Target>
 
   <Target Name="Documentation">
-	<MSBuild Projects="Cassia.shfbproj" Properties="Configuration=Release;Platform=AnyCPU" />
+	<Exec Command="Tools\ImmDoc.NET\ImmDocNet.exe -fd -pn:Cassia -cn:$(DocPath)\Cassia.chm -cp:Tools\HTMLHelpWorkshop -od:$(DocPath) $(BuildPath)\Cassia.dll" />
   </Target>
   
-  <Target Name="All" DependsOnTargets="Build;Package" />
+  <Target Name="All" DependsOnTargets="Build;Documentation;Package" />
 </Project>
