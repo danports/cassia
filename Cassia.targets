@@ -14,7 +14,7 @@
 	    
     <Target Name="Clean">
         <RemoveDir Directories="$(BuildPath);$(DocPath)" />
-        <MakeDir Directories="$(BuildPath);$(DropPath);$(DocPath)" />
+        <MakeDir Directories="$(BuildPath);$(DropPath)" />
     </Target>
     
   <Target Name="Build" DependsOnTargets="Clean">
@@ -38,7 +38,7 @@
   </Target>
 
   <Target Name="Documentation">
-	<Exec Command="Tools\ImmDoc.NET\ImmDocNet.exe -fd -pn:Cassia -cn:$(DocPath)\Cassia.chm -cp:Tools\HTMLHelpWorkshop -od:$(DocPath) $(BuildPath)\Cassia.dll" />
+	<Exec Command="Tools\ImmDoc.NET\ImmDocNet.exe -pn:Cassia -cn:$(DocPath)\Cassia.chm -cp:Tools\HTMLHelpWorkshop -od:$(DocPath) $(BuildPath)\Cassia.dll" />
   </Target>
   
   <Target Name="All" DependsOnTargets="Build;Documentation;Package" />
