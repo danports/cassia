@@ -5,7 +5,7 @@
     <PropertyGroup>
       <BuildPath>Bin</BuildPath>
       <DocPath>Doc</DocPath>
-      <PackageLabel>Cassia-$(BuildLabel).zip</PackageLabel>
+      <PackageLabel>Cassia-$(BUILD_NUMBER).zip</PackageLabel>
       <DropPath>$(BuildPath)\Publish</DropPath>
 	  <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
     </PropertyGroup>
@@ -18,11 +18,11 @@
     </Target>
     
   <Target Name="Build" DependsOnTargets="Clean">
-        <AssemblyInfo Condition="'$(BuildLabel)' != ''"
+        <AssemblyInfo Condition="'$(BUILD_NUMBER)' != ''"
                       CodeLanguage="CS"
                       OutputFile="VersionInfo.cs"
-                      AssemblyVersion="$(BuildLabel)"
-                      AssemblyFileVersion="$(BuildLabel)"
+                      AssemblyVersion="$(BUILD_NUMBER)"
+                      AssemblyFileVersion="$(BUILD_NUMBER)"
                       CLSCompliant="true" 
                       AssemblyCompany="Cassia Developers"
                       AssemblyProduct="Cassia: .NET Terminal Services Library"
