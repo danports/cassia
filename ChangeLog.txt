@@ -4,17 +4,33 @@ Version History
 ===============
 
 Version 2.1.0:
+- Feature: Starting and stopping remote control of a session (issue 3).
+- Feature: Connecting to existing sessions (issue 6).
+- Improvement: Support for fetching the active console session via ITerminalServicesManager.ActiveConsoleSession (issue 4).
+- Improvement: Support for fetching the client directory for a session (issue 10).
+- Improvement: Support for fetching the client hardware ID for a session (issue 11).
+- Improvement: Support for fetching the client product ID for a session (issue 12).
+- Improvement: Support for fetching the client protocol type for a session (issue 13).
+- Improvement: Support for fetching the initial program and working directory for a session (issue 14).
+- Improvement: Support for fetching the published application name for a session (issue 16).
+- Improvement: Support for fetching the remote endpoint (actual destination IP address and port) for a session (issue 15).
+- Improvement: ITerminalServicesSession.IdleTime reports time disconnected when client is disconnected (issue 7).
+- Improvement: All properties of TerminalServicesSession are lazy loaded to avoid unnecessary network calls (issue 24).
+- Change: Default overloads of ITerminalServicesSession.Logoff and ITerminalServicesSession.Disconnect are synchronous (issue 19).
+- Fix: Session times are sometimes off by 7-10 minutes (issue 20).
+
+Breaking changes:
 
 Version 2.0.0:
-- Feature: Fetching client display details, client-reported IP address, client build number, and other information for a session
-- Feature: Logging off a session
-- Feature: Disconnecting a session
-- Feature: Displaying a message box in a session
-- Feature: Enumerating all terminal servers on a domain
-- Feature: Shutting down or rebooting a terminal server
-- Feature: Enumerating all processes running on a terminal server
-- Feature: Killing a process on a terminal server
-- Improvement: API documentation
+- Feature: Fetching client display details, client-reported IP address, client build number, and other information for a session.
+- Feature: Logging off a session.
+- Feature: Disconnecting a session.
+- Feature: Displaying a message box in a session.
+- Feature: Enumerating all terminal servers on a domain.
+- Feature: Shutting down or rebooting a terminal server.
+- Feature: Enumerating all processes running on a terminal server.
+- Feature: Killing a process on a terminal server.
+- Improvement: API documentation.
 
 Breaking changes:
 - WTS_CONNECTSTATE_CLASS has been renamed to ConnectionState, and the names of its members have been shortened.
@@ -24,4 +40,4 @@ Breaking changes:
 - ITerminalServicesManager.GetSessions() is deprecated. Use ITerminalServer.GetSessions() instead.
 
 Version 1.0.1:
-- Feature: Enumerating sessions locally and remotely
+- Feature: Enumerating sessions locally and remotely.
