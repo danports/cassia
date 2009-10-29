@@ -78,13 +78,14 @@ namespace Cassia.Impl
 
         public static DateTime? FileTimeToDateTime(FILETIME ft)
         {
-            if (ft.Equals(new FILETIME()))
-            {
-                return null;
-            }
             SYSTEMTIME sysTime = new SYSTEMTIME();
             if (NativeMethods.FileTimeToSystemTime(ref ft, ref sysTime) == 0)
             {
+                return null;
+            }
+            if (sysTime.Year < 1900)
+            {
+                // Must have gotten a bogus date. This happens sometimes on Windows Server 2003.
                 return null;
             }
             return

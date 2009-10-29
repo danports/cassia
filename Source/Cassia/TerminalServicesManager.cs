@@ -28,27 +28,6 @@ namespace Cassia
             }
         }
 
-        /// <overloads><inheritdoc /></overloads>
-        /// <inheritdoc />
-        public IList<ITerminalServicesSession> GetSessions(string serverName)
-        {
-            using (ITerminalServer server = GetRemoteServer(serverName))
-            {
-                server.Open();
-                return server.GetSessions();
-            }
-        }
-
-        /// <inheritdoc />
-        public IList<ITerminalServicesSession> GetSessions()
-        {
-            using (ITerminalServer server = GetLocalServer())
-            {
-                server.Open();
-                return server.GetSessions();
-            }
-        }
-
         /// <inheritdoc />
         public ITerminalServer GetRemoteServer(string serverName)
         {

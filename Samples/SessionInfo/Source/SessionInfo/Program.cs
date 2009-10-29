@@ -392,6 +392,7 @@ namespace SessionInfo
             Console.WriteLine("State: " + session.ConnectionState);
             Console.WriteLine("Connect Time: " + session.ConnectTime);
             Console.WriteLine("Logon Time: " + session.LoginTime);
+            Console.WriteLine("Last Input Time: " + session.LastInputTime);
             Console.WriteLine("Idle Time: " + session.IdleTime);
             Console.WriteLine(string.Format("Client Display: {0}x{1} with {2} bits per pixel",
                                             session.ClientDisplay.HorizontalResolution,
