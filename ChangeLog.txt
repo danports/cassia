@@ -20,6 +20,7 @@ Version 2.1.0:
 - Fix: Session times are sometimes off by 7-10 minutes (issue 20).
 
 Breaking changes:
+- ITerminalServicesManager.GetSessions(), deprecated since version 2.0, has been removed. Use ITerminalServer.GetSessions() instead.
 
 Version 2.0.0:
 - Feature: Fetching client display details, client-reported IP address, client build number, and other information for a session.
