@@ -319,7 +319,7 @@ namespace Cassia.Impl
 
         public static void Connect(int sourceSessionId, int targetSessionId, string password, bool wait)
         {
-            if (NativeMethods.WTSConnectSession(sourceSessionId, targetSessionId, password, wait) == 0)
+            if (NativeMethods.WTSConnectSession(targetSessionId, sourceSessionId, password, wait) == 0)
             {
                 throw new Win32Exception();
             }

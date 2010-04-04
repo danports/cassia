@@ -89,7 +89,7 @@ namespace Cassia.Impl
                                                     string password, bool wait);
 
         [DllImport("wtsapi32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern int WTSConnectSession(int sourceSessionId, int targetSessionId, string password, bool wait);
+        public static extern int WTSConnectSession(int targetSessionId, int sourceSessionId, string password, bool wait);
 
         [DllImport("wtsapi32.dll", SetLastError = true)]
         public static extern int WTSStopRemoteControlSession(int targetSessionId);
