@@ -84,8 +84,7 @@ namespace SessionInfo
         {
             if (args.Length < 4)
             {
-                Console.WriteLine(
-                    "Usage: SessionInfo connect [source session id] [target session id] [password]");
+                Console.WriteLine("Usage: SessionInfo connect [source session id] [target session id] [password]");
                 return;
             }
             using (ITerminalServer server = _manager.GetLocalServer())
@@ -397,7 +396,25 @@ namespace SessionInfo
             Console.WriteLine(string.Format("Client Display: {0}x{1} with {2} bits per pixel",
                                             session.ClientDisplay.HorizontalResolution,
                                             session.ClientDisplay.VerticalResolution, session.ClientDisplay.BitsPerPixel));
+            if (session.IncomingStatistics != null)
+            {
+                Console.Write("Incoming protocol statistics: ");
+                WriteProtocolStatistics(session.IncomingStatistics);
+                Console.WriteLine();
+            }
+            if (session.OutgoingStatistics != null)
+            {
+                Console.Write("Outgoing protocol statistics: ");
+                WriteProtocolStatistics(session.OutgoingStatistics);
+                Console.WriteLine();
+            }
             Console.WriteLine();
+        }
+
+        private static void WriteProtocolStatistics(IProtocolStatistics statistics)
+        {
+            Console.Write("Bytes: " + statistics.Bytes + " Frames: " + statistics.Frames + " Compressed: " +
+                          statistics.CompressedBytes);
         }
     }
 }

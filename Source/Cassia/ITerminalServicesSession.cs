@@ -204,6 +204,16 @@ namespace Cassia
         /// </summary>
         bool Local { get; }
 
+        /// <summary>
+        /// Incoming protocol statistics for the session.
+        /// </summary>
+        IProtocolStatistics IncomingStatistics { get; }
+
+        /// <summary>
+        /// Outgoing protocol statistics for the session.
+        /// </summary>
+        IProtocolStatistics OutgoingStatistics { get; }
+
         /// <overloads>
         /// <summary>
         /// Logs the session off, disconnecting any user that might be attached.

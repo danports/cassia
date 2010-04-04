@@ -62,7 +62,7 @@ namespace Cassia.Impl
     ///     LARGE_INTEGER LastInputTime;
     ///     LARGE_INTEGER LogonTime;
     ///     PROTOCOLSTATUS Status;
-    ///     WCHAR Domain[ DOMAIN_LENGTH + 1 ]; // This is incorrect; it should be USERNAME_LENGTH + 1
+    ///     WCHAR Domain[DOMAIN_LENGTH + 1]; // This is incorrect; it should be USERNAME_LENGTH + 1
     ///     WCHAR UserName[USERNAME_LENGTH + 1];
     ///     LARGE_INTEGER CurrentTime;
     /// } WINSTATIONINFORMATION, * PWINSTATIONINFORMATION;

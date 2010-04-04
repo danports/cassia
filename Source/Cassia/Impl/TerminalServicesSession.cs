@@ -20,19 +20,21 @@ namespace Cassia.Impl
         private readonly LazyLoadedProperty<string> _clientName;
         private readonly LazyLoadedProperty<short> _clientProductId;
         private readonly LazyLoadedProperty<ClientProtocolType> _clientProtocolType;
-        private readonly LazyLoadedProperty<ConnectionState> _connectionState;
+        private readonly GroupLazyLoadedProperty<ConnectionState> _connectionState;
         private readonly GroupLazyLoadedProperty<DateTime?> _connectTime;
         private readonly GroupLazyLoadedProperty<DateTime?> _currentTime;
         private readonly GroupLazyLoadedProperty<DateTime?> _disconnectTime;
         private readonly GroupLazyLoadedProperty<string> _domainName;
+        private readonly GroupLazyLoadedProperty<IProtocolStatistics> _incomingStatistics;
         private readonly LazyLoadedProperty<string> _initialProgram;
         private readonly GroupLazyLoadedProperty<DateTime?> _lastInputTime;
         private readonly GroupLazyLoadedProperty<DateTime?> _loginTime;
+        private readonly GroupLazyLoadedProperty<IProtocolStatistics> _outgoingStatistics;
         private readonly LazyLoadedProperty<EndPoint> _remoteEndPoint;
         private readonly ITerminalServer _server;
         private readonly int _sessionId;
         private readonly GroupLazyLoadedProperty<string> _userName;
-        private readonly LazyLoadedProperty<string> _windowStationName;
+        private readonly GroupLazyLoadedProperty<string> _windowStationName;
         private readonly LazyLoadedProperty<string> _workingDirectory;
 
         public TerminalServicesSession(ITerminalServer server, int sessionId)
@@ -42,8 +44,6 @@ namespace Cassia.Impl
 
             // TODO: on Windows Server 2008, most of these values can be fetched in one shot from WTSCLIENT.
             // Do this with GroupLazyLoadedProperty.
-            _windowStationName = new LazyLoadedProperty<string>(GetWindowStationName);
-            _connectionState = new LazyLoadedProperty<ConnectionState>(GetConnectionState);
             _clientBuildNumber = new LazyLoadedProperty<int>(GetClientBuildNumber);
             _clientIPAddress = new LazyLoadedProperty<IPAddress>(GetClientIPAddress);
             _remoteEndPoint = new LazyLoadedProperty<EndPoint>(GetRemoteEndPoint);
@@ -63,6 +63,8 @@ namespace Cassia.Impl
             GroupPropertyLoader loader = IsVistaSp1OrHigher
                                              ? (GroupPropertyLoader) LoadWtsInfoProperties
                                              : LoadWinStationInformationProperties;
+            _windowStationName = new GroupLazyLoadedProperty<string>(loader);
+            _connectionState = new GroupLazyLoadedProperty<ConnectionState>(loader);
             _connectTime = new GroupLazyLoadedProperty<DateTime?>(loader);
             _currentTime = new GroupLazyLoadedProperty<DateTime?>(loader);
             _disconnectTime = new GroupLazyLoadedProperty<DateTime?>(loader);
@@ -70,6 +72,8 @@ namespace Cassia.Impl
             _loginTime = new GroupLazyLoadedProperty<DateTime?>(loader);
             _userName = new GroupLazyLoadedProperty<string>(loader);
             _domainName = new GroupLazyLoadedProperty<string>(loader);
+            _incomingStatistics = new GroupLazyLoadedProperty<IProtocolStatistics>(loader);
+            _outgoingStatistics = new GroupLazyLoadedProperty<IProtocolStatistics>(loader);
         }
 
         public TerminalServicesSession(ITerminalServer server, WTS_SESSION_INFO sessionInfo)
@@ -85,6 +89,16 @@ namespace Cassia.Impl
         }
 
         #region ITerminalServicesSession Members
+
+        public IProtocolStatistics IncomingStatistics
+        {
+            get { return _incomingStatistics.Value; }
+        }
+
+        public IProtocolStatistics OutgoingStatistics
+        {
+            get { return _outgoingStatistics.Value; }
+        }
 
         public string ApplicationName
         {
@@ -344,20 +358,11 @@ namespace Cassia.Impl
 
         #endregion
 
-        private ConnectionState GetConnectionState()
-        {
-            return NativeMethodsHelper.GetConnectionState(_server.Handle, _sessionId);
-        }
-
-        private string GetWindowStationName()
-        {
-            return NativeMethodsHelper.QuerySessionInformationForString(_server.Handle, _sessionId,
-                                                                        WTS_INFO_CLASS.WTSWinStationName);
-        }
-
         private void LoadWinStationInformationProperties()
         {
             WINSTATIONINFORMATIONW wsInfo = NativeMethodsHelper.GetWinStationInformation(_server.Handle, _sessionId);
+            _windowStationName.Value = wsInfo.WinStationName;
+            _connectionState.Value = wsInfo.State;
             _connectTime.Value = NativeMethodsHelper.FileTimeToDateTime(wsInfo.ConnectTime);
             _currentTime.Value = NativeMethodsHelper.FileTimeToDateTime(wsInfo.CurrentTime);
             _disconnectTime.Value = NativeMethodsHelper.FileTimeToDateTime(wsInfo.DisconnectTime);
@@ -365,19 +370,27 @@ namespace Cassia.Impl
             _loginTime.Value = NativeMethodsHelper.FileTimeToDateTime(wsInfo.LoginTime);
             _userName.Value = wsInfo.UserName;
             _domainName.Value = wsInfo.Domain;
+            _incomingStatistics.Value = new ProtocolStatistics(wsInfo.ProtocolStatus.Input);
+            _outgoingStatistics.Value = new ProtocolStatistics(wsInfo.ProtocolStatus.Output);
         }
 
         private void LoadWtsInfoProperties()
         {
             WTSINFO info = NativeMethodsHelper.QuerySessionInformationForStruct<WTSINFO>(_server.Handle, _sessionId,
                                                                                          WTS_INFO_CLASS.WTSSessionInfo);
+            _connectionState.Value = info.State;
+            _incomingStatistics.Value = new ProtocolStatistics(info.IncomingBytes, info.IncomingFrames,
+                                                               info.IncomingCompressedBytes);
+            _outgoingStatistics.Value = new ProtocolStatistics(info.OutgoingBytes, info.OutgoingFrames,
+                                                               info.OutgoingCompressedBytes);
+            _windowStationName.Value = info.WinStationName;
+            _domainName.Value = info.Domain;
+            _userName.Value = info.UserName;
             _connectTime.Value = NativeMethodsHelper.FileTimeToDateTime(info.ConnectTime);
-            _currentTime.Value = NativeMethodsHelper.FileTimeToDateTime(info.CurrentTime);
             _disconnectTime.Value = NativeMethodsHelper.FileTimeToDateTime(info.DisconnectTime);
             _lastInputTime.Value = NativeMethodsHelper.FileTimeToDateTime(info.LastInputTime);
             _loginTime.Value = NativeMethodsHelper.FileTimeToDateTime(info.LogonTime);
-            _userName.Value = info.UserName;
-            _domainName.Value = info.Domain;
+            _currentTime.Value = NativeMethodsHelper.FileTimeToDateTime(info.CurrentTime);
         }
 
         private string GetClientName()

@@ -33,6 +33,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\..\VersionInfo.cs">
@@ -43,10 +45,14 @@
     <Compile Include="Impl\ClientDisplay.cs" />
     <Compile Include="IClientDisplay.cs" />
     <Compile Include="Impl\GroupLazyLoadedProperty.cs" />
+    <Compile Include="IProtocolStatistics.cs" />
     <Compile Include="Impl\NamespaceDoc.cs" />
     <Compile Include="ConnectionState.cs" />
     <Compile Include="Impl\PROTOCOLCOUNTERS.cs" />
+    <Compile Include="Impl\ProtocolStatistics.cs" />
     <Compile Include="Impl\PROTOCOLSTATUS.cs" />
+    <Compile Include="Impl\WTSINFOEX.cs" />
+    <Compile Include="Impl\WTSINFOEX_LEVEL1.cs" />
     <Compile Include="RemoteControlHotkeyModifiers.cs" />
     <Compile Include="Impl\SYSTEMTIME.cs" />
     <Compile Include="Impl\WINSTATIONINFOCLASS.cs" />
