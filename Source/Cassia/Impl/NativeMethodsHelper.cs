@@ -132,7 +132,10 @@ namespace Cassia.Impl
                                                          string message, int style, int timeout, bool wait)
         {
             RemoteMessageBoxResult result;
-            title = title ?? string.Empty;
+            // If you pass an empty title string to WTSSendMessage, Server 2003 returns a bizarre error code
+            // (-2147467259: "The stub received bad data"). Windows 7 and Server 2008 R2 do not return an error code,
+            // but display the text "Error" instead of the empty string.
+            title = string.IsNullOrEmpty(title) ? " " : title;
             message = message ?? string.Empty;
             if (
                 NativeMethods.WTSSendMessage(server.Handle, sessionId, title, title.Length*Marshal.SystemDefaultCharSize,
