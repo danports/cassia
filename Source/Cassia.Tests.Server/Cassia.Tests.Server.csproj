@@ -4,11 +4,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{B649FF4B-ECBC-4955-BC17-B02903924165}</ProjectGuid>
+    <ProjectGuid>{2260F8C7-5D4C-4DD7-AED3-D39CF6EEE61A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SessionInfo</RootNamespace>
-    <AssemblyName>SessionInfo</AssemblyName>
+    <RootNamespace>Cassia.Tests.Server</RootNamespace>
+    <AssemblyName>Cassia.Tests.Server</AssemblyName>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,16 +29,33 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.ServiceModel, Version=3.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL" />
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\..\..\VersionInfo.cs">
+    <Compile Include="..\..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="ConsoleServiceHost.cs" />
+    <Compile Include="IHostedService.cs" />
+    <Compile Include="IServiceHost.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RemoteDesktopTestService.cs" />
+    <Compile Include="ServiceRunner.cs" />
+    <Compile Include="TestServer.cs" />
+    <Compile Include="WindowsServiceHost.cs">
+      <SubType>Component</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Source\Cassia\Cassia.csproj">
+    <ProjectReference Include="..\Cassia.Tests.Model\Cassia.Tests.Model.csproj">
+      <Project>{3491E15A-1F64-4BA4-8459-C8859B84C1BE}</Project>
+      <Name>Cassia.Tests.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Cassia\Cassia.csproj">
       <Project>{FA7C09C9-33DE-459E-8299-DE57834CEC15}</Project>
       <Name>Cassia</Name>
     </ProjectReference>

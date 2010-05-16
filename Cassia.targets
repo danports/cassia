@@ -23,7 +23,6 @@
                       OutputFile="VersionInfo.cs"
                       AssemblyVersion="$(BUILD_NUMBER)"
                       AssemblyFileVersion="$(BUILD_NUMBER)"
-                      CLSCompliant="true" 
                       AssemblyCompany="Cassia Developers"
                       AssemblyProduct="Cassia: .NET Terminal Services Library"
                       AssemblyCopyright="Copyright © 2008 - 2009" />
