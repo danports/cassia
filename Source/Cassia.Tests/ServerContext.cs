@@ -26,7 +26,7 @@ namespace Cassia.Tests
                 if (_testService == null)
                 {
                     CopyFilesToServer();
-                    StartService();
+                    CreateAndStartService();
                     ConnectToService();
                 }
                 return _testService;
@@ -48,7 +48,7 @@ namespace Cassia.Tests
         public void Dispose()
         {
             DisconnectFromService();
-            StopService();
+            StopAndDeleteService();
             DeleteFilesFromServer();
         }
 
@@ -63,7 +63,7 @@ namespace Cassia.Tests
             Directory.Delete(TargetDirectory, true);
         }
 
-        private void StopService()
+        private void StopAndDeleteService()
         {
             if (_serviceController == null)
             {
@@ -71,9 +71,10 @@ namespace Cassia.Tests
             }
             _serviceController.Stop();
             _serviceController.WaitForStatus(ServiceControllerStatus.Stopped);
+            _serviceController.Dispose();
             // It takes Windows a bit of time after the service stops to release locks on the assemblies, apparently.
             Thread.Sleep(500);
-            _serviceController.Dispose();
+            ServiceHelper.Delete(_serviceController);
         }
 
         private void DisconnectFromService()
@@ -108,10 +109,15 @@ namespace Cassia.Tests
             _testService = _channelFactory.CreateChannel();
         }
 
-        private void StartService()
+        private void CreateAndStartService()
         {
-            _serviceController = new ServiceController("CassiaTestServer", _server);
+            _serviceController = ServiceHelper.Create(_server, "CassiaTestServer", "Cassia Test Server",
+                                                      ServiceType.Win32OwnProcess, ServiceStartMode.Automatic,
+                                                      ServiceHelper.ServiceErrorControl.Normal,
+                                                      @"C:\Windows\Temp\CassiaTestServer\Cassia.Tests.Server.exe", null,
+                                                      new string[] {"TermService"}, null, null);
             _serviceController.Start();
+            _serviceController.WaitForStatus(ServiceControllerStatus.Running);
         }
 
         public RdpConnection OpenRdpConnection()

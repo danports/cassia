@@ -88,6 +88,7 @@
       <PredefinedRule Inspect="True" Prefix="" Suffix="" Style="AaBb" ElementKind="Other" />
       <Abbreviation Text="WTS" />
       <Abbreviation Text="IP" />
+      <Abbreviation Text="SC" />
     </Naming2>
   </CodeStyleSettings>
 </Configuration>
