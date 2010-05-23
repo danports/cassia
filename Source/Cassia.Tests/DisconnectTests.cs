@@ -7,7 +7,8 @@ namespace Cassia.Tests
     public class DisconnectTests
     {
         [Test]
-        public void DisconnectOperationDisconnectsClient([ValueSource(typeof(TestEnvironment), "Servers")] string server)
+        public void DisconnectOperationDisconnectsClient(
+            [ValueSource(typeof(TestSettings), "Servers")] TestServer server)
         {
             using (ServerContext context = new ServerContext(server))
             {

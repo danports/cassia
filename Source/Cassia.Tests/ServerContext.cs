@@ -9,12 +9,12 @@ namespace Cassia.Tests
 {
     public class ServerContext : IDisposable
     {
-        private readonly string _server;
+        private readonly TestServer _server;
         private ChannelFactory<IRemoteDesktopTestService> _channelFactory;
         private ServiceController _serviceController;
         private IRemoteDesktopTestService _testService;
 
-        public ServerContext(string server)
+        public ServerContext(TestServer server)
         {
             _server = server;
         }
@@ -33,7 +33,7 @@ namespace Cassia.Tests
             }
         }
 
-        public string ServerName
+        public TestServer Server
         {
             get { return _server; }
         }
@@ -111,7 +111,7 @@ namespace Cassia.Tests
 
         private void CreateAndStartService()
         {
-            _serviceController = ServiceHelper.Create(_server, "CassiaTestServer", "Cassia Test Server",
+            _serviceController = ServiceHelper.Create(_server.Name, "CassiaTestServer", "Cassia Test Server",
                                                       ServiceType.Win32OwnProcess, ServiceStartMode.Automatic,
                                                       ServiceHelper.ServiceErrorControl.Normal,
                                                       @"C:\Windows\Temp\CassiaTestServer\Cassia.Tests.Server.exe", null,

@@ -55,10 +55,10 @@ namespace Cassia.Tests
             _form = new TestForm();
             _form.Show();
             _ax = _form.RdpControl;
-            _ax.Server = _context.ServerName;
-            _ax.Domain = TestEnvironment.Domain;
-            _ax.UserName = TestEnvironment.UserName;
-            _ax.AdvancedSettings8.ClearTextPassword = TestEnvironment.Password;
+            _ax.Server = _context.Server.Name;
+            _ax.Domain = _context.Server.Domain;
+            _ax.UserName = _context.Server.Username;
+            _ax.AdvancedSettings8.ClearTextPassword = _context.Server.Password;
             _ax.Connect();
 
             // You need a message loop or else the RDP client control will never connect.
