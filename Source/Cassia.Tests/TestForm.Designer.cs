@@ -40,14 +40,14 @@ namespace Cassia.Tests
             this.rdpControl.Location = new System.Drawing.Point(0, 0);
             this.rdpControl.Name = "rdpControl";
             this.rdpControl.OcxState = ((System.Windows.Forms.AxHost.State)(resources.GetObject("rdpControl.OcxState")));
-            this.rdpControl.Size = new System.Drawing.Size(585, 418);
+            this.rdpControl.Size = new System.Drawing.Size(1008, 730);
             this.rdpControl.TabIndex = 0;
             // 
             // TestForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(585, 418);
+            this.ClientSize = new System.Drawing.Size(1008, 730);
             this.Controls.Add(this.rdpControl);
             this.Name = "TestForm";
             this.ShowIcon = false;

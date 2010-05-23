@@ -18,7 +18,8 @@ namespace Cassia.Tests.Server
             ITerminalServicesSession latest = null;
             foreach (ITerminalServicesSession session in _manager.GetLocalServer().GetSessions())
             {
-                if (latest == null || (session.ConnectTime != null && session.ConnectTime > latest.ConnectTime))
+                if (latest == null || latest.ConnectTime == null ||
+                    (session.ConnectTime != null && session.ConnectTime > latest.ConnectTime))
                 {
                     latest = session;
                 }

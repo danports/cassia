@@ -7,6 +7,7 @@ namespace Cassia.Tests
 {
     public class RdpConnection : IDisposable
     {
+        private readonly ManualResetEvent _connectedEvent;
         private readonly ServerContext _context;
         private readonly int _sessionId;
         private readonly Thread _thread;
@@ -17,12 +18,15 @@ namespace Cassia.Tests
         {
             _context = context;
 
+            _connectedEvent = new ManualResetEvent(false);
             _thread = new Thread((ThreadStart) delegate { ConnectCore(); });
             // The RDP ActiveX control requires STA.
             _thread.SetApartmentState(ApartmentState.STA);
             _thread.Start();
-            // TODO: poll the connection status of the control or use the control's events
-            Thread.Sleep(5000);
+            if (!_connectedEvent.WaitOne(TimeSpan.FromSeconds(30)))
+            {
+                throw new TimeoutException("Could not connect to server " + _context.Server);
+            }
 
             // Unfortunately, there doesn't seem to be any way to pull the session ID from the client,
             // so we have to pull it from the server.
@@ -59,6 +63,7 @@ namespace Cassia.Tests
             _ax.Domain = _context.Server.Domain;
             _ax.UserName = _context.Server.Username;
             _ax.AdvancedSettings8.ClearTextPassword = _context.Server.Password;
+            _ax.OnConnected += delegate { _connectedEvent.Set(); };
             _ax.Connect();
 
             // You need a message loop or else the RDP client control will never connect.

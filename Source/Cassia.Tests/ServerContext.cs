@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.ServiceModel;
 using System.ServiceProcess;
@@ -69,9 +70,13 @@ namespace Cassia.Tests
             {
                 return;
             }
-            _serviceController.Stop();
-            _serviceController.WaitForStatus(ServiceControllerStatus.Stopped);
-            _serviceController.Dispose();
+            try
+            {
+                _serviceController.Stop();
+                _serviceController.WaitForStatus(ServiceControllerStatus.Stopped);
+                _serviceController.Dispose();
+            }
+            catch (Win32Exception) {}
             // It takes Windows a bit of time after the service stops to release locks on the assemblies, apparently.
             Thread.Sleep(500);
             ServiceHelper.Delete(_serviceController);
@@ -83,7 +88,11 @@ namespace Cassia.Tests
             {
                 return;
             }
-            _channelFactory.Close();
+            try
+            {
+                _channelFactory.Close();
+            }
+            catch (CommunicationObjectFaultedException) {}
         }
 
         private void CopyFilesToServer()
@@ -104,7 +113,7 @@ namespace Cassia.Tests
         {
             NetTcpBinding binding = new NetTcpBinding();
             binding.Security.Mode = SecurityMode.None;
-            string remoteAddress = String.Format("net.tcp://{0}:17876/CassiaTestService", _server);
+            string remoteAddress = EndpointHelper.GetEndpointUri(_server.Name, EndpointHelper.DefaultPort);
             _channelFactory = new ChannelFactory<IRemoteDesktopTestService>(binding, remoteAddress);
             _testService = _channelFactory.CreateChannel();
         }
