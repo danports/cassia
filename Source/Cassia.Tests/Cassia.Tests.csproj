@@ -68,6 +68,7 @@
     </Compile>
     <Compile Include="TestServer.cs" />
     <Compile Include="TestServerConfiguration.cs" />
+    <Compile Include="TestServersAttribute.cs" />
     <Compile Include="TestServersSectionHandler.cs" />
     <Compile Include="TestSettings.cs" />
   </ItemGroup>
