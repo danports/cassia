@@ -38,11 +38,6 @@ namespace Cassia.Tests
             get { return _sessionId; }
         }
 
-        public int Connected
-        {
-            get { return _ax.Connected; }
-        }
-
         #region IDisposable Members
 
         public void Dispose()
@@ -64,6 +59,7 @@ namespace Cassia.Tests
             _ax.UserName = _context.Server.Username;
             _ax.AdvancedSettings8.ClearTextPassword = _context.Server.Password;
             _ax.OnConnected += delegate { _connectedEvent.Set(); };
+            _ax.OnDisconnected += AxOnDisconnected;
             _ax.Connect();
 
             // You need a message loop or else the RDP client control will never connect.
@@ -71,5 +67,15 @@ namespace Cassia.Tests
             Application.Run(_form);
             _form.Dispose();
         }
+
+        private void AxOnDisconnected(object sender, IMsTscAxEvents_OnDisconnectedEvent e)
+        {
+            if (Disconnected != null)
+            {
+                Disconnected(this, EventArgs.Empty);
+            }
+        }
+
+        public event EventHandler Disconnected;
     }
 }
