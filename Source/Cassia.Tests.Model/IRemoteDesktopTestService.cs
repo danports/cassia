@@ -10,5 +10,14 @@ namespace Cassia.Tests.Model
 
         [OperationContract]
         int GetLatestSessionId();
+
+        [OperationContract]
+        ConnectionState GetSessionState(int sessionId);
+
+        [OperationContract]
+        void Logoff(int sessionId);
+
+        [OperationContract]
+        bool SessionExists(int sessionId);
     }
 }

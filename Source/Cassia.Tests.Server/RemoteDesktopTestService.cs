@@ -1,7 +1,10 @@
+using System;
+using System.ServiceModel;
 using Cassia.Tests.Model;
 
 namespace Cassia.Tests.Server
 {
+    [ServiceBehavior(IncludeExceptionDetailInFaults = true)]
     public class RemoteDesktopTestService : IRemoteDesktopTestService
     {
         private readonly ITerminalServicesManager _manager = new TerminalServicesManager();
@@ -25,6 +28,29 @@ namespace Cassia.Tests.Server
                 }
             }
             return latest == null ? 0 : latest.SessionId;
+        }
+
+        public ConnectionState GetSessionState(int sessionId)
+        {
+            return _manager.GetLocalServer().GetSession(sessionId).ConnectionState;
+        }
+
+        public void Logoff(int sessionId)
+        {
+            _manager.GetLocalServer().GetSession(sessionId).Logoff();
+        }
+
+        public bool SessionExists(int sessionId)
+        {
+            try
+            {
+                ConnectionState state = _manager.GetLocalServer().GetSession(sessionId).ConnectionState;
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         #endregion

@@ -24,5 +24,19 @@ namespace Cassia.Tests
                 }
             }
         }
+
+        [Test]
+        public void DisconnectOperationUpdatesSessionStatus([TestServers] TestServer server)
+        {
+            using (ServerContext context = new ServerContext(server))
+            {
+                using (RdpConnection connection = context.OpenRdpConnection())
+                {
+                    context.TestService.Disconnect(connection.SessionId);
+                    Assert.That(context.TestService.GetSessionState(connection.SessionId),
+                                Is.EqualTo(ConnectionState.Disconnected));
+                }
+            }
+        }
     }
 }

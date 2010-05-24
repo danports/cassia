@@ -72,10 +72,10 @@ namespace Cassia.Tests
         {
             if (Disconnected != null)
             {
-                Disconnected(this, EventArgs.Empty);
+                Disconnected(this, new DisconnectEventArgs(e.discReason));
             }
         }
 
-        public event EventHandler Disconnected;
+        public event EventHandler<DisconnectEventArgs> Disconnected;
     }
 }
