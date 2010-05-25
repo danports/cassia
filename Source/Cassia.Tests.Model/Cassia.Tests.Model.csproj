@@ -37,6 +37,7 @@
     <Compile Include="..\..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="ConnectionDetails.cs" />
     <Compile Include="EndpointHelper.cs" />
     <Compile Include="IRemoteDesktopTestService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

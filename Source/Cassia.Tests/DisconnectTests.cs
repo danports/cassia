@@ -16,7 +16,7 @@ namespace Cassia.Tests
                 {
                     ManualResetEvent disconnectEvent = new ManualResetEvent(false);
                     connection.Disconnected += delegate { disconnectEvent.Set(); };
-                    context.Source.Disconnect(context.TargetName, connection.SessionId);
+                    context.Source.Disconnect(context.TargetConnection, connection.SessionId);
                     if (!disconnectEvent.WaitOne(TimeSpan.FromSeconds(10)))
                     {
                         throw new TimeoutException("Not disconnected yet");

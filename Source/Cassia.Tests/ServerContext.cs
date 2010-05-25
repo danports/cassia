@@ -24,6 +24,11 @@ namespace Cassia.Tests
             get { return _target.Server.Name; }
         }
 
+        public ConnectionDetails TargetConnection
+        {
+            get { return _target.Server.ConnectionDetails; }
+        }
+
         #region IDisposable Members
 
         public void Dispose()

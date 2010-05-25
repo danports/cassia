@@ -1,3 +1,5 @@
+using Cassia.Tests.Model;
+
 namespace Cassia.Tests
 {
     public class ServerInfo
@@ -6,7 +8,6 @@ namespace Cassia.Tests
         private readonly string _name;
         private readonly string _password;
         private readonly bool _supportsRemoteAdministration;
-
         private readonly string _username;
 
         public ServerInfo(string name, string domain, string username, string password,
@@ -42,6 +43,11 @@ namespace Cassia.Tests
         public string Password
         {
             get { return _password; }
+        }
+
+        public ConnectionDetails ConnectionDetails
+        {
+            get { return new ConnectionDetails(_name, _username, _domain, _password); }
         }
 
         public override string ToString()

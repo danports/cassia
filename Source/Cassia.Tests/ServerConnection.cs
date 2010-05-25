@@ -1,7 +1,6 @@
 using System;
 using System.ComponentModel;
 using System.IO;
-using System.Security.Principal;
 using System.ServiceModel;
 using System.ServiceProcess;
 using System.Threading;
@@ -115,7 +114,6 @@ namespace Cassia.Tests
             NetTcpBinding binding = new NetTcpBinding();
             string remoteAddress = EndpointHelper.GetEndpointUri(_server.Name, EndpointHelper.DefaultPort);
             _channelFactory = new ChannelFactory<IRemoteDesktopTestService>(binding, remoteAddress);
-            _channelFactory.Credentials.Windows.AllowedImpersonationLevel = TokenImpersonationLevel.Delegation;
             _testService = _channelFactory.CreateChannel();
         }
 
