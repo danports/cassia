@@ -1,3 +1,4 @@
+using System;
 using System.Configuration;
 using System.Xml;
 
@@ -16,7 +17,13 @@ namespace Cassia.Tests
                 string domain = childNode.Attributes["domain"].Value;
                 string username = childNode.Attributes["username"].Value;
                 string password = childNode.Attributes["password"].Value;
-                TestServer server = new TestServer(name, domain, username, password);
+                bool remoteAdministration = false;
+                XmlAttribute attribute = childNode.Attributes["supportsRemoteAdministration"];
+                if (attribute != null)
+                {
+                    remoteAdministration = Convert.ToBoolean(attribute.Value);
+                }
+                ServerInfo server = new ServerInfo(name, domain, username, password, remoteAdministration);
                 configuration.AddServer(server);
             }
             return configuration;

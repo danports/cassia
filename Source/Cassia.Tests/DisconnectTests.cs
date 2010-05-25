@@ -8,15 +8,15 @@ namespace Cassia.Tests
     public class DisconnectTests
     {
         [Test]
-        public void DisconnectOperationDisconnectsClient([TestServers] TestServer server)
+        public void OperationDisconnectsClient([TestConfigurations] ServerConfiguration config)
         {
-            using (ServerContext context = new ServerContext(server))
+            using (ServerContext context = new ServerContext(config))
             {
                 using (RdpConnection connection = context.OpenRdpConnection())
                 {
                     ManualResetEvent disconnectEvent = new ManualResetEvent(false);
                     connection.Disconnected += delegate { disconnectEvent.Set(); };
-                    context.TestService.Disconnect(connection.SessionId);
+                    context.Source.Disconnect(context.TargetName, connection.SessionId);
                     if (!disconnectEvent.WaitOne(TimeSpan.FromSeconds(10)))
                     {
                         throw new TimeoutException("Not disconnected yet");
@@ -26,13 +26,13 @@ namespace Cassia.Tests
         }
 
         [Test]
-        public void DisconnectOperationUpdatesSessionStatus([TestServers] TestServer server)
+        public void OperationUpdatesSessionStatus([TestServers] ServerInfo server)
         {
-            using (ServerContext context = new ServerContext(server))
+            using (ServerConnection context = new ServerConnection(server))
             {
                 using (RdpConnection connection = context.OpenRdpConnection())
                 {
-                    context.TestService.Disconnect(connection.SessionId);
+                    context.TestService.Disconnect(null, connection.SessionId);
                     Assert.That(context.TestService.GetSessionState(connection.SessionId),
                                 Is.EqualTo(ConnectionState.Disconnected));
                 }

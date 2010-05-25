@@ -34,7 +34,6 @@ namespace Cassia.Tests.Server
         {
             _host = new ServiceHost(typeof(RemoteDesktopTestService));
             NetTcpBinding binding = new NetTcpBinding();
-            binding.Security.Mode = SecurityMode.None;
             _host.AddServiceEndpoint(typeof(IRemoteDesktopTestService), binding,
                                      EndpointHelper.GetEndpointUri("localhost", EndpointHelper.DefaultPort));
             _host.Open();

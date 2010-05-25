@@ -8,9 +8,9 @@ namespace Cassia.Tests
     public class LogoffTests
     {
         [Test]
-        public void OperationClosesSession([TestServers] TestServer server)
+        public void OperationClosesSession([TestServers] ServerInfo server)
         {
-            using (ServerContext context = new ServerContext(server))
+            using (ServerConnection context = new ServerConnection(server))
             {
                 using (RdpConnection connection = context.OpenRdpConnection())
                 {
@@ -23,9 +23,9 @@ namespace Cassia.Tests
         }
 
         [Test]
-        public void OperationDisconnectsClient([TestServers] TestServer server)
+        public void OperationDisconnectsClient([TestServers] ServerInfo server)
         {
-            using (ServerContext context = new ServerContext(server))
+            using (ServerConnection context = new ServerConnection(server))
             {
                 using (RdpConnection connection = context.OpenRdpConnection())
                 {

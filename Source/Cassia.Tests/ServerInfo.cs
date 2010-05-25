@@ -1,18 +1,27 @@
 namespace Cassia.Tests
 {
-    public class TestServer
+    public class ServerInfo
     {
         private readonly string _domain;
         private readonly string _name;
         private readonly string _password;
+        private readonly bool _supportsRemoteAdministration;
+
         private readonly string _username;
 
-        public TestServer(string name, string domain, string username, string password)
+        public ServerInfo(string name, string domain, string username, string password,
+                          bool supportsRemoteAdministration)
         {
             _name = name;
             _domain = domain;
             _username = username;
             _password = password;
+            _supportsRemoteAdministration = supportsRemoteAdministration;
+        }
+
+        public bool SupportsRemoteAdministration
+        {
+            get { return _supportsRemoteAdministration; }
         }
 
         public string Name

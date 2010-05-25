@@ -6,7 +6,7 @@ namespace Cassia.Tests.Model
     public interface IRemoteDesktopTestService
     {
         [OperationContract]
-        void Disconnect(int sessionId);
+        void Disconnect(string server, int sessionId);
 
         [OperationContract]
         int GetLatestSessionId();

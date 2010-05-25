@@ -8,13 +8,13 @@ namespace Cassia.Tests
     public class RdpConnection : IDisposable
     {
         private readonly ManualResetEvent _connectedEvent;
-        private readonly ServerContext _context;
+        private readonly ServerConnection _context;
         private readonly int _sessionId;
         private readonly Thread _thread;
         private AxMsRdpClient7NotSafeForScripting _ax;
         private TestForm _form;
 
-        public RdpConnection(ServerContext context)
+        public RdpConnection(ServerConnection context)
         {
             _context = context;
 

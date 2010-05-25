@@ -13,9 +13,35 @@ namespace Cassia.Tests
                              new TestServerConfiguration();
         }
 
-        public IEnumerable<TestServer> Servers
+        public IEnumerable<ServerInfo> Servers
         {
             get { return _configuration.Servers; }
+        }
+
+        public IEnumerable<ServerConfiguration> Configurations
+        {
+            get
+            {
+                List<ServerConfiguration> configurations = new List<ServerConfiguration>();
+                foreach (ServerInfo source in Servers)
+                {
+                    foreach (ServerInfo target in Servers)
+                    {
+                        if (source == target)
+                        {
+                            configurations.Add(new ServerConfiguration(source));
+                        }
+                        else
+                        {
+                            if (target.SupportsRemoteAdministration)
+                            {
+                                configurations.Add(new ServerConfiguration(source, target));
+                            }
+                        }
+                    }
+                }
+                return configurations;
+            }
         }
     }
 }
