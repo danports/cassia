@@ -18,9 +18,8 @@ namespace Cassia.Impl
 
         public static ConnectionState GetConnectionState(ITerminalServerHandle server, int sessionId)
         {
-            ProcessSessionCallback<ConnectionState> callback =
-                delegate(IntPtr mem, int returned) { return (ConnectionState) Marshal.ReadInt32(mem); };
-            return QuerySessionInformation(server, sessionId, WTS_INFO_CLASS.WTSConnectState, callback);
+            return QuerySessionInformation(server, sessionId, WTS_INFO_CLASS.WTSConnectState,
+                                           (mem, returned) => (ConnectionState) Marshal.ReadInt32(mem));
         }
 
         private static T QuerySessionInformation<T>(ITerminalServerHandle server, int sessionId,
@@ -48,17 +47,15 @@ namespace Cassia.Impl
         public static string QuerySessionInformationForString(ITerminalServerHandle server, int sessionId,
                                                               WTS_INFO_CLASS infoClass)
         {
-            ProcessSessionCallback<string> callback =
-                delegate(IntPtr mem, int returned) { return mem == IntPtr.Zero ? null : Marshal.PtrToStringAuto(mem); };
-            return QuerySessionInformation(server, sessionId, infoClass, callback);
+            return QuerySessionInformation(server, sessionId, infoClass,
+                                           (mem, returned) => mem == IntPtr.Zero ? null : Marshal.PtrToStringAuto(mem));
         }
 
         public static T QuerySessionInformationForStruct<T>(ITerminalServerHandle server, int sessionId,
                                                             WTS_INFO_CLASS infoClass) where T : struct
         {
-            ProcessSessionCallback<T> callback =
-                delegate(IntPtr mem, int returned) { return (T) Marshal.PtrToStructure(mem, typeof(T)); };
-            return QuerySessionInformation(server, sessionId, infoClass, callback);
+            return QuerySessionInformation(server, sessionId, infoClass,
+                                           (mem, returned) => (T) Marshal.PtrToStructure(mem, typeof(T)));
         }
 
         public static WINSTATIONINFORMATIONW GetWinStationInformation(ITerminalServerHandle server, int sessionId)
@@ -220,8 +217,7 @@ namespace Cassia.Impl
         public static int QuerySessionInformationForInt(ITerminalServerHandle server, int sessionId,
                                                         WTS_INFO_CLASS infoClass)
         {
-            ProcessSessionCallback<int> callback = delegate(IntPtr mem, int returned) { return Marshal.ReadInt32(mem); };
-            return QuerySessionInformation(server, sessionId, infoClass, callback);
+            return QuerySessionInformation(server, sessionId, infoClass, (mem, returned) => Marshal.ReadInt32(mem));
         }
 
         public static void ShutdownSystem(ITerminalServerHandle server, int flags)
@@ -244,8 +240,24 @@ namespace Cassia.Impl
         public static short QuerySessionInformationForShort(ITerminalServerHandle server, int sessionId,
                                                             WTS_INFO_CLASS infoClass)
         {
-            return QuerySessionInformation(server, sessionId, infoClass,
-                                           delegate(IntPtr mem, int returned) { return Marshal.ReadInt16(mem); });
+            return QuerySessionInformation(server, sessionId, infoClass, (mem, returned) => Marshal.ReadInt16(mem));
+        }
+
+        public static IPAddress ExtractIPAddress(AddressFamily family, byte[] rawAddress)
+        {
+            switch (family)
+            {
+                case AddressFamily.InterNetwork:
+                    var v4Addr = new byte[4];
+                    // TODO: I'm not sure what type of address structure this is that we need to start at offset 2.
+                    Array.Copy(rawAddress, 2, v4Addr, 0, 4);
+                    return new IPAddress(v4Addr);
+                case AddressFamily.InterNetworkV6:
+                    var v6Addr = new byte[16];
+                    Array.Copy(rawAddress, 2, v6Addr, 0, 16);
+                    return new IPAddress(v6Addr);
+            }
+            return null;
         }
 
         public static EndPoint QuerySessionInformationForEndPoint(ITerminalServerHandle server, int sessionId)
@@ -259,15 +271,9 @@ namespace Cassia.Impl
                                                                       Marshal.SizeOf(typeof(WINSTATIONREMOTEADDRESS)),
                                                                       out retLen) != 0)
             {
-                if (remoteAddress.Family == (int) AddressFamily.InterNetwork)
-                {
-                    var addr = new byte[4];
-                    Array.Copy(remoteAddress.Address, 2, addr, 0, 4);
-                    int port = NativeMethods.ntohs((ushort) remoteAddress.Port);
-                    return new IPEndPoint(new IPAddress(addr), port);
-                }
-                // TODO: IPv6 support
-                return null;
+                var ipAddress = ExtractIPAddress(remoteAddress.Family, remoteAddress.Address);
+                int port = NativeMethods.ntohs((ushort) remoteAddress.Port);
+                return ipAddress == null ? null : new IPEndPoint(ipAddress, port);
             }
             throw new Win32Exception();
         }

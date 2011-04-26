@@ -1,3 +1,4 @@
+using System.Net.Sockets;
 using System.Runtime.InteropServices;
 
 namespace Cassia.Impl
@@ -5,7 +6,7 @@ namespace Cassia.Impl
     [StructLayout(LayoutKind.Sequential)]
     public struct WINSTATIONREMOTEADDRESS
     {
-        public int Family;
+        public AddressFamily Family;
         public short Port;
 
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]

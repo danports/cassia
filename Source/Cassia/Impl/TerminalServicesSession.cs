@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Sockets;
 using System.Security.Principal;
 
 namespace Cassia.Impl
@@ -459,15 +458,7 @@ namespace Cassia.Impl
         {
             var clientAddress = NativeMethodsHelper.QuerySessionInformationForStruct<WTS_CLIENT_ADDRESS>(
                 _server.Handle, _sessionId, WTS_INFO_CLASS.WTSClientAddress);
-            var addressFamily = (AddressFamily) clientAddress.AddressFamily;
-            if (addressFamily == AddressFamily.InterNetwork)
-            {
-                var address = new byte[4];
-                Array.Copy(clientAddress.Address, 2, address, 0, 4);
-                return new IPAddress(address);
-            }
-            // TODO: support IPv6
-            return null;
+            return NativeMethodsHelper.ExtractIPAddress(clientAddress.AddressFamily, clientAddress.Address);
         }
 
         private int GetClientBuildNumber()
