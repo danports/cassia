@@ -1,6 +1,6 @@
 using System;
 using System.Runtime.InteropServices;
-using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
+using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace Cassia.Impl
 {

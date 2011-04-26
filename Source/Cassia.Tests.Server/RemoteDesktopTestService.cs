@@ -15,7 +15,7 @@ namespace Cassia.Tests.Server
         {
             using (ImpersonationHelper.Impersonate(connection))
             {
-                using (ITerminalServer server = GetServer(connection.Server))
+                using (var server = GetServer(connection.Server))
                 {
                     server.Open();
                     server.GetSession(sessionId).Disconnect();
@@ -51,7 +51,7 @@ namespace Cassia.Tests.Server
         {
             try
             {
-                ConnectionState state = _manager.GetLocalServer().GetSession(sessionId).ConnectionState;
+                var state = _manager.GetLocalServer().GetSession(sessionId).ConnectionState;
                 return true;
             }
             catch (Exception)

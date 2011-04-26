@@ -4,7 +4,7 @@ using System.ComponentModel;
 using System.Net;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
-using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
+using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace Cassia.Impl
 {
@@ -63,8 +63,8 @@ namespace Cassia.Impl
 
         public static WINSTATIONINFORMATIONW GetWinStationInformation(ITerminalServerHandle server, int sessionId)
         {
-            int retLen = 0;
-            WINSTATIONINFORMATIONW wsInfo = new WINSTATIONINFORMATIONW();
+            var retLen = 0;
+            var wsInfo = new WINSTATIONINFORMATIONW();
             if (
                 NativeMethods.WinStationQueryInformation(server.Handle, sessionId,
                                                          (int) WINSTATIONINFOCLASS.WinStationInformation, ref wsInfo,
@@ -78,7 +78,7 @@ namespace Cassia.Impl
 
         public static DateTime? FileTimeToDateTime(FILETIME ft)
         {
-            SYSTEMTIME sysTime = new SYSTEMTIME();
+            var sysTime = new SYSTEMTIME();
             if (NativeMethods.FileTimeToSystemTime(ref ft, ref sysTime) == 0)
             {
                 return null;
@@ -167,12 +167,12 @@ namespace Cassia.Impl
 
         private static IList<T> PtrToStructureList<T>(IntPtr ppList, int count) where T : struct
         {
-            List<T> result = new List<T>();
-            long pointer = ppList.ToInt64();
-            int sizeOf = Marshal.SizeOf(typeof(T));
-            for (int index = 0; index < count; index++)
+            var result = new List<T>();
+            var pointer = ppList.ToInt64();
+            var sizeOf = Marshal.SizeOf(typeof(T));
+            for (var index = 0; index < count; index++)
             {
-                T item = (T) Marshal.PtrToStructure(new IntPtr(pointer), typeof(T));
+                var item = (T) Marshal.PtrToStructure(new IntPtr(pointer), typeof(T));
                 result.Add(item);
                 pointer += sizeOf;
             }
@@ -191,7 +191,7 @@ namespace Cassia.Impl
             {
                 // We can't just return a list of WTS_PROCESS_INFOs because those have pointers to 
                 // SIDs that have to be copied into managed memory first. So we use a callback instead.
-                IList<WTS_PROCESS_INFO> processInfos = PtrToStructureList<WTS_PROCESS_INFO>(ppProcessInfo, count);
+                var processInfos = PtrToStructureList<WTS_PROCESS_INFO>(ppProcessInfo, count);
                 foreach (WTS_PROCESS_INFO processInfo in processInfos)
                 {
                     // It seems that WTSEnumerateProcesses likes to return an empty struct in the first 
@@ -244,14 +244,14 @@ namespace Cassia.Impl
         public static short QuerySessionInformationForShort(ITerminalServerHandle server, int sessionId,
                                                             WTS_INFO_CLASS infoClass)
         {
-            return QuerySessionInformation<short>(server, sessionId, infoClass,
-                                                  delegate(IntPtr mem, int returned) { return Marshal.ReadInt16(mem); });
+            return QuerySessionInformation(server, sessionId, infoClass,
+                                           delegate(IntPtr mem, int returned) { return Marshal.ReadInt16(mem); });
         }
 
         public static EndPoint QuerySessionInformationForEndPoint(ITerminalServerHandle server, int sessionId)
         {
             int retLen;
-            WINSTATIONREMOTEADDRESS remoteAddress = new WINSTATIONREMOTEADDRESS();
+            var remoteAddress = new WINSTATIONREMOTEADDRESS();
             if (
                 NativeMethods.WinStationQueryInformationRemoteAddress(server.Handle, sessionId,
                                                                       WINSTATIONINFOCLASS.WinStationRemoteAddress,
@@ -261,7 +261,7 @@ namespace Cassia.Impl
             {
                 if (remoteAddress.Family == (int) AddressFamily.InterNetwork)
                 {
-                    byte[] addr = new byte[4];
+                    var addr = new byte[4];
                     Array.Copy(remoteAddress.Address, 2, addr, 0, 4);
                     int port = NativeMethods.ntohs((ushort) remoteAddress.Port);
                     return new IPEndPoint(new IPAddress(addr), port);
@@ -330,7 +330,7 @@ namespace Cassia.Impl
 
         public static int? GetActiveConsoleSessionId()
         {
-            int sessionId = NativeMethods.WTSGetActiveConsoleSessionId();
+            var sessionId = NativeMethods.WTSGetActiveConsoleSessionId();
             return sessionId == -1 ? (int?) null : sessionId;
         }
 

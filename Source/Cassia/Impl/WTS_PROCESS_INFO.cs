@@ -8,8 +8,10 @@ namespace Cassia.Impl
     {
         public int SessionId;
         public int ProcessId;
+
         [MarshalAs(UnmanagedType.LPTStr)]
         public string ProcessName;
+
         public IntPtr UserSid;
     }
 }

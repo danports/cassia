@@ -97,7 +97,7 @@ namespace Cassia.Tests
 
         private void CopyFilesToServer()
         {
-            string targetDirectory = TargetDirectory;
+            var targetDirectory = TargetDirectory;
             if (!Directory.Exists(targetDirectory))
             {
                 Directory.CreateDirectory(targetDirectory);
@@ -111,8 +111,8 @@ namespace Cassia.Tests
 
         private void ConnectToService()
         {
-            NetTcpBinding binding = new NetTcpBinding();
-            string remoteAddress = EndpointHelper.GetEndpointUri(_server.Name, EndpointHelper.DefaultPort);
+            var binding = new NetTcpBinding();
+            var remoteAddress = EndpointHelper.GetEndpointUri(_server.Name, EndpointHelper.DefaultPort);
             _channelFactory = new ChannelFactory<IRemoteDesktopTestService>(binding, remoteAddress);
             _testService = _channelFactory.CreateChannel();
         }
@@ -123,7 +123,7 @@ namespace Cassia.Tests
                                                       ServiceType.Win32OwnProcess, ServiceStartMode.Automatic,
                                                       ServiceHelper.ServiceErrorControl.Normal,
                                                       @"C:\Windows\Temp\CassiaTestServer\Cassia.Tests.Server.exe", null,
-                                                      new string[] {"TermService"}, null, null);
+                                                      new[] {"TermService"}, null, null);
             _serviceController.Start();
             _serviceController.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromMinutes(30));
         }

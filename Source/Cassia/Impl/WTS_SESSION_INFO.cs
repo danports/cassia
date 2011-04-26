@@ -6,8 +6,10 @@ namespace Cassia.Impl
     public struct WTS_SESSION_INFO
     {
         public int SessionID;
+
         [MarshalAs(UnmanagedType.LPTStr)]
         public string WinStationName;
+
         public ConnectionState State;
     }
 }

@@ -71,10 +71,9 @@ namespace Cassia.Impl
         {
             get
             {
-                return
-                    _server.ServerName == null
-                        ? Process.GetProcessById(_processId)
-                        : Process.GetProcessById(_processId, _server.ServerName);
+                return _server.ServerName == null
+                           ? Process.GetProcessById(_processId)
+                           : Process.GetProcessById(_processId, _server.ServerName);
             }
         }
 

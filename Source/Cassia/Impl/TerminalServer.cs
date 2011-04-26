@@ -39,8 +39,8 @@ namespace Cassia.Impl
 
         public IList<ITerminalServicesSession> GetSessions()
         {
-            List<ITerminalServicesSession> results = new List<ITerminalServicesSession>();
-            IList<WTS_SESSION_INFO> sessionInfos = NativeMethodsHelper.GetSessionInfos(Handle);
+            var results = new List<ITerminalServicesSession>();
+            var sessionInfos = NativeMethodsHelper.GetSessionInfos(Handle);
             foreach (WTS_SESSION_INFO sessionInfo in sessionInfos)
             {
                 results.Add(new TerminalServicesSession(this, sessionInfo));
@@ -71,7 +71,7 @@ namespace Cassia.Impl
 
         public IList<ITerminalServicesProcess> GetProcesses()
         {
-            List<ITerminalServicesProcess> processes = new List<ITerminalServicesProcess>();
+            var processes = new List<ITerminalServicesProcess>();
             NativeMethodsHelper.ForEachProcessInfo(Handle,
                                                    delegate(WTS_PROCESS_INFO processInfo) { processes.Add(new TerminalServicesProcess(this, processInfo)); });
             return processes;

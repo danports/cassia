@@ -21,7 +21,8 @@ namespace Cassia.Impl
         public int TdErrors;
         public short ProtocolType;
         public short Length;
+
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 100)]
-        private int[] Reserved;
+        public int[] Reserved;
     }
 }

@@ -23,7 +23,7 @@ namespace Cassia
         {
             get
             {
-                int? sessionId = NativeMethodsHelper.GetActiveConsoleSessionId();
+                var sessionId = NativeMethodsHelper.GetActiveConsoleSessionId();
                 return sessionId == null ? null : new TerminalServicesSession(GetLocalServer(), sessionId.Value);
             }
         }
@@ -43,7 +43,7 @@ namespace Cassia
         /// <inheritdoc />
         public IList<ITerminalServer> GetServers(string domainName)
         {
-            List<ITerminalServer> servers = new List<ITerminalServer>();
+            var servers = new List<ITerminalServer>();
             foreach (WTS_SERVER_INFO serverInfo in NativeMethodsHelper.EnumerateServers(domainName))
             {
                 servers.Add(new TerminalServer(new RemoteServerHandle(serverInfo.ServerName)));

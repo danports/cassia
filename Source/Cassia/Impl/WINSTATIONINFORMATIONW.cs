@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using FILETIME=System.Runtime.InteropServices.ComTypes.FILETIME;
+using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace Cassia.Impl
 {
@@ -71,8 +71,10 @@ namespace Cassia.Impl
     public struct WINSTATIONINFORMATIONW
     {
         public ConnectionState State;
+
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 33)]
         public string WinStationName;
+
         public int SessionId;
         public int Unknown;
         public FILETIME ConnectTime;
@@ -80,10 +82,13 @@ namespace Cassia.Impl
         public FILETIME LastInputTime;
         public FILETIME LoginTime;
         public PROTOCOLSTATUS ProtocolStatus;
+
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 18)]
         public string Domain;
+
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 24)]
         public string UserName;
+
         public FILETIME CurrentTime;
     }
 }

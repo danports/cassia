@@ -41,7 +41,7 @@ namespace Cassia.Tests.Server
 
         public static IDisposable Impersonate(ConnectionDetails connection)
         {
-            IntPtr token = IntPtr.Zero;
+            var token = IntPtr.Zero;
             if (
                 LogonUser(connection.Username, connection.Domain, connection.Password, LogonType.Interactive,
                           LogonProvider.Default, ref token) == 0)

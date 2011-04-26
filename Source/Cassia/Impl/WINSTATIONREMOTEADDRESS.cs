@@ -7,9 +7,11 @@ namespace Cassia.Impl
     {
         public int Family;
         public short Port;
+
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
         public byte[] Address;
+
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
         public byte[] Reserved;
-    } 
+    }
 }

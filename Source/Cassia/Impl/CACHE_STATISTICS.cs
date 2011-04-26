@@ -5,9 +5,10 @@ namespace Cassia.Impl
     [StructLayout(LayoutKind.Sequential)]
     public struct CACHE_STATISTICS
     {
-        short ProtocolType;
-        short Length;
+        private readonly short ProtocolType;
+        private readonly short Length;
+
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
-        private int[] Reserved;
+        private readonly int[] Reserved;
     }
 }

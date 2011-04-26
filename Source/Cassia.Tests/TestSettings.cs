@@ -22,7 +22,7 @@ namespace Cassia.Tests
         {
             get
             {
-                List<ServerConfiguration> configurations = new List<ServerConfiguration>();
+                var configurations = new List<ServerConfiguration>();
                 foreach (ServerInfo source in Servers)
                 {
                     foreach (ServerInfo target in Servers)

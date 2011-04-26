@@ -10,20 +10,20 @@ namespace Cassia.Tests
 
         public object Create(object parent, object configContext, XmlNode section)
         {
-            TestServerConfiguration configuration = new TestServerConfiguration();
+            var configuration = new TestServerConfiguration();
             foreach (XmlNode childNode in section.ChildNodes)
             {
-                string name = childNode.Attributes["name"].Value;
-                string domain = childNode.Attributes["domain"].Value;
-                string username = childNode.Attributes["username"].Value;
-                string password = childNode.Attributes["password"].Value;
-                bool remoteAdministration = false;
-                XmlAttribute attribute = childNode.Attributes["supportsRemoteAdministration"];
+                var name = childNode.Attributes["name"].Value;
+                var domain = childNode.Attributes["domain"].Value;
+                var username = childNode.Attributes["username"].Value;
+                var password = childNode.Attributes["password"].Value;
+                var remoteAdministration = false;
+                var attribute = childNode.Attributes["supportsRemoteAdministration"];
                 if (attribute != null)
                 {
                     remoteAdministration = Convert.ToBoolean(attribute.Value);
                 }
-                ServerInfo server = new ServerInfo(name, domain, username, password, remoteAdministration);
+                var server = new ServerInfo(name, domain, username, password, remoteAdministration);
                 configuration.AddServer(server);
             }
             return configuration;

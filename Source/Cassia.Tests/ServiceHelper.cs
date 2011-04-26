@@ -79,19 +79,19 @@ namespace Cassia.Tests
                                                string loadOrderGroup, string[] dependencies, string serviceStartName,
                                                string password)
         {
-            IntPtr hScManager = OpenSCManager(machineName, null, ScmAccessRights.CreateService);
+            var hScManager = OpenSCManager(machineName, null, ScmAccessRights.CreateService);
             if (hScManager == IntPtr.Zero)
             {
                 throw new Win32Exception();
             }
             try
             {
-                string dependencyList = dependencies == null || dependencies.Length == 0
-                                            ? null
-                                            : string.Join("\0", dependencies);
-                IntPtr hService = CreateService(hScManager, serviceName, displayName, ServiceAccessRights.AllAccess,
-                                                serviceType, startType, errorControl, binaryPathName, loadOrderGroup,
-                                                IntPtr.Zero, dependencyList, serviceStartName, password);
+                var dependencyList = dependencies == null || dependencies.Length == 0
+                                         ? null
+                                         : string.Join("\0", dependencies);
+                var hService = CreateService(hScManager, serviceName, displayName, ServiceAccessRights.AllAccess,
+                                             serviceType, startType, errorControl, binaryPathName, loadOrderGroup,
+                                             IntPtr.Zero, dependencyList, serviceStartName, password);
                 if (hService == IntPtr.Zero)
                 {
                     throw new Win32Exception();
@@ -108,14 +108,14 @@ namespace Cassia.Tests
 
         public static void Delete(ServiceController service)
         {
-            IntPtr hScManager = OpenSCManager(service.MachineName, null, ScmAccessRights.AllAccess);
+            var hScManager = OpenSCManager(service.MachineName, null, ScmAccessRights.AllAccess);
             if (hScManager == IntPtr.Zero)
             {
                 throw new Win32Exception();
             }
             try
             {
-                IntPtr hService = OpenService(hScManager, service.ServiceName, ServiceAccessRights.AllAccess);
+                var hService = OpenService(hScManager, service.ServiceName, ServiceAccessRights.AllAccess);
                 if (hService == IntPtr.Zero)
                 {
                     throw new Win32Exception();

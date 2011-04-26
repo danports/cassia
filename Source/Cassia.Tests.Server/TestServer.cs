@@ -40,13 +40,13 @@ namespace Cassia.Tests.Server
 
         private static void OpenFirewallPort()
         {
-            INetFwProfile profile = GetCurrentFirewallProfile();
+            var profile = GetCurrentFirewallProfile();
             if (!profile.FirewallEnabled)
             {
                 return;
             }
-            Type portType = Type.GetTypeFromProgID("HNetCfg.FWOpenPort", false);
-            INetFwOpenPort port = (INetFwOpenPort) Activator.CreateInstance(portType);
+            var portType = Type.GetTypeFromProgID("HNetCfg.FWOpenPort", false);
+            var port = (INetFwOpenPort) Activator.CreateInstance(portType);
             port.Name = "CassiaTestService";
             port.Port = EndpointHelper.DefaultPort;
             port.Protocol = NET_FW_IP_PROTOCOL_.NET_FW_IP_PROTOCOL_TCP;
@@ -57,8 +57,8 @@ namespace Cassia.Tests.Server
 
         private static INetFwProfile GetCurrentFirewallProfile()
         {
-            Type type = Type.GetTypeFromProgID("HNetCfg.FwMgr", false);
-            INetFwMgr manager = (INetFwMgr) Activator.CreateInstance(type);
+            var type = Type.GetTypeFromProgID("HNetCfg.FwMgr", false);
+            var manager = (INetFwMgr) Activator.CreateInstance(type);
             return manager.LocalPolicy.CurrentProfile;
         }
 
@@ -66,7 +66,7 @@ namespace Cassia.Tests.Server
         {
             try
             {
-                INetFwProfile profile = GetCurrentFirewallProfile();
+                var profile = GetCurrentFirewallProfile();
                 if (!profile.FirewallEnabled)
                 {
                     return;

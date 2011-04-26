@@ -20,8 +20,8 @@ namespace Cassia.Impl
         private readonly LazyLoadedProperty<string> _clientName;
         private readonly LazyLoadedProperty<short> _clientProductId;
         private readonly LazyLoadedProperty<ClientProtocolType> _clientProtocolType;
-        private readonly GroupLazyLoadedProperty<ConnectionState> _connectionState;
         private readonly GroupLazyLoadedProperty<DateTime?> _connectTime;
+        private readonly GroupLazyLoadedProperty<ConnectionState> _connectionState;
         private readonly GroupLazyLoadedProperty<DateTime?> _currentTime;
         private readonly GroupLazyLoadedProperty<DateTime?> _disconnectTime;
         private readonly GroupLazyLoadedProperty<string> _domainName;
@@ -60,9 +60,9 @@ namespace Cassia.Impl
             // TODO: MSDN says most of these properties should be null for the console session.
             // I haven't observed this in practice on Windows Server 2000, 2003, or 2008, but perhaps this 
             // should be considered.
-            GroupPropertyLoader loader = IsVistaSp1OrHigher
-                                             ? (GroupPropertyLoader) LoadWtsInfoProperties
-                                             : LoadWinStationInformationProperties;
+            var loader = IsVistaSp1OrHigher
+                             ? (GroupPropertyLoader) LoadWtsInfoProperties
+                             : LoadWinStationInformationProperties;
             _windowStationName = new GroupLazyLoadedProperty<string>(loader);
             _connectionState = new GroupLazyLoadedProperty<ConnectionState>(loader);
             _connectTime = new GroupLazyLoadedProperty<DateTime?>(loader);
@@ -287,11 +287,11 @@ namespace Cassia.Impl
                                                  RemoteMessageBoxIcon icon, RemoteMessageBoxDefaultButton defaultButton,
                                                  RemoteMessageBoxOptions options, TimeSpan timeout, bool synchronous)
         {
-            int timeoutSeconds = (int) timeout.TotalSeconds;
-            int style = (int) buttons | (int) icon | (int) defaultButton | (int) options;
+            var timeoutSeconds = (int) timeout.TotalSeconds;
+            var style = (int) buttons | (int) icon | (int) defaultButton | (int) options;
             // TODO: Win 2003 Server doesn't start timeout counter until user moves mouse in session.
-            RemoteMessageBoxResult result = NativeMethodsHelper.SendMessage(_server.Handle, _sessionId, caption, text,
-                                                                            style, timeoutSeconds, synchronous);
+            var result = NativeMethodsHelper.SendMessage(_server.Handle, _sessionId, caption, text, style,
+                                                         timeoutSeconds, synchronous);
             // TODO: Windows Server 2008 R2 beta returns 0 if the timeout expires.
             // find out why this happens or file a bug report.
             return result == 0 ? RemoteMessageBoxResult.Timeout : result;
@@ -299,8 +299,8 @@ namespace Cassia.Impl
 
         public IList<ITerminalServicesProcess> GetProcesses()
         {
-            IList<ITerminalServicesProcess> allProcesses = _server.GetProcesses();
-            List<ITerminalServicesProcess> results = new List<ITerminalServicesProcess>();
+            var allProcesses = _server.GetProcesses();
+            var results = new List<ITerminalServicesProcess>();
             foreach (ITerminalServicesProcess process in allProcesses)
             {
                 if (process.SessionId == _sessionId)
@@ -360,7 +360,7 @@ namespace Cassia.Impl
 
         private void LoadWinStationInformationProperties()
         {
-            WINSTATIONINFORMATIONW wsInfo = NativeMethodsHelper.GetWinStationInformation(_server.Handle, _sessionId);
+            var wsInfo = NativeMethodsHelper.GetWinStationInformation(_server.Handle, _sessionId);
             _windowStationName.Value = wsInfo.WinStationName;
             _connectionState.Value = wsInfo.State;
             _connectTime.Value = NativeMethodsHelper.FileTimeToDateTime(wsInfo.ConnectTime);
@@ -376,8 +376,8 @@ namespace Cassia.Impl
 
         private void LoadWtsInfoProperties()
         {
-            WTSINFO info = NativeMethodsHelper.QuerySessionInformationForStruct<WTSINFO>(_server.Handle, _sessionId,
-                                                                                         WTS_INFO_CLASS.WTSSessionInfo);
+            var info = NativeMethodsHelper.QuerySessionInformationForStruct<WTSINFO>(_server.Handle, _sessionId,
+                                                                                     WTS_INFO_CLASS.WTSSessionInfo);
             _connectionState.Value = info.State;
             _incomingStatistics.Value = new ProtocolStatistics(info.IncomingBytes, info.IncomingFrames,
                                                                info.IncomingCompressedBytes);
@@ -450,21 +450,19 @@ namespace Cassia.Impl
 
         private IClientDisplay GetClientDisplay()
         {
-            WTS_CLIENT_DISPLAY clientDisplay =
-                NativeMethodsHelper.QuerySessionInformationForStruct<WTS_CLIENT_DISPLAY>(_server.Handle, _sessionId,
-                                                                                         WTS_INFO_CLASS.WTSClientDisplay);
+            var clientDisplay = NativeMethodsHelper.QuerySessionInformationForStruct<WTS_CLIENT_DISPLAY>(
+                _server.Handle, _sessionId, WTS_INFO_CLASS.WTSClientDisplay);
             return new ClientDisplay(clientDisplay);
         }
 
         private IPAddress GetClientIPAddress()
         {
-            WTS_CLIENT_ADDRESS clientAddress =
-                NativeMethodsHelper.QuerySessionInformationForStruct<WTS_CLIENT_ADDRESS>(_server.Handle, _sessionId,
-                                                                                         WTS_INFO_CLASS.WTSClientAddress);
-            AddressFamily addressFamily = (AddressFamily) clientAddress.AddressFamily;
+            var clientAddress = NativeMethodsHelper.QuerySessionInformationForStruct<WTS_CLIENT_ADDRESS>(
+                _server.Handle, _sessionId, WTS_INFO_CLASS.WTSClientAddress);
+            var addressFamily = (AddressFamily) clientAddress.AddressFamily;
             if (addressFamily == AddressFamily.InterNetwork)
             {
-                byte[] address = new byte[4];
+                var address = new byte[4];
                 Array.Copy(clientAddress.Address, 2, address, 0, 4);
                 return new IPAddress(address);
             }

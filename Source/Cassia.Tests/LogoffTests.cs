@@ -10,9 +10,9 @@ namespace Cassia.Tests
         [Test]
         public void OperationClosesSession([TestServers] ServerInfo server)
         {
-            using (ServerConnection context = new ServerConnection(server))
+            using (var context = new ServerConnection(server))
             {
-                using (RdpConnection connection = context.OpenRdpConnection())
+                using (var connection = context.OpenRdpConnection())
                 {
                     context.TestService.Logoff(connection.SessionId);
                     // Give Windows a bit of time to clean up the session.
@@ -25,11 +25,11 @@ namespace Cassia.Tests
         [Test]
         public void OperationDisconnectsClient([TestServers] ServerInfo server)
         {
-            using (ServerConnection context = new ServerConnection(server))
+            using (var context = new ServerConnection(server))
             {
-                using (RdpConnection connection = context.OpenRdpConnection())
+                using (var connection = context.OpenRdpConnection())
                 {
-                    ManualResetEvent disconnectEvent = new ManualResetEvent(false);
+                    var disconnectEvent = new ManualResetEvent(false);
                     connection.Disconnected += delegate { disconnectEvent.Set(); };
                     context.TestService.Logoff(connection.SessionId);
                     if (!disconnectEvent.WaitOne(TimeSpan.FromSeconds(10)))

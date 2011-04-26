@@ -87,12 +87,12 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo connect [source session id] [target session id] [password]");
                 return;
             }
-            using (ITerminalServer server = _manager.GetLocalServer())
+            using (var server = _manager.GetLocalServer())
             {
                 server.Open();
-                ITerminalServicesSession source = server.GetSession(int.Parse(args[1]));
-                ITerminalServicesSession target = server.GetSession(int.Parse(args[2]));
-                string password = args[3];
+                var source = server.GetSession(int.Parse(args[1]));
+                var target = server.GetSession(int.Parse(args[2]));
+                var password = args[3];
                 source.Connect(target, password, true);
             }
         }
@@ -104,10 +104,10 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo stopremotecontrol [session id]");
                 return;
             }
-            using (ITerminalServer server = _manager.GetLocalServer())
+            using (var server = _manager.GetLocalServer())
             {
                 server.Open();
-                ITerminalServicesSession session = server.GetSession(int.Parse(args[1]));
+                var session = server.GetSession(int.Parse(args[1]));
                 session.StopRemoteControl();
             }
         }
@@ -119,14 +119,14 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo startremotecontrol [server] [session id] [modifier] [hotkey]");
                 return;
             }
-            using (ITerminalServer server = GetServerFromName(args[1]))
+            using (var server = GetServerFromName(args[1]))
             {
                 server.Open();
-                ITerminalServicesSession session = server.GetSession(int.Parse(args[2]));
-                RemoteControlHotkeyModifiers modifier =
+                var session = server.GetSession(int.Parse(args[2]));
+                var modifier =
                     (RemoteControlHotkeyModifiers)
                     Enum.Parse(typeof(RemoteControlHotkeyModifiers), args[3].Replace('+', ','), true);
-                ConsoleKey hotkey = (ConsoleKey) Enum.Parse(typeof(ConsoleKey), args[4], true);
+                var hotkey = (ConsoleKey) Enum.Parse(typeof(ConsoleKey), args[4], true);
                 session.StartRemoteControl(hotkey, modifier);
             }
         }
@@ -152,10 +152,10 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo shutdown [server] [shutdown type]");
                 return;
             }
-            using (ITerminalServer server = GetServerFromName(args[1]))
+            using (var server = GetServerFromName(args[1]))
             {
                 server.Open();
-                ShutdownType type = (ShutdownType) Enum.Parse(typeof(ShutdownType), args[2], true);
+                var type = (ShutdownType) Enum.Parse(typeof(ShutdownType), args[2], true);
                 server.Shutdown(type);
             }
         }
@@ -167,12 +167,12 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo killprocess [server] [process id] [exit code]");
                 return;
             }
-            int processId = int.Parse(args[2]);
-            int exitCode = int.Parse(args[3]);
-            using (ITerminalServer server = GetServerFromName(args[1]))
+            var processId = int.Parse(args[2]);
+            var exitCode = int.Parse(args[3]);
+            using (var server = GetServerFromName(args[1]))
             {
                 server.Open();
-                ITerminalServicesProcess process = server.GetProcess(processId);
+                var process = server.GetProcess(processId);
                 process.Kill(exitCode);
             }
         }
@@ -184,7 +184,7 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo listprocesses [server]");
                 return;
             }
-            using (ITerminalServer server = GetServerFromName(args[1]))
+            using (var server = GetServerFromName(args[1]))
             {
                 server.Open();
                 WriteProcesses(server.GetProcesses());
@@ -210,7 +210,7 @@ namespace SessionInfo
 
         private static void ListServers(string[] args)
         {
-            string domainName = (args.Length > 1 ? args[1] : null);
+            var domainName = (args.Length > 1 ? args[1] : null);
             foreach (ITerminalServer server in _manager.GetServers(domainName))
             {
                 Console.WriteLine(server.ServerName);
@@ -225,20 +225,16 @@ namespace SessionInfo
                     "Usage: SessionInfo ask [server] [session id] [icon] [caption] [text] [timeout] [buttons]");
                 return;
             }
-            int seconds = int.Parse(args[6]);
-            int sessionId = int.Parse(args[2]);
-            using (ITerminalServer server = GetServerFromName(args[1]))
+            var seconds = int.Parse(args[6]);
+            var sessionId = int.Parse(args[2]);
+            using (var server = GetServerFromName(args[1]))
             {
                 server.Open();
-                ITerminalServicesSession session = server.GetSession(sessionId);
-                RemoteMessageBoxIcon icon =
-                    (RemoteMessageBoxIcon) Enum.Parse(typeof(RemoteMessageBoxIcon), args[3], true);
-                RemoteMessageBoxButtons buttons =
-                    (RemoteMessageBoxButtons) Enum.Parse(typeof(RemoteMessageBoxButtons), args[7], true);
-                RemoteMessageBoxResult result = session.MessageBox(args[5], args[4], buttons, icon,
-                                                                   default(RemoteMessageBoxDefaultButton),
-                                                                   default(RemoteMessageBoxOptions),
-                                                                   TimeSpan.FromSeconds(seconds), true);
+                var session = server.GetSession(sessionId);
+                var icon = (RemoteMessageBoxIcon) Enum.Parse(typeof(RemoteMessageBoxIcon), args[3], true);
+                var buttons = (RemoteMessageBoxButtons) Enum.Parse(typeof(RemoteMessageBoxButtons), args[7], true);
+                var result = session.MessageBox(args[5], args[4], buttons, icon, default(RemoteMessageBoxDefaultButton),
+                                                default(RemoteMessageBoxOptions), TimeSpan.FromSeconds(seconds), true);
                 Console.WriteLine("Response: " + result);
             }
         }
@@ -250,13 +246,12 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo message [server] [session id] [icon] [caption] [text]");
                 return;
             }
-            int sessionId = int.Parse(args[2]);
-            using (ITerminalServer server = GetServerFromName(args[1]))
+            var sessionId = int.Parse(args[2]);
+            using (var server = GetServerFromName(args[1]))
             {
                 server.Open();
-                ITerminalServicesSession session = server.GetSession(sessionId);
-                RemoteMessageBoxIcon icon =
-                    (RemoteMessageBoxIcon) Enum.Parse(typeof(RemoteMessageBoxIcon), args[3], true);
+                var session = server.GetSession(sessionId);
+                var icon = (RemoteMessageBoxIcon) Enum.Parse(typeof(RemoteMessageBoxIcon), args[3], true);
                 session.MessageBox(args[5], args[4], icon);
             }
         }
@@ -268,8 +263,8 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo get [server] [session id]");
                 return;
             }
-            int sessionId = int.Parse(args[2]);
-            using (ITerminalServer server = GetServerFromName(args[1]))
+            var sessionId = int.Parse(args[2]);
+            using (var server = GetServerFromName(args[1]))
             {
                 server.Open();
                 WriteSessionInfo(server.GetSession(sessionId));
@@ -283,11 +278,11 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo listsessionprocesses [server] [session id]");
                 return;
             }
-            int sessionId = int.Parse(args[2]);
-            using (ITerminalServer server = GetServerFromName(args[1]))
+            var sessionId = int.Parse(args[2]);
+            using (var server = GetServerFromName(args[1]))
             {
                 server.Open();
-                ITerminalServicesSession session = server.GetSession(sessionId);
+                var session = server.GetSession(sessionId);
                 WriteProcesses(session.GetProcesses());
             }
         }
@@ -299,7 +294,7 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo listsessions [server]");
                 return;
             }
-            using (ITerminalServer server = GetServerFromName(args[1]))
+            using (var server = GetServerFromName(args[1]))
             {
                 server.Open();
                 foreach (ITerminalServicesSession session in server.GetSessions())
@@ -322,12 +317,12 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo logoff [server] [session id]");
                 return;
             }
-            string serverName = args[1];
-            int sessionId = int.Parse(args[2]);
-            using (ITerminalServer server = GetServerFromName(serverName))
+            var serverName = args[1];
+            var sessionId = int.Parse(args[2]);
+            using (var server = GetServerFromName(serverName))
             {
                 server.Open();
-                ITerminalServicesSession session = server.GetSession(sessionId);
+                var session = server.GetSession(sessionId);
                 session.Logoff();
             }
         }
@@ -346,12 +341,12 @@ namespace SessionInfo
                 Console.WriteLine("Usage: SessionInfo disconnect [server] [session id]");
                 return;
             }
-            string serverName = args[1];
-            int sessionId = int.Parse(args[2]);
-            using (ITerminalServer server = GetServerFromName(serverName))
+            var serverName = args[1];
+            var sessionId = int.Parse(args[2]);
+            using (var server = GetServerFromName(serverName))
             {
                 server.Open();
-                ITerminalServicesSession session = server.GetSession(sessionId);
+                var session = server.GetSession(sessionId);
                 session.Disconnect();
             }
         }
