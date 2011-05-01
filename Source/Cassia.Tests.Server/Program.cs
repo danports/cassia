@@ -9,26 +9,23 @@ namespace Cassia.Tests.Server
 
         private static void Main(string[] args)
         {
-            var inSession = Array.Find(args, arg => String.Equals(arg, "/insession"));
-            if (inSession != null)
+            if (Array.Find(args, arg => String.Equals(arg, InSessionSwitch)) == null)
             {
-                Logger.InSessionLog("Starting...");
-                try
-                {
-                    InSessionServer.Run();
-                }
-                catch (Exception ex)
-                {
-                    Logger.InSessionLog(ex.ToString());
-                    throw;
-                }
-                Logger.InSessionLog("Stopping...");
+                ServiceRunner.Run(new TestServer(), args);
                 return;
             }
 
-            Logger.MainServerLog("Starting...");
-            ServiceRunner.Run(new TestServer(), args);
-            Logger.MainServerLog("Stopping...");
+            Logger.Log("Starting...");
+            try
+            {
+                InSessionServer.Run();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(ex.ToString());
+                throw;
+            }
+            Logger.Log("Stopping...");
         }
     }
 }

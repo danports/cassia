@@ -12,25 +12,25 @@ namespace Cassia.Tests.Server.InSession
 
         public void ClickButtonInWindow(string windowTitle, string button)
         {
-            Logger.InSessionLog("trying to click button " + button + " in window " + windowTitle);
+            Logger.Log("trying to click button " + button + " in window " + windowTitle);
             var hwnd = FindWindow(null, windowTitle);
             if (hwnd == IntPtr.Zero)
             {
                 return;
             }
-            Logger.InSessionLog("got window; trying to find button");
+            Logger.Log("got window; trying to find button");
 
             var element = AutomationElement.FromHandle(hwnd);
             foreach (AutomationElement child in
                 element.FindAll(TreeScope.Children,
                                 new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Button)))
             {
-                Logger.InSessionLog(child.Current.Name + ": " + child.Current.AutomationId);
+                Logger.Log(child.Current.Name + ": " + child.Current.AutomationId);
                 if (child.Current.AutomationId != button)
                 {
                     continue;
                 }
-                Logger.InSessionLog("found button! clicking");
+                Logger.Log("found button! clicking");
                 var pattern = (InvokePattern) child.GetCurrentPattern(InvokePattern.Pattern);
                 pattern.Invoke();
                 break;
@@ -39,7 +39,7 @@ namespace Cassia.Tests.Server.InSession
 
         public bool WindowWithTitleExists(string windowTitle)
         {
-            Logger.InSessionLog("trying to find window with title: " + windowTitle);
+            Logger.Log("trying to find window with title: " + windowTitle);
             return FindWindow(null, windowTitle) != IntPtr.Zero;
         }
 
@@ -49,7 +49,6 @@ namespace Cassia.Tests.Server.InSession
             // rather unhappy. So we need to delay the shutdown a bit, until this call has completed.
             // TODO: Is there a nicer way to do this? (e.g. listen to an event for call complete and shut down
             // when that is fired)
-            Logger.InSessionLog("told to stop the insession server");
             InSessionServer.Stop();
         }
 

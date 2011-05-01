@@ -11,14 +11,10 @@ namespace Cassia.Tests.Server.ServiceComponents
         public void Run(IHostedService service)
         {
             _service = service;
-            _service.Attach(this);
             ServiceName = _service.Name;
+            Logger.SetLogger(new EventLogLogger(EventLog));
+            _service.Attach(this);
             Run(this);
-        }
-
-        public void Log(string message)
-        {
-            EventLog.WriteEntry(message);
         }
 
         #endregion

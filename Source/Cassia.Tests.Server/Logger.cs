@@ -1,18 +1,17 @@
-﻿using System;
-
-namespace Cassia.Tests.Server
+﻿namespace Cassia.Tests.Server
 {
     public static class Logger
     {
-        public static void InSessionLog(string text)
+        private static ILogger _current = new ConsoleLogger();
+
+        public static void SetLogger(ILogger logger)
         {
-            // TODO: this is a lame logging mechanism.
-            Console.WriteLine(DateTime.Now + ": " + text);
+            _current = logger;
         }
 
-        public static void MainServerLog(string text)
+        public static void Log(string text)
         {
-            Console.WriteLine(DateTime.Now + ": " + text);
+            _current.Log(text);
         }
     }
 }

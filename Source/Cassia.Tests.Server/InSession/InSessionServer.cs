@@ -16,7 +16,7 @@ namespace Cassia.Tests.Server.InSession
             host.Open();
             _stopEvent.WaitOne();
             Thread.Sleep(500); // let any pending calls complete...
-            Logger.InSessionLog("Stopping the WCF host");
+            Logger.Log("Stopping the WCF host");
             host.Close();
         }
 

@@ -44,15 +44,15 @@ namespace Cassia.Tests.Server.InSession
             {
                 return;
             }
-            Logger.MainServerLog("Telling in session server to quit...");
+            Logger.Log("Telling in session server to quit...");
             _testService.Stop();
             _process.WaitForExit();
-            Logger.MainServerLog("In session server has exited");
+            Logger.Log("In session server has exited");
         }
 
         private void StartService()
         {
-            Logger.MainServerLog("Starting in session server for session " + _sessionId);
+            Logger.Log("Starting in session server for session " + _sessionId);
 
             // TODO: For the process to start, the user that is connected to the session needs to have
             // access to the C:\Windows\Temp folder WITHOUT running as an administrator.

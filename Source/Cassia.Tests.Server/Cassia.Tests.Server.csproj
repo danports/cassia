@@ -67,9 +67,12 @@
     <Compile Include="..\..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
+    <Compile Include="ConsoleLogger.cs" />
+    <Compile Include="ILogger.cs" />
     <Compile Include="InSession\ProcessHelper.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="ServiceComponents\ConsoleServiceHost.cs" />
+    <Compile Include="ServiceComponents\EventLogLogger.cs" />
     <Compile Include="ServiceComponents\IHostedService.cs" />
     <Compile Include="InSession\IInSessionTestService.cs" />
     <Compile Include="ImpersonationHelper.cs" />
