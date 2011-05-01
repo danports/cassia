@@ -26,14 +26,14 @@ namespace Cassia.Tests
         }
 
         [Test]
-        public void OperationUpdatesSessionStatus([TestServers] ServerInfo server)
+        public void OperationUpdatesSessionStatus([TestConfigurations] ServerConfiguration config)
         {
-            using (var context = new ServerConnection(server))
+            using (ServerContext context = new ServerContext(config))
             {
                 using (var connection = context.OpenRdpConnection())
                 {
-                    context.TestService.Disconnect(null, connection.SessionId);
-                    Assert.That(context.TestService.GetSessionState(connection.SessionId),
+                    context.Source.Disconnect(context.TargetConnection, connection.SessionId);
+                    Assert.That(context.Source.GetSessionState(context.TargetConnection, connection.SessionId),
                                 Is.EqualTo(ConnectionState.Disconnected));
                 }
             }

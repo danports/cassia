@@ -1,6 +1,8 @@
 using System;
+using System.Runtime.InteropServices;
 using System.ServiceModel;
 using Cassia.Tests.Model;
+using Cassia.Tests.Server.ServiceComponents;
 using NetFwTypeLib;
 
 namespace Cassia.Tests.Server
@@ -28,6 +30,8 @@ namespace Cassia.Tests.Server
             CloseServiceHost();
         }
 
+        public void Attach(IServiceHost host) {}
+
         #endregion
 
         private void OpenServiceHost()
@@ -40,19 +44,26 @@ namespace Cassia.Tests.Server
 
         private static void OpenFirewallPort()
         {
-            var profile = GetCurrentFirewallProfile();
-            if (!profile.FirewallEnabled)
+            try
             {
-                return;
+                var profile = GetCurrentFirewallProfile();
+                if (!profile.FirewallEnabled)
+                {
+                    return;
+                }
+                var portType = Type.GetTypeFromProgID("HNetCfg.FWOpenPort", false);
+                var port = (INetFwOpenPort) Activator.CreateInstance(portType);
+                port.Name = "CassiaTestService";
+                port.Port = EndpointHelper.DefaultPort;
+                port.Protocol = NET_FW_IP_PROTOCOL_.NET_FW_IP_PROTOCOL_TCP;
+                port.Scope = NET_FW_SCOPE_.NET_FW_SCOPE_ALL;
+                port.IpVersion = NET_FW_IP_VERSION_.NET_FW_IP_VERSION_ANY;
+                profile.GloballyOpenPorts.Add(port);
             }
-            var portType = Type.GetTypeFromProgID("HNetCfg.FWOpenPort", false);
-            var port = (INetFwOpenPort) Activator.CreateInstance(portType);
-            port.Name = "CassiaTestService";
-            port.Port = EndpointHelper.DefaultPort;
-            port.Protocol = NET_FW_IP_PROTOCOL_.NET_FW_IP_PROTOCOL_TCP;
-            port.Scope = NET_FW_SCOPE_.NET_FW_SCOPE_ALL;
-            port.IpVersion = NET_FW_IP_VERSION_.NET_FW_IP_VERSION_ANY;
-            profile.GloballyOpenPorts.Add(port);
+            catch (COMException)
+            {
+                // Oh well, I guess we won't worry about the firewall.
+            }
         }
 
         private static INetFwProfile GetCurrentFirewallProfile()
@@ -74,6 +85,7 @@ namespace Cassia.Tests.Server
                 profile.GloballyOpenPorts.Remove(EndpointHelper.DefaultPort, NET_FW_IP_PROTOCOL_.NET_FW_IP_PROTOCOL_TCP);
             }
             catch (ArgumentException) {}
+            catch (COMException) {}
         }
 
         private void CloseServiceHost()

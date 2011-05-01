@@ -80,6 +80,7 @@
     <Compile Include="DisconnectEventArgs.cs" />
     <Compile Include="DisconnectTests.cs" />
     <Compile Include="LogoffTests.cs" />
+    <Compile Include="MessageBoxTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RdpConnection.cs" />
     <Compile Include="ServerConfiguration.cs" />
@@ -95,7 +96,6 @@
     </Compile>
     <Compile Include="ServerInfo.cs" />
     <Compile Include="TestServerConfiguration.cs" />
-    <Compile Include="TestServersAttribute.cs" />
     <Compile Include="TestServersSectionHandler.cs" />
     <Compile Include="TestSettings.cs" />
   </ItemGroup>

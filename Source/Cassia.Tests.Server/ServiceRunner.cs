@@ -1,4 +1,5 @@
 using System;
+using Cassia.Tests.Server.ServiceComponents;
 
 namespace Cassia.Tests.Server
 {
@@ -7,11 +8,7 @@ namespace Cassia.Tests.Server
         public static void Run(IHostedService service, string[] args)
         {
             var consoleArg = Array.Find(args,
-                                        delegate(string arg)
-                                            {
-                                                return string.Equals(arg, "/console",
-                                                                     StringComparison.CurrentCultureIgnoreCase);
-                                            });
+                                        arg => string.Equals(arg, "/console", StringComparison.CurrentCultureIgnoreCase));
             var host = consoleArg != null ? (IServiceHost) new ConsoleServiceHost() : new WindowsServiceHost();
             host.Run(service);
         }

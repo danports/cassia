@@ -1,6 +1,6 @@
 using System.ServiceProcess;
 
-namespace Cassia.Tests.Server
+namespace Cassia.Tests.Server.ServiceComponents
 {
     public class WindowsServiceHost : ServiceBase, IServiceHost
     {
@@ -11,8 +11,14 @@ namespace Cassia.Tests.Server
         public void Run(IHostedService service)
         {
             _service = service;
+            _service.Attach(this);
             ServiceName = _service.Name;
             Run(this);
+        }
+
+        public void Log(string message)
+        {
+            EventLog.WriteEntry(message);
         }
 
         #endregion

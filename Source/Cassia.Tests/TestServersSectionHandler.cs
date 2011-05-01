@@ -13,6 +13,7 @@ namespace Cassia.Tests
             var configuration = new TestServerConfiguration();
             foreach (XmlNode childNode in section.ChildNodes)
             {
+                // TODO: XML comments in the section totally break this parsing.
                 var name = childNode.Attributes["name"].Value;
                 var domain = childNode.Attributes["domain"].Value;
                 var username = childNode.Attributes["username"].Value;

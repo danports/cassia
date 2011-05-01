@@ -29,6 +29,11 @@ namespace Cassia.Tests
             get { return _target.Server.ConnectionDetails; }
         }
 
+        public IRemoteDesktopTestService Target
+        {
+            get { return _target.TestService; }
+        }
+
         #region IDisposable Members
 
         public void Dispose()

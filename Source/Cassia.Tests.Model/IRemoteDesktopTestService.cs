@@ -1,3 +1,4 @@
+using System;
 using System.ServiceModel;
 
 namespace Cassia.Tests.Model
@@ -12,12 +13,25 @@ namespace Cassia.Tests.Model
         int GetLatestSessionId();
 
         [OperationContract]
-        ConnectionState GetSessionState(int sessionId);
+        ConnectionState GetSessionState(ConnectionDetails connection, int sessionId);
 
         [OperationContract]
-        void Logoff(int sessionId);
+        void Logoff(ConnectionDetails connection, int sessionId);
 
         [OperationContract]
-        bool SessionExists(int sessionId);
+        bool SessionExists(ConnectionDetails connection, int sessionId);
+
+        [OperationContract]
+        RemoteMessageBoxResult GetLatestMessageBoxResponse();
+
+        [OperationContract]
+        void ClickButtonInWindow(int sessionId, string windowTitle, string button);
+
+        [OperationContract]
+        bool WindowWithTitleExists(int sessionId, string windowTitle);
+
+        [OperationContract]
+        void StartShowingMessageBox(ConnectionDetails connection, int sessionId, string windowTitle, string text,
+                                    RemoteMessageBoxButtons buttons, TimeSpan timeout);
     }
 }

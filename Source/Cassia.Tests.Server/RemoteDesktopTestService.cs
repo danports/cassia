@@ -1,6 +1,8 @@
 using System;
 using System.ServiceModel;
+using System.Threading;
 using Cassia.Tests.Model;
+using Cassia.Tests.Server.InSession;
 
 namespace Cassia.Tests.Server
 {
@@ -8,6 +10,7 @@ namespace Cassia.Tests.Server
     public class RemoteDesktopTestService : IRemoteDesktopTestService
     {
         private readonly ITerminalServicesManager _manager = new TerminalServicesManager();
+        private RemoteMessageBoxResult _lastResult;
 
         #region IRemoteDesktopTestService Members
 
@@ -37,34 +40,135 @@ namespace Cassia.Tests.Server
             return latest == null ? 0 : latest.SessionId;
         }
 
-        public ConnectionState GetSessionState(int sessionId)
+        public ConnectionState GetSessionState(ConnectionDetails connection, int sessionId)
         {
-            return _manager.GetLocalServer().GetSession(sessionId).ConnectionState;
+            using (ImpersonationHelper.Impersonate(connection))
+            {
+                using (var server = GetServer(connection.Server))
+                {
+                    server.Open();
+                    return server.GetSession(sessionId).ConnectionState;
+                }
+            }
         }
 
-        public void Logoff(int sessionId)
+        public void Logoff(ConnectionDetails connection, int sessionId)
         {
-            _manager.GetLocalServer().GetSession(sessionId).Logoff();
+            using (ImpersonationHelper.Impersonate(connection))
+            {
+                using (var server = GetServer(connection.Server))
+                {
+                    server.Open();
+                    server.GetSession(sessionId).Logoff();
+                }
+            }
         }
 
-        public bool SessionExists(int sessionId)
+        public bool SessionExists(ConnectionDetails connection, int sessionId)
         {
-            try
+            using (ImpersonationHelper.Impersonate(connection))
             {
-                var state = _manager.GetLocalServer().GetSession(sessionId).ConnectionState;
-                return true;
+                using (var server = GetServer(connection.Server))
+                {
+                    server.Open();
+                    try
+                    {
+                        var state = server.GetSession(sessionId).ConnectionState;
+                        return true;
+                    }
+                    catch (Exception)
+                    {
+                        return false;
+                    }
+                }
             }
-            catch (Exception)
+        }
+
+        public RemoteMessageBoxResult GetLatestMessageBoxResponse()
+        {
+            return _lastResult;
+        }
+
+        public void ClickButtonInWindow(int sessionId, string windowTitle, string button)
+        {
+            using (var context = new InSessionServiceContext(sessionId))
             {
-                return false;
+                context.Service.ClickButtonInWindow(windowTitle, button);
             }
+        }
+
+        public bool WindowWithTitleExists(int sessionId, string windowTitle)
+        {
+            using (var context = new InSessionServiceContext(sessionId))
+            {
+                return context.Service.WindowWithTitleExists(windowTitle);
+            }
+        }
+
+        public void StartShowingMessageBox(ConnectionDetails connection, int sessionId, string windowTitle, string text,
+                                           RemoteMessageBoxButtons buttons, TimeSpan timeout)
+        {
+            new MessageBoxShower(this, sessionId, connection, windowTitle, text, buttons, timeout).Show();
         }
 
         #endregion
+
+        private void SetLastMessageBoxResult(RemoteMessageBoxResult result)
+        {
+            _lastResult = result;
+        }
 
         private ITerminalServer GetServer(string server)
         {
             return string.IsNullOrEmpty(server) ? _manager.GetLocalServer() : _manager.GetRemoteServer(server);
         }
+
+        #region Nested type: MessageBoxShower
+
+        private class MessageBoxShower
+        {
+            private readonly RemoteMessageBoxButtons _buttons;
+            private readonly ConnectionDetails _connection;
+            private readonly RemoteDesktopTestService _service;
+            private readonly int _sessionId;
+            private readonly string _text;
+            private readonly TimeSpan _timeout;
+            private readonly string _title;
+
+            public MessageBoxShower(RemoteDesktopTestService service, int sessionId, ConnectionDetails connection,
+                                    string title, string text, RemoteMessageBoxButtons buttons, TimeSpan timeout)
+            {
+                _service = service;
+                _sessionId = sessionId;
+                _connection = connection;
+                _title = title;
+                _text = text;
+                _buttons = buttons;
+                _timeout = timeout;
+            }
+
+            public void Show()
+            {
+                new Thread(ShowCore).Start();
+            }
+
+            private void ShowCore()
+            {
+                using (ImpersonationHelper.Impersonate(_connection))
+                {
+                    using (var server = _service.GetServer(_connection.Server))
+                    {
+                        server.Open();
+                        var session = server.GetSession(_sessionId);
+                        var result = session.MessageBox(_text, _title, _buttons, RemoteMessageBoxIcon.Warning,
+                                                        default(RemoteMessageBoxDefaultButton),
+                                                        default(RemoteMessageBoxOptions), _timeout, true);
+                        _service.SetLastMessageBoxResult(result);
+                    }
+                }
+            }
+        }
+
+        #endregion
     }
 }

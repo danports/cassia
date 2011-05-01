@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.ServiceModel;
 using System.ServiceProcess;
@@ -10,6 +11,7 @@ namespace Cassia.Tests
 {
     public class ServerConnection : IDisposable
     {
+        private const string _serviceName = "CassiaTestServer";
         private readonly ServerInfo _server;
         private ChannelFactory<IRemoteDesktopTestService> _channelFactory;
         private ServiceController _serviceController;
@@ -27,7 +29,8 @@ namespace Cassia.Tests
                 if (_testService == null)
                 {
                     CopyFilesToServer();
-                    CreateAndStartService();
+                    CreateService();
+                    StartService();
                     ConnectToService();
                 }
                 return _testService;
@@ -49,11 +52,23 @@ namespace Cassia.Tests
         public void Dispose()
         {
             DisconnectFromService();
-            StopAndDeleteService();
+            StopService();
+            DeleteService();
             DeleteFilesFromServer();
         }
 
         #endregion
+
+        private void StartService()
+        {
+            _serviceController.Start();
+            _serviceController.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromMinutes(30));
+        }
+
+        private void DeleteService()
+        {
+            ServiceHelper.DeleteIfExists(_server.Name, _serviceName);
+        }
 
         private void DeleteFilesFromServer()
         {
@@ -61,10 +76,17 @@ namespace Cassia.Tests
             {
                 return;
             }
-            Directory.Delete(TargetDirectory, true);
+            try
+            {
+                Directory.Delete(TargetDirectory, true);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine("wasn't able to delete files from server: " + ex);
+            }
         }
 
-        private void StopAndDeleteService()
+        private void StopService()
         {
             if (_serviceController == null)
             {
@@ -76,10 +98,10 @@ namespace Cassia.Tests
                 _serviceController.WaitForStatus(ServiceControllerStatus.Stopped);
                 _serviceController.Dispose();
             }
+            catch (InvalidOperationException) {}
             catch (Win32Exception) {}
             // It takes Windows a bit of time after the service stops to release locks on the assemblies, apparently.
             Thread.Sleep(500);
-            ServiceHelper.Delete(_serviceController);
         }
 
         private void DisconnectFromService()
@@ -117,15 +139,14 @@ namespace Cassia.Tests
             _testService = _channelFactory.CreateChannel();
         }
 
-        private void CreateAndStartService()
+        private void CreateService()
         {
-            _serviceController = ServiceHelper.Create(_server.Name, "CassiaTestServer", "Cassia Test Server",
+            _serviceController = ServiceHelper.Create(_server.Name, _serviceName, "Cassia Test Server",
                                                       ServiceType.Win32OwnProcess, ServiceStartMode.Automatic,
                                                       ServiceHelper.ServiceErrorControl.Normal,
+                                                      // TODO: this path is not DRY...
                                                       @"C:\Windows\Temp\CassiaTestServer\Cassia.Tests.Server.exe", null,
                                                       new[] {"TermService"}, null, null);
-            _serviceController.Start();
-            _serviceController.WaitForStatus(ServiceControllerStatus.Running, TimeSpan.FromMinutes(30));
         }
 
         public RdpConnection OpenRdpConnection()

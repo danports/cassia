@@ -1,6 +1,6 @@
 using System;
 
-namespace Cassia.Tests.Server
+namespace Cassia.Tests.Server.ServiceComponents
 {
     public class ConsoleServiceHost : IServiceHost
     {
@@ -8,6 +8,7 @@ namespace Cassia.Tests.Server
 
         public void Run(IHostedService service)
         {
+            service.Attach(this);
             Console.WriteLine("Starting service {0}...", service.Name);
             service.Start();
             Console.WriteLine("Service started.");
@@ -19,6 +20,11 @@ namespace Cassia.Tests.Server
             Console.WriteLine("Stopping service {0}...", service.Name);
             service.Stop();
             Console.WriteLine("Service stopped.");
+        }
+
+        public void Log(string message)
+        {
+            Console.WriteLine(message);
         }
 
         #endregion

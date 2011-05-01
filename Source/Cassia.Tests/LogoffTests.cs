@@ -8,30 +8,30 @@ namespace Cassia.Tests
     public class LogoffTests
     {
         [Test]
-        public void OperationClosesSession([TestServers] ServerInfo server)
+        public void OperationClosesSession([TestConfigurations] ServerConfiguration config)
         {
-            using (var context = new ServerConnection(server))
+            using (ServerContext context = new ServerContext(config))
             {
                 using (var connection = context.OpenRdpConnection())
                 {
-                    context.TestService.Logoff(connection.SessionId);
+                    context.Source.Logoff(context.TargetConnection, connection.SessionId);
                     // Give Windows a bit of time to clean up the session.
                     Thread.Sleep(1000);
-                    Assert.That(context.TestService.SessionExists(connection.SessionId), Is.False);
+                    Assert.That(context.Source.SessionExists(context.TargetConnection, connection.SessionId), Is.False);
                 }
             }
         }
 
         [Test]
-        public void OperationDisconnectsClient([TestServers] ServerInfo server)
+        public void OperationDisconnectsClient([TestConfigurations] ServerConfiguration config)
         {
-            using (var context = new ServerConnection(server))
+            using (ServerContext context = new ServerContext(config))
             {
                 using (var connection = context.OpenRdpConnection())
                 {
                     var disconnectEvent = new ManualResetEvent(false);
                     connection.Disconnected += delegate { disconnectEvent.Set(); };
-                    context.TestService.Logoff(connection.SessionId);
+                    context.Source.Logoff(context.TargetConnection, connection.SessionId);
                     if (!disconnectEvent.WaitOne(TimeSpan.FromSeconds(10)))
                     {
                         throw new TimeoutException("Not disconnected yet");

@@ -3,7 +3,7 @@ using System.Configuration;
 
 namespace Cassia.Tests
 {
-    public class TestSettings
+    public static class TestSettings
     {
         private static readonly TestServerConfiguration _configuration;
 
@@ -13,19 +13,14 @@ namespace Cassia.Tests
                              new TestServerConfiguration();
         }
 
-        public IEnumerable<ServerInfo> Servers
-        {
-            get { return _configuration.Servers; }
-        }
-
-        public IEnumerable<ServerConfiguration> Configurations
+        public static IEnumerable<ServerConfiguration> Configurations
         {
             get
             {
                 var configurations = new List<ServerConfiguration>();
-                foreach (ServerInfo source in Servers)
+                foreach (ServerInfo source in _configuration.Servers)
                 {
-                    foreach (ServerInfo target in Servers)
+                    foreach (ServerInfo target in _configuration.Servers)
                     {
                         if (source == target)
                         {

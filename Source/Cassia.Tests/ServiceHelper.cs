@@ -53,6 +53,8 @@ namespace Cassia.Tests
 
         #endregion
 
+        private const int _serviceDoesNotExistError = 1060;
+
         [DllImport("Advapi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         private static extern IntPtr OpenSCManager(string machineName, string databaseName,
                                                    ScmAccessRights desiredAccess);
@@ -106,18 +108,22 @@ namespace Cassia.Tests
             }
         }
 
-        public static void Delete(ServiceController service)
+        public static void DeleteIfExists(string machineName, string serviceName)
         {
-            var hScManager = OpenSCManager(service.MachineName, null, ScmAccessRights.AllAccess);
+            IntPtr hScManager = OpenSCManager(machineName, null, ScmAccessRights.AllAccess);
             if (hScManager == IntPtr.Zero)
             {
                 throw new Win32Exception();
             }
             try
             {
-                var hService = OpenService(hScManager, service.ServiceName, ServiceAccessRights.AllAccess);
+                IntPtr hService = OpenService(hScManager, serviceName, ServiceAccessRights.AllAccess);
                 if (hService == IntPtr.Zero)
                 {
+                    if (Marshal.GetLastWin32Error() == _serviceDoesNotExistError)
+                    {
+                        return;
+                    }
                     throw new Win32Exception();
                 }
 

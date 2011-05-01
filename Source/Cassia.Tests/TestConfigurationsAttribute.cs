@@ -1,9 +1,14 @@
+using System.Collections;
+using System.Reflection;
 using NUnit.Framework;
 
 namespace Cassia.Tests
 {
-    public class TestConfigurationsAttribute : ValueSourceAttribute
+    public class TestConfigurationsAttribute : ParameterDataAttribute
     {
-        public TestConfigurationsAttribute() : base(typeof(TestSettings), "Configurations") {}
+        public override IEnumerable GetData(ParameterInfo parameter)
+        {
+            return TestSettings.Configurations;
+        }
     }
 }
