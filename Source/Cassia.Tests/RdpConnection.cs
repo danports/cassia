@@ -19,7 +19,7 @@ namespace Cassia.Tests
             _context = context;
 
             _connectedEvent = new ManualResetEvent(false);
-            _thread = new Thread((ThreadStart) delegate { ConnectCore(); });
+            _thread = new Thread(ConnectCore);
             // The RDP ActiveX control requires STA.
             _thread.SetApartmentState(ApartmentState.STA);
             _thread.Start();
@@ -31,6 +31,9 @@ namespace Cassia.Tests
             // Unfortunately, there doesn't seem to be any way to pull the session ID from the client,
             // so we have to pull it from the server.
             _sessionId = context.TestService.GetLatestSessionId();
+
+            // TODO: Sometimes the system takes a while to log on...
+            Thread.Sleep(5000);
         }
 
         public int SessionId
@@ -42,7 +45,7 @@ namespace Cassia.Tests
 
         public void Dispose()
         {
-            _form.Invoke((ThreadStart) delegate { _form.Close(); });
+            _form.Invoke((ThreadStart) (() => _form.Close()));
             // Wait for the form to clean itself up.
             _thread.Join();
         }
