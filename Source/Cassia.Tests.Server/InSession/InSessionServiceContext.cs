@@ -2,7 +2,6 @@ using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.ServiceModel;
-using System.Threading;
 
 namespace Cassia.Tests.Server.InSession
 {
@@ -53,18 +52,11 @@ namespace Cassia.Tests.Server.InSession
         private void StartService()
         {
             Logger.Log("Starting in session server for session " + _sessionId);
-
-            // TODO: For the process to start, the user that is connected to the session needs to have
-            // access to the C:\Windows\Temp folder WITHOUT running as an administrator.
-            // Should probably just run the process as an admin to fix this.
             _process = ProcessHelper.Start(_sessionId, Assembly.GetEntryAssembly().Location, Program.InSessionSwitch);
-            Thread.Sleep(2000); // Give it some time to start up (TODO: is this necessary?)
 
-            // Using the named pipes binding here is problematic, as described here:
+            // TODO: now that we are running as an administrator, we could probably use the named pipes binding.
+            // Using the named pipes binding here is problematic when running as a limited user, as described here:
             // http://weblogs.thinktecture.com/cweyer/2007/12/dealing-with-os-privilege-issues-in-wcf-named-pipes-scenarios.html
-            // Essentially, the process that we just started is running as a limited user,
-            // and limited users cannot write to the shared memory location where WCF stores the 
-            // endpoint name to pipe GUID mappings.
             _testService = ChannelFactory<IInSessionTestService>.CreateChannel(new NetTcpBinding(),
                                                                                new EndpointAddress(
                                                                                    InSessionServer.EndpointUri));

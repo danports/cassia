@@ -8,6 +8,121 @@ namespace Cassia.Tests.Server.InSession
 {
     public static class ProcessHelper
     {
+        #region CreationFlags enum
+
+        [Flags]
+        public enum CreationFlags
+        {
+            Default = DefaultErrorMode | NewConsole | NewProcessGroup,
+            DefaultErrorMode = 0x4000000,
+            NewConsole = 0x10,
+            NewProcessGroup = 0x200,
+            SeparateWowVdm = 0x800,
+            Suspended = 0x4,
+            UnicodeEnvironment = 0x400,
+            ExtendedStartupInfoPresent = 0x80000,
+        }
+
+        #endregion
+
+        #region LogonFlags enum
+
+        [Flags]
+        public enum LogonFlags
+        {
+            None = 0,
+            LogonWithProfile = 1,
+            NetCredentialsOnly = 2,
+        }
+
+        #endregion
+
+        #region SecurityImpersonationLevel enum
+
+        public enum SecurityImpersonationLevel
+        {
+            SecurityAnonymous,
+            SecurityIdentification,
+            SecurityImpersonation,
+            SecurityDelegation
+        }
+
+        #endregion
+
+        #region StartupInfoFlags enum
+
+        [Flags]
+        public enum StartupInfoFlags
+        {
+            ForceOnFeedback = 0x40,
+            ForceOffFeedback = 0x80,
+            PreventPinning = 0x2000,
+            RunFullScreen = 0x20,
+            TitleIsAppId = 0x1000,
+            TitleIsLinkName = 0x800,
+            UseCountChars = 0x8,
+            UseFillAttribute = 0x10,
+            UseHotKey = 0x200,
+            UsePosition = 0x4,
+            UseShowWindow = 0x1,
+            UseSize = 0x2,
+            UseStdHandles = 0x100,
+        }
+
+        #endregion
+
+        #region TokenInformationClass enum
+
+        public enum TokenInformationClass
+        {
+            TokenUser = 1,
+            TokenGroups,
+            TokenPrivileges,
+            TokenOwner,
+            TokenPrimaryGroup,
+            TokenDefaultDacl,
+            TokenSource,
+            TokenType,
+            TokenImpersonationLevel,
+            TokenStatistics,
+            TokenRestrictedSids,
+            TokenSessionId,
+            TokenGroupsAndPrivileges,
+            TokenSessionReference,
+            TokenSandBoxInert,
+            TokenAuditPolicy,
+            TokenOrigin,
+            TokenElevationType,
+            TokenLinkedToken,
+            TokenElevation,
+            TokenHasRestrictions,
+            TokenAccessInformation,
+            TokenVirtualizationAllowed,
+            TokenVirtualizationEnabled,
+            TokenIntegrityLevel,
+            TokenUIAccess,
+            TokenMandatoryPolicy,
+            TokenLogonSid,
+            MaxTokenInfoClass
+        }
+
+        #endregion
+
+        #region TokenType enum
+
+        public enum TokenType
+        {
+            TokenPrimary = 1,
+            TokenImpersonation
+        }
+
+        #endregion
+
+        [DllImport("Advapi32.dll", SetLastError = true)]
+        private static extern int GetTokenInformation(IntPtr token, TokenInformationClass infoClass,
+                                                      ref TOKEN_LINKED_TOKEN buffer, int bufferLength,
+                                                      out int returnLength);
+
         [DllImport("Wtsapi32.dll", SetLastError = true)]
         private static extern int WTSQueryUserToken(int sessionId, ref IntPtr token);
 
@@ -28,6 +143,11 @@ namespace Cassia.Tests.Server.InSession
         [DllImport("Userenv.dll", SetLastError = true)]
         private static extern int DestroyEnvironmentBlock(IntPtr environment);
 
+        [DllImport("Advapi32.dll", SetLastError = true)]
+        private static extern int DuplicateTokenEx(IntPtr token, int desiredAccess, IntPtr tokenAttributes,
+                                                   SecurityImpersonationLevel impersonationLevel, TokenType tokenType,
+                                                   out IntPtr newToken);
+
         public static Process Start(int sessionId, string applicationName, string commandLine)
         {
             var hToken = IntPtr.Zero;
@@ -35,6 +155,28 @@ namespace Cassia.Tests.Server.InSession
             {
                 throw new Win32Exception();
             }
+
+            // TODO: only get the elevated token on Vista or higher?
+            var linked = new TOKEN_LINKED_TOKEN();
+            int returned;
+            if (
+                GetTokenInformation(hToken, TokenInformationClass.TokenLinkedToken, ref linked, Marshal.SizeOf(linked),
+                                    out returned) == 0)
+            {
+                throw new Win32Exception();
+            }
+
+            var hLinkedToken = linked.LinkedToken;
+            IntPtr hAdminToken;
+            if (
+                DuplicateTokenEx(hLinkedToken, 0, IntPtr.Zero, SecurityImpersonationLevel.SecurityImpersonation,
+                                 TokenType.TokenPrimary, out hAdminToken) == 0)
+            {
+                throw new Win32Exception();
+            }
+
+            CloseHandle(hLinkedToken);
+            CloseHandle(hToken);
 
             try
             {
@@ -44,7 +186,7 @@ namespace Cassia.Tests.Server.InSession
                 ProcessInformation processInfo;
 
                 IntPtr hEnvironment;
-                if (CreateEnvironmentBlock(out hEnvironment, hToken, true) == 0)
+                if (CreateEnvironmentBlock(out hEnvironment, hAdminToken, true) == 0)
                 {
                     throw new Win32Exception();
                 }
@@ -52,7 +194,7 @@ namespace Cassia.Tests.Server.InSession
                 try
                 {
                     if (
-                        CreateProcessAsUser(hToken, null, commandLineText, IntPtr.Zero, IntPtr.Zero, false,
+                        CreateProcessAsUser(hAdminToken, null, commandLineText, IntPtr.Zero, IntPtr.Zero, false,
                                             CreationFlags.UnicodeEnvironment, hEnvironment, null, ref info,
                                             out processInfo) == 0)
                     {
@@ -70,99 +212,46 @@ namespace Cassia.Tests.Server.InSession
             }
             finally
             {
-                CloseHandle(hToken);
+                CloseHandle(hAdminToken);
             }
         }
+    }
 
-        #region Nested type: CreationFlags
+    [StructLayout(LayoutKind.Sequential)]
+    public struct ProcessInformation
+    {
+        public readonly IntPtr Process;
+        public readonly IntPtr Thread;
+        public readonly int ProcessId;
+        public readonly int ThreadId;
+    }
 
-        [Flags]
-        private enum CreationFlags
-        {
-            Default = DefaultErrorMode | NewConsole | NewProcessGroup,
-            DefaultErrorMode = 0x4000000,
-            NewConsole = 0x10,
-            NewProcessGroup = 0x200,
-            SeparateWowVdm = 0x800,
-            Suspended = 0x4,
-            UnicodeEnvironment = 0x400,
-            ExtendedStartupInfoPresent = 0x80000,
-        }
+    [StructLayout(LayoutKind.Sequential)]
+    public struct StartupInfo
+    {
+        public int Cb;
+        public readonly string Reserved;
+        public readonly string Desktop;
+        public readonly string Title;
+        public readonly int X;
+        public readonly int Y;
+        public readonly int XSize;
+        public readonly int YSize;
+        public readonly int XCountChars;
+        public readonly int YCountChars;
+        public readonly int FillAttribute;
+        public readonly ProcessHelper.StartupInfoFlags Flags;
+        public readonly short ShowWindow;
+        public readonly short Reserved2;
+        public readonly IntPtr Reserved3;
+        public readonly IntPtr StandardInput;
+        public readonly IntPtr StandardOutput;
+        public readonly IntPtr StandardError;
+    }
 
-        #endregion
-
-        #region Nested type: LogonFlags
-
-        [Flags]
-        private enum LogonFlags
-        {
-            None = 0,
-            LogonWithProfile = 1,
-            NetCredentialsOnly = 2,
-        }
-
-        #endregion
-
-        #region Nested type: ProcessInformation
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct ProcessInformation
-        {
-            public readonly IntPtr Process;
-            public readonly IntPtr Thread;
-            public readonly int ProcessId;
-            public readonly int ThreadId;
-        }
-
-        #endregion
-
-        #region Nested type: StartupInfo
-
-        [StructLayout(LayoutKind.Sequential)]
-        private struct StartupInfo
-        {
-            public int Cb;
-            public readonly string Reserved;
-            public readonly string Desktop;
-            public readonly string Title;
-            public readonly int X;
-            public readonly int Y;
-            public readonly int XSize;
-            public readonly int YSize;
-            public readonly int XCountChars;
-            public readonly int YCountChars;
-            public readonly int FillAttribute;
-            public readonly StartupInfoFlags Flags;
-            public readonly short ShowWindow;
-            public readonly short Reserved2;
-            public readonly IntPtr Reserved3;
-            public readonly IntPtr StandardInput;
-            public readonly IntPtr StandardOutput;
-            public readonly IntPtr StandardError;
-        }
-
-        #endregion
-
-        #region Nested type: StartupInfoFlags
-
-        [Flags]
-        private enum StartupInfoFlags
-        {
-            ForceOnFeedback = 0x40,
-            ForceOffFeedback = 0x80,
-            PreventPinning = 0x2000,
-            RunFullScreen = 0x20,
-            TitleIsAppId = 0x1000,
-            TitleIsLinkName = 0x800,
-            UseCountChars = 0x8,
-            UseFillAttribute = 0x10,
-            UseHotKey = 0x200,
-            UsePosition = 0x4,
-            UseShowWindow = 0x1,
-            UseSize = 0x2,
-            UseStdHandles = 0x100,
-        }
-
-        #endregion
+    [StructLayout(LayoutKind.Sequential)]
+    public struct TOKEN_LINKED_TOKEN
+    {
+        public IntPtr LinkedToken;
     }
 }
