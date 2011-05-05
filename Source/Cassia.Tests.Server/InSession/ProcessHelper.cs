@@ -118,6 +118,15 @@ namespace Cassia.Tests.Server.InSession
 
         #endregion
 
+        private static bool UserAccountControlExists
+        {
+            get
+            {
+                // TODO: there's probably a nicer way to do this.
+                return Environment.OSVersion.Version >= new Version(6, 0); // Vista
+            }
+        }
+
         [DllImport("Advapi32.dll", SetLastError = true)]
         private static extern int GetTokenInformation(IntPtr token, TokenInformationClass infoClass,
                                                       ref TOKEN_LINKED_TOKEN buffer, int bufferLength,
@@ -156,27 +165,29 @@ namespace Cassia.Tests.Server.InSession
                 throw new Win32Exception();
             }
 
-            // TODO: only get the elevated token on Vista or higher?
-            var linked = new TOKEN_LINKED_TOKEN();
-            int returned;
-            if (
-                GetTokenInformation(hToken, TokenInformationClass.TokenLinkedToken, ref linked, Marshal.SizeOf(linked),
-                                    out returned) == 0)
+            var hAdminToken = hToken;
+            if (UserAccountControlExists)
             {
-                throw new Win32Exception();
-            }
+                var linked = new TOKEN_LINKED_TOKEN();
+                int returned;
+                if (
+                    GetTokenInformation(hToken, TokenInformationClass.TokenLinkedToken, ref linked,
+                                        Marshal.SizeOf(linked), out returned) == 0)
+                {
+                    throw new Win32Exception();
+                }
 
-            var hLinkedToken = linked.LinkedToken;
-            IntPtr hAdminToken;
-            if (
-                DuplicateTokenEx(hLinkedToken, 0, IntPtr.Zero, SecurityImpersonationLevel.SecurityImpersonation,
-                                 TokenType.TokenPrimary, out hAdminToken) == 0)
-            {
-                throw new Win32Exception();
-            }
+                var hLinkedToken = linked.LinkedToken;
+                if (
+                    DuplicateTokenEx(hLinkedToken, 0, IntPtr.Zero, SecurityImpersonationLevel.SecurityImpersonation,
+                                     TokenType.TokenPrimary, out hAdminToken) == 0)
+                {
+                    throw new Win32Exception();
+                }
 
-            CloseHandle(hLinkedToken);
-            CloseHandle(hToken);
+                CloseHandle(hLinkedToken);
+                CloseHandle(hToken);
+            }
 
             try
             {

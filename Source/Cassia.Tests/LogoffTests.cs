@@ -10,7 +10,7 @@ namespace Cassia.Tests
         [Test]
         public void OperationClosesSession([TestConfigurations] ServerConfiguration config)
         {
-            using (ServerContext context = new ServerContext(config))
+            using (var context = new ServerContext(config))
             {
                 using (var connection = context.OpenRdpConnection())
                 {
@@ -25,7 +25,7 @@ namespace Cassia.Tests
         [Test]
         public void OperationDisconnectsClient([TestConfigurations] ServerConfiguration config)
         {
-            using (ServerContext context = new ServerContext(config))
+            using (var context = new ServerContext(config))
             {
                 using (var connection = context.OpenRdpConnection())
                 {

@@ -37,7 +37,11 @@ namespace Cassia.Tests.Server
                     latest = session;
                 }
             }
-            return latest == null ? 0 : latest.SessionId;
+            if (latest == null)
+            {
+                throw new InvalidOperationException("No connected sessions found");
+            }
+            return latest.SessionId;
         }
 
         public ConnectionState GetSessionState(ConnectionDetails connection, int sessionId)
@@ -73,8 +77,11 @@ namespace Cassia.Tests.Server
                     server.Open();
                     try
                     {
-                        var state = server.GetSession(sessionId).ConnectionState;
-                        return true;
+                        var session = server.GetSession(sessionId);
+                        // Windows XP sometimes connects you to session 0, and that session still exists after
+                        // logging the user off, as a disconnected console session but with no associated username.
+                        return (session.ConnectionState != ConnectionState.Disconnected ||
+                                !string.IsNullOrEmpty(session.UserName));
                     }
                     catch (Exception)
                     {
