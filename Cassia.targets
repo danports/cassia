@@ -1,31 +1,31 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="All">
-    <ItemGroup>
-      <Projects Include="Cassia.sln" />
-    </ItemGroup>
-    <PropertyGroup>
-      <BuildPath>Bin</BuildPath>
-      <DocPath>Doc</DocPath>
-      <PackageLabel>Cassia-$(BUILD_NUMBER).zip</PackageLabel>
-      <DropPath>$(BuildPath)\Publish</DropPath>
-	  <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
-    </PropertyGroup>
+  <ItemGroup>
+    <Projects Include="Cassia.sln" />
+  </ItemGroup>
+  <PropertyGroup>
+    <BuildPath>Bin</BuildPath>
+    <DocPath>Doc</DocPath>
+    <PackageLabel>Cassia-$(BUILD_NUMBER).zip</PackageLabel>
+    <DropPath>$(BuildPath)\Publish</DropPath>
+    <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
+  </PropertyGroup>
 
-    <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
-	    
-    <Target Name="Clean">
-        <RemoveDir Directories="$(BuildPath);$(DocPath)" />
-        <MakeDir Directories="$(BuildPath);$(DropPath)" />
-    </Target>
+  <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
+      
+  <Target Name="Clean">
+    <RemoveDir Directories="$(BuildPath);$(DocPath)" />
+    <MakeDir Directories="$(BuildPath);$(DropPath)" />
+  </Target>
     
   <Target Name="Build" DependsOnTargets="Clean">
-        <AssemblyInfo Condition="'$(BUILD_NUMBER)' != ''"
-                      CodeLanguage="CS"
-                      OutputFile="VersionInfo.cs"
-                      AssemblyVersion="$(BUILD_NUMBER)"
-                      AssemblyFileVersion="$(BUILD_NUMBER)"
-                      AssemblyCompany="Cassia Developers"
-                      AssemblyProduct="Cassia: .NET Terminal Services Library"
-                      AssemblyCopyright="Copyright © 2008 - 2009" />
+    <AssemblyInfo Condition="'$(BUILD_NUMBER)' != ''"
+                  CodeLanguage="CS"
+                  OutputFile="VersionInfo.cs"
+                  AssemblyVersion="$(BUILD_NUMBER)"
+                  AssemblyFileVersion="$(BUILD_NUMBER)"
+                  AssemblyCompany="Cassia Developers"
+                  AssemblyProduct="Cassia: .NET Terminal Services Library"
+                  AssemblyCopyright="Copyright © 2008 - 2011" />
     <MSBuild Projects="@(Projects)" Targets="Build" Properties="Configuration=Release" />  
   </Target>
     
@@ -36,9 +36,13 @@
     <Zip Files="@(PackageFiles)" ZipFileName="$(DropPath)\$(PackageLabel)" />
   </Target>
 
+  <Target Name="NuGet">
+    <Exec Command="Tools\NuGet\NuGet.exe pack Source\Cassia\Cassia.csproj -OutputDirectory $(DropPath)" />
+  </Target>
+
   <Target Name="Documentation">
-	<Exec Command="Tools\ImmDoc.NET\ImmDocNet.exe -pn:Cassia -cn:$(DocPath)\Cassia.chm -cp:Tools\HTMLHelpWorkshop -od:$(DocPath) $(BuildPath)\Cassia.xml $(BuildPath)\Cassia.dll" />
+    <Exec Command="Tools\ImmDoc.NET\ImmDocNet.exe -pn:Cassia -cn:$(DocPath)\Cassia.chm -cp:Tools\HTMLHelpWorkshop -od:$(DocPath) $(BuildPath)\Cassia.xml $(BuildPath)\Cassia.dll" />
   </Target>
   
-  <Target Name="All" DependsOnTargets="Build;Documentation;Package" />
+  <Target Name="All" DependsOnTargets="Build;Documentation;Package;NuGet" />
 </Project>
