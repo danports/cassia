@@ -51,6 +51,7 @@
     <Compile Include="Impl\ClientDisplay.cs" />
     <Compile Include="IClientDisplay.cs" />
     <Compile Include="Impl\GroupLazyLoadedProperty.cs" />
+    <Compile Include="Impl\WTS_SESSION_ADDRESS.cs" />
     <Compile Include="IProtocolStatistics.cs" />
     <Compile Include="Impl\NamespaceDoc.cs" />
     <Compile Include="ConnectionState.cs" />
