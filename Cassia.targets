@@ -6,7 +6,8 @@
     <BuildPath>Bin</BuildPath>
     <DocPath>Doc</DocPath>
     <PackageLabel>Cassia-$(BUILD_BUILDNUMBER).zip</PackageLabel>
-    <DropPath>$(BuildPath)\Publish</DropPath>
+    <DropPath>$(BUILD_ARTIFACTSTAGINGDIRECTORY)</DropPath>
+    <DropPath Condition="'$(DropPath)' == ''">$(BuildPath)\Publish</DropPath>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
   </PropertyGroup>
 
