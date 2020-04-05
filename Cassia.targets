@@ -26,23 +26,23 @@
                   AssemblyFileVersion="$(BUILD_BUILDNUMBER)"
                   AssemblyCompany="Cassia Developers"
                   AssemblyProduct="Cassia: .NET Terminal Services Library"
-                  AssemblyCopyright="Copyright © 2008 - 2018" />
-    <MSBuild Projects="@(Projects)" Targets="Build" Properties="Configuration=Release" />  
+                  AssemblyCopyright="Copyright © 2008 - 2020" />
+    <MSBuild Projects="@(Projects)" Targets="Restore;Build" Properties="Configuration=Release" />  
   </Target>
     
   <Target Name="Package">
-    <CreateItem Include="**\*.*" Exclude="**\obj\**\*.*;**\*.suo;**\*.user;**\*.log;**\*.cache;**\.svn\**\*.*;**\*Resharper*\**\*.*;$(DropPath)\**\*.*">
+    <CreateItem Include="**\*.*" Exclude="**\obj\**\*.*;**\*.suo;**\*.user;**\*.log;**\*.cache;**\.git*\**\*.*;**\.vs\**\*.*;$(DropPath)\**\*.*">
       <Output TaskParameter="Include" ItemName="PackageFiles" />
     </CreateItem>
     <Zip Files="@(PackageFiles)" ZipFileName="$(DropPath)\$(PackageLabel)" />
   </Target>
 
   <Target Name="NuGet">
-    <Exec Command="Tools\NuGet\NuGet.exe pack Source\Cassia\Cassia.csproj -OutputDirectory $(DropPath)" />
+    <MSBuild Projects="Source\Cassia\Cassia.csproj" Targets="Pack" Properties="Configuration=Release;PackageOutputPath=..\..\$(DropPath)" />
   </Target>
 
   <Target Name="Documentation">
-    <Exec Command="Tools\ImmDoc.NET\ImmDocNet.exe -pn:Cassia -cn:$(DocPath)\Cassia.chm -cp:Tools\HTMLHelpWorkshop -od:$(DocPath) $(BuildPath)\Cassia.xml $(BuildPath)\Cassia.dll" />
+    <Exec Command="Tools\ImmDoc.NET\ImmDocNet.exe -pn:Cassia -cn:$(DocPath)\Cassia.chm -cp:Tools\HTMLHelpWorkshop -od:$(DocPath) $(BuildPath)\Cassia.xml $(BuildPath)\netstandard2.0\Cassia.dll" />
   </Target>
   
   <Target Name="All" DependsOnTargets="Build;Documentation;Package;NuGet" />
