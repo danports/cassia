@@ -168,8 +168,7 @@ namespace Cassia.Tests.Server
                         server.Open();
                         var session = server.GetSession(_sessionId);
                         var result = session.MessageBox(_text, _title, _buttons, RemoteMessageBoxIcon.Warning,
-                                                        default(RemoteMessageBoxDefaultButton),
-                                                        default(RemoteMessageBoxOptions), _timeout, true);
+                                                        default, default, _timeout, true);
                         _service.SetLastMessageBoxResult(result);
                     }
                 }

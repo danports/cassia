@@ -1,102 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{FA7C09C9-33DE-459E-8299-DE57834CEC15}</ProjectGuid>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Cassia</RootNamespace>
-    <AssemblyName>Cassia</AssemblyName>
-    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <UpgradeBackupLocation />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
     <OutputPath>..\..\Bin\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Cassia.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
     <OutputPath>..\..\Bin\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <DocumentationFile>..\..\Bin\Cassia.xml</DocumentationFile>
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="..\..\VersionInfo.cs">
       <Link>Properties\VersionInfo.cs</Link>
     </Compile>
-    <Compile Include="ClientProtocolType.cs" />
-    <Compile Include="Impl\CACHE_STATISTICS.cs" />
-    <Compile Include="Impl\ClientDisplay.cs" />
-    <Compile Include="IClientDisplay.cs" />
-    <Compile Include="Impl\GroupLazyLoadedProperty.cs" />
-    <Compile Include="Impl\WTS_SESSION_ADDRESS.cs" />
-    <Compile Include="IProtocolStatistics.cs" />
-    <Compile Include="Impl\NamespaceDoc.cs" />
-    <Compile Include="ConnectionState.cs" />
-    <Compile Include="Impl\PROTOCOLCOUNTERS.cs" />
-    <Compile Include="Impl\ProtocolStatistics.cs" />
-    <Compile Include="Impl\PROTOCOLSTATUS.cs" />
-    <Compile Include="Impl\WTSINFOEX.cs" />
-    <Compile Include="Impl\WTSINFOEX_LEVEL1.cs" />
-    <Compile Include="RemoteControlHotkeyModifiers.cs" />
-    <Compile Include="Impl\SYSTEMTIME.cs" />
-    <Compile Include="Impl\WINSTATIONINFOCLASS.cs" />
-    <Compile Include="Impl\WINSTATIONINFORMATIONW.cs" />
-    <Compile Include="Impl\WINSTATIONREMOTEADDRESS.cs" />
-    <Compile Include="Impl\WTSINFO.cs" />
-    <Compile Include="Impl\WTS_CLIENT_ADDRESS.cs" />
-    <Compile Include="Impl\WTS_CLIENT_DISPLAY.cs" />
-    <Compile Include="Impl\WTS_INFO_CLASS.cs" />
-    <Compile Include="Impl\WTS_PROCESS_INFO.cs" />
-    <Compile Include="Impl\WTS_SERVER_INFO.cs" />
-    <Compile Include="Impl\WTS_SESSION_INFO.cs" />
-    <Compile Include="ITerminalServer.cs" />
-    <Compile Include="ITerminalServerHandle.cs" />
-    <Compile Include="ITerminalServicesManager.cs" />
-    <Compile Include="ITerminalServicesProcess.cs" />
-    <Compile Include="ITerminalServicesSession.cs" />
-    <Compile Include="Impl\LazyLoadedProperty.cs" />
-    <Compile Include="Impl\LocalServerHandle.cs" />
-    <Compile Include="NamespaceDoc.cs" />
-    <Compile Include="Impl\NativeMethods.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RemoteMessageBoxButtons.cs" />
-    <Compile Include="RemoteMessageBoxDefaultButton.cs" />
-    <Compile Include="RemoteMessageBoxIcon.cs" />
-    <Compile Include="RemoteMessageBoxOptions.cs" />
-    <Compile Include="RemoteMessageBoxResult.cs" />
-    <Compile Include="Impl\NativeMethodsHelper.cs" />
-    <Compile Include="ShutdownType.cs" />
-    <Compile Include="Impl\TerminalServer.cs" />
-    <Compile Include="Impl\RemoteServerHandle.cs" />
-    <Compile Include="TerminalServicesManager.cs" />
-    <Compile Include="Impl\TerminalServicesProcess.cs" />
-    <Compile Include="Impl\TerminalServicesSession.cs" />
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <Target Name="BeforeBuild">
-    <Copy Condition="!Exists('$(SolutionDir)\VersionInfo.cs')" SourceFiles="$(SolutionDir)\VersionInfo.cs.tmpl" DestinationFiles="$(SolutionDir)\VersionInfo.cs" />
+  <ItemGroup>
+    <PackageReference Include="System.Security.Principal.Windows" Version="4.7.0" />
+  </ItemGroup>
+  <Target Name="CopyVersionInfo" BeforeTargets="CoreCompile">
+    <Copy Condition="!Exists('..\..\VersionInfo.cs')" SourceFiles="..\..\VersionInfo.cs.tmpl" DestinationFiles="..\..\VersionInfo.cs" />
   </Target>
 </Project>

@@ -233,8 +233,8 @@ namespace SessionInfo
                 var session = server.GetSession(sessionId);
                 var icon = (RemoteMessageBoxIcon) Enum.Parse(typeof(RemoteMessageBoxIcon), args[3], true);
                 var buttons = (RemoteMessageBoxButtons) Enum.Parse(typeof(RemoteMessageBoxButtons), args[7], true);
-                var result = session.MessageBox(args[5], args[4], buttons, icon, default(RemoteMessageBoxDefaultButton),
-                                                default(RemoteMessageBoxOptions), TimeSpan.FromSeconds(seconds), true);
+                var result = session.MessageBox(args[5], args[4], buttons, icon, default,
+                                                default, TimeSpan.FromSeconds(seconds), true);
                 Console.WriteLine("Response: " + result);
             }
         }
