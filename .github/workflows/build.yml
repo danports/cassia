@@ -6,6 +6,8 @@ on:
 
 jobs:
   build:
+    env:
+      BUILD_BUILDNUMBER: "3.0.0.${{ github.run_number }}"
 
     runs-on: windows-latest
 
