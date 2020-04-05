@@ -18,7 +18,11 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Company>Cassia Developers</Company>
+    <Authors>Cassia Developers</Authors>
+    <Product>Cassia: .NET Remote Desktop Services Library</Product>
+    <Copyright>Copyright © 2008 - 2020</Copyright>
+    <AssemblyVersion>$(BUILD_BUILDNUMBER)</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Interop.NetFwTypeLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -30,9 +34,6 @@
     <Reference Include="UIAutomationTypes" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\..\VersionInfo.cs">
-      <Link>Properties\VersionInfo.cs</Link>
-    </Compile>
     <Compile Update="ServiceComponents\WindowsServiceHost.cs">
       <SubType>Component</SubType>
     </Compile>

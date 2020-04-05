@@ -2,7 +2,17 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <OutputType>Library</OutputType>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Company>Cassia Developers</Company>
+    <Authors>Cassia Developers</Authors>
+    <Product>Cassia: .NET Remote Desktop Services Library</Product>
+    <Description>Cassia is a .NET library for accessing the native Windows Remote Desktop Services API.</Description>
+    <Copyright>Copyright © 2008 - 2020</Copyright>
+    <AssemblyVersion>$(BUILD_BUILDNUMBER)</AssemblyVersion>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/danports/cassia</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/danports/cassia.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>TerminalServices;RemoteDesktop</PackageTags>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>..\..\Bin\</OutputPath>
@@ -16,14 +26,6 @@
     <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\..\VersionInfo.cs">
-      <Link>Properties\VersionInfo.cs</Link>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
     <PackageReference Include="System.Security.Principal.Windows" Version="4.7.0" />
   </ItemGroup>
-  <Target Name="CopyVersionInfo" BeforeTargets="CoreCompile">
-    <Copy Condition="!Exists('..\..\VersionInfo.cs')" SourceFiles="..\..\VersionInfo.cs.tmpl" DestinationFiles="..\..\VersionInfo.cs" />
-  </Target>
 </Project>

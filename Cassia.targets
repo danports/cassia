@@ -19,14 +19,6 @@
   </Target>
     
   <Target Name="Build" DependsOnTargets="Clean">
-    <AssemblyInfo Condition="'$(BUILD_BUILDNUMBER)' != ''"
-                  CodeLanguage="CS"
-                  OutputFile="VersionInfo.cs"
-                  AssemblyVersion="$(BUILD_BUILDNUMBER)"
-                  AssemblyFileVersion="$(BUILD_BUILDNUMBER)"
-                  AssemblyCompany="Cassia Developers"
-                  AssemblyProduct="Cassia: .NET Terminal Services Library"
-                  AssemblyCopyright="Copyright © 2008 - 2020" />
     <MSBuild Projects="@(Projects)" Targets="Restore;Build" Properties="Configuration=Release" />  
   </Target>
     

@@ -17,13 +17,12 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Company>Cassia Developers</Company>
+    <Authors>Cassia Developers</Authors>
+    <Product>Cassia: .NET Remote Desktop Services Library</Product>
+    <Copyright>Copyright © 2008 - 2020</Copyright>
+    <AssemblyVersion>$(BUILD_BUILDNUMBER)</AssemblyVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="..\..\VersionInfo.cs">
-      <Link>Properties\VersionInfo.cs</Link>
-    </Compile>
-  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cassia\Cassia.csproj" />
   </ItemGroup>
