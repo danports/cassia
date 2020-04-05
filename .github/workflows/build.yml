@@ -19,3 +19,14 @@ jobs:
     
     - name: Build
       run: msbuild Cassia.targets
+
+    - name: Publish package
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: Package
+        path: "Bin/Publish/Cassia-${{ env.BUILD_BUILDNUMBER }}.zip"
+    - name: Publish NuGet
+      uses: actions/upload-artifact@v1.0.0
+      with:
+        name: NuGet
+        path: "Bin/Publish/Cassia.${{ env.BUILD_BUILDNUMBER }}.nupkg"
