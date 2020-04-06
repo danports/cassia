@@ -35,4 +35,4 @@ jobs:
         path: "${{ env.NUGET_FILE }}"
     
     - name: Push to NuGet Gallery
-      run: dotnet nuget push -k ${{ secrets.NuGetAPIKey }} ${{ env.NUGET_FILE }}
+      run: dotnet nuget push -k ${{ secrets.NuGetAPIKey }} -s https://api.nuget.org/v3/index.json ${{ env.NUGET_FILE }}
