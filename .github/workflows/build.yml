@@ -10,7 +10,7 @@ jobs:
       ASSEMBLY_FILE_VERSION: "3.0.0.${{ github.run_number }}"
       NUGET_PACKAGE_VERSION: "3.0.0-alpha.${{ github.run_number }}"
       PACKAGE_FILE: "Bin/Publish/Cassia-3.0.0.${{ github.run_number }}.zip"
-      NUGET_FILE: "Bin/Publish/Cassia.3.0.0.nupkg"
+      NUGET_FILE: "Bin/Publish/Cassia.3.0.0-alpha.${{ github.run_number }}.nupkg"
 
     runs-on: windows-latest
 
@@ -33,3 +33,6 @@ jobs:
       with:
         name: NuGet Package
         path: "${{ env.NUGET_FILE }}"
+    
+    - name: Push to NuGet Gallery
+      run: dotnet nuget push -k ${{ secrets.NuGetAPIKey }} ${{ env.NUGET_FILE }}
