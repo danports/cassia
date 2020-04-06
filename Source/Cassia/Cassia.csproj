@@ -7,7 +7,8 @@
     <Product>Cassia: .NET Remote Desktop Services Library</Product>
     <Description>Cassia is a .NET library for accessing the native Windows Remote Desktop Services API.</Description>
     <Copyright>Copyright © 2008 - 2020</Copyright>
-    <AssemblyVersion>$(BUILD_BUILDNUMBER)</AssemblyVersion>
+    <AssemblyVersion>$(ASSEMBLY_FILE_VERSION)</AssemblyVersion>
+    <PackageVersion>$(NUGET_PACKAGE_VERSION)</PackageVersion>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/danports/cassia</PackageProjectUrl>
     <RepositoryUrl>https://github.com/danports/cassia.git</RepositoryUrl>

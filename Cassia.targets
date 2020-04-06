@@ -5,28 +5,28 @@
   <PropertyGroup>
     <BuildPath>Bin</BuildPath>
     <DocPath>Doc</DocPath>
-    <PackageLabel>Cassia-$(BUILD_BUILDNUMBER).zip</PackageLabel>
-    <DropPath>$(BUILD_ARTIFACTSTAGINGDIRECTORY)</DropPath>
     <DropPath Condition="'$(DropPath)' == ''">$(BuildPath)\Publish</DropPath>
+    <PackageFile>$(PACKAGE_FILE)</PackageFile>
+    <PackageFile Condition="'$(PackageFile)' == ''">$(DropPath)\Cassia.zip</PackageFile>
     <MSBuildCommunityTasksPath>$(MSBuildProjectDirectory)\Tools\MSBuildCommunityTasks</MSBuildCommunityTasksPath>
   </PropertyGroup>
 
   <Import Project="$(MSBuildCommunityTasksPath)\MSBuild.Community.Tasks.Targets" />
-      
+
   <Target Name="Clean">
     <RemoveDir Directories="$(BuildPath);$(DocPath)" />
     <MakeDir Directories="$(BuildPath);$(DropPath)" />
   </Target>
-    
+
   <Target Name="Build" DependsOnTargets="Clean">
-    <MSBuild Projects="@(Projects)" Targets="Restore;Build" Properties="Configuration=Release" />  
+    <MSBuild Projects="@(Projects)" Targets="Restore;Build" Properties="Configuration=Release" />
   </Target>
-    
+
   <Target Name="Package">
     <CreateItem Include="**\*.*" Exclude="**\obj\**\*.*;**\*.suo;**\*.user;**\*.log;**\*.cache;**\.git*\**\*.*;**\.vs\**\*.*;$(DropPath)\**\*.*">
       <Output TaskParameter="Include" ItemName="PackageFiles" />
     </CreateItem>
-    <Zip Files="@(PackageFiles)" ZipFileName="$(DropPath)\$(PackageLabel)" />
+    <Zip Files="@(PackageFiles)" ZipFileName="$(PackageFile)" />
   </Target>
 
   <Target Name="NuGet">
@@ -36,6 +36,6 @@
   <Target Name="Documentation">
     <Exec Command="Tools\ImmDoc.NET\ImmDocNet.exe -pn:Cassia -cn:$(DocPath)\Cassia.chm -cp:Tools\HTMLHelpWorkshop -od:$(DocPath) $(BuildPath)\Cassia.xml $(BuildPath)\netstandard2.0\Cassia.dll" />
   </Target>
-  
+
   <Target Name="All" DependsOnTargets="Build;Documentation;Package;NuGet" />
 </Project>

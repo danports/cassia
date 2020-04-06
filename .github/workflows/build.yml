@@ -7,7 +7,10 @@ on:
 jobs:
   build:
     env:
-      BUILD_BUILDNUMBER: "3.0.0.${{ github.run_number }}"
+      ASSEMBLY_FILE_VERSION: "3.0.0.${{ github.run_number }}"
+      NUGET_PACKAGE_VERSION: "3.0.0-alpha.${{ github.run_number }}"
+      PACKAGE_FILE: "Bin/Publish/Cassia-3.0.0.${{ github.run_number }}.zip"
+      NUGET_FILE: "Bin/Publish/Cassia.3.0.0.nupkg"
 
     runs-on: windows-latest
 
@@ -23,10 +26,10 @@ jobs:
     - name: Publish package
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: Package
-        path: "Bin/Publish/Cassia-${{ env.BUILD_BUILDNUMBER }}.zip"
+        name: Source
+        path: "${{ env.PACKAGE_FILE }}"
     - name: Publish NuGet
       uses: actions/upload-artifact@v1.0.0
       with:
-        name: NuGet
-        path: "Bin/Publish/Cassia.${{ env.BUILD_BUILDNUMBER }}.nupkg"
+        name: NuGet Package
+        path: "${{ env.NUGET_FILE }}"

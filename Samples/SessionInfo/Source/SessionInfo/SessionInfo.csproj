@@ -6,7 +6,7 @@
     <Authors>Cassia Developers</Authors>
     <Product>Cassia: .NET Remote Desktop Services Library</Product>
     <Copyright>Copyright © 2008 - 2020</Copyright>
-    <AssemblyVersion>$(BUILD_BUILDNUMBER)</AssemblyVersion>
+    <AssemblyVersion>$(ASSEMBLY_FILE_VERSION)</AssemblyVersion>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\Source\Cassia\Cassia.csproj" />
